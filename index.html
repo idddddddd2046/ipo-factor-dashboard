@@ -487,6 +487,11 @@ function fmtVal(f, v){
   }
 }
 const pctS = (v, d=1) => v == null ? "—" : (v*100 >= 0 ? "+" : "") + (v*100).toFixed(d) + "%";
+const strategyPct = (v, signed=true) => {
+  if (v == null) return "—";
+  const value = Math.round(Math.abs(v) * 1000 + 1e-9) / 10;
+  return (v < 0 ? "−" : (signed ? "+" : "")) + value.toFixed(1) + "%";
+};
 const icS = v => v == null ? "—" : (v >= 0 ? "+" : "") + v.toFixed(3);
 const icCls = v => v == null || v === 0 ? "icnull" : (v > 0 ? "icpos" : "icinv");
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -515,9 +520,9 @@ function renderStrategy(){
   const r = STRATEGY.metrics.rank_ic, b = STRATEGY.metrics.buy_tier;
   $("#strategyGrid").innerHTML = [
     metricCard("整组 D1 RankIC", r.v2.toFixed(3), r.baseline.toFixed(3)),
-    metricCard(`历史买入档 D1 中位（各 n=${b.v2.buy_n}）`, pctS(b.v2.buy_median), pctS(b.baseline.buy_median)),
-    metricCard("历史买入档正收益率", pctS(b.v2.buy_winrate), pctS(b.baseline.buy_winrate)),
-    metricCard("底部 1/3 捕捉全部破发的比例", pctS(b.v2.avoid_rate), pctS(b.baseline.avoid_rate))
+    metricCard(`历史买入档 D1 中位（各 n=${b.v2.buy_n}）`, strategyPct(b.v2.buy_median), strategyPct(b.baseline.buy_median)),
+    metricCard("历史买入档正收益率", strategyPct(b.v2.buy_winrate, false), strategyPct(b.baseline.buy_winrate, false)),
+    metricCard("底部 1/3 捕捉全部破发的比例", strategyPct(b.v2.avoid_rate, false), strategyPct(b.baseline.avoid_rate, false))
   ].join("");
   $("#strategyNote").innerHTML = `2026 时间外验证交集 n=${STRATEGY.n_valid_intersection}，两组按相同覆盖率对齐为各 ${b.v2.buy_n} 只；验证交集共有 ${b.v2.n_breaks} 只破发，绝非“买入档破发 ${b.v2.n_breaks} 只”。v2 与旧引擎的买入档中位差 95% CI 为 ${pctS(b.buy_median_diff_ci95[0])} ~ ${pctS(b.buy_median_diff_ci95[1])}；RankIC 差 95% CI 为 ${r.diff_ci95[0].toFixed(3)} ~ ${r.diff_ci95[1].toFixed(3)}。这是冻结历史验证，前瞻双跑仍在累积。`;
 }
