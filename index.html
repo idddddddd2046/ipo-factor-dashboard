@@ -611,7 +611,7 @@ $("#modgrid").innerHTML = DATA.modules.map(m => {
 document.querySelectorAll(".mod").forEach(el => {
   const go = () => { selectFactor(DATA.factors.filter(f=>f.m===el.dataset.mod)
       .sort((a,b)=>Math.abs(b.d1?.ic??0)+Math.abs(b.d30?.ic??0)-Math.abs(a.d1?.ic??0)-Math.abs(a.d30?.ic??0))[0].id);
-    $("#explorer").scrollIntoView(); };
+    (innerWidth <= 900 ? $("#fdetail") : $("#explorer")).scrollIntoView({block:"start"}); };
   el.addEventListener("click", go);
   el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
 });
