@@ -3,28 +3,28 @@
 :root{
   --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
   --grid:#e1e0d9; --baseline:#c3c2b7; --border:rgba(11,11,11,.10);
-  --pos:#2a78d6; --neg:#e34948; --good:#006300; --wash:rgba(11,11,11,.04);
+  --pos:#2a78d6; --neg:#e34948; --inverse:#7652b8; --good:#006300; --warn:#9a6500; --wash:rgba(11,11,11,.04);
   --m-funding:#2a78d6; --m-supply:#1baf7a; --m-anchor:#4a3aa7; --m-env:#eda100;
   --m-growth:#008300; --m-value:#eb6834; --m-research:#e87ba4;
 }
 @media (prefers-color-scheme: dark){:root{
   --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
   --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
-  --pos:#3987e5; --neg:#e66767; --good:#0ca30c; --wash:rgba(255,255,255,.06);
+  --pos:#3987e5; --neg:#e66767; --inverse:#a894e8; --good:#0ca30c; --warn:#e2ae45; --wash:rgba(255,255,255,.06);
   --m-funding:#3987e5; --m-supply:#199e70; --m-anchor:#9085e9; --m-env:#c98500;
   --m-growth:#008300; --m-value:#d95926; --m-research:#d55181;
 }}
 :root[data-theme="dark"]{
   --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
   --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
-  --pos:#3987e5; --neg:#e66767; --good:#0ca30c; --wash:rgba(255,255,255,.06);
+  --pos:#3987e5; --neg:#e66767; --inverse:#a894e8; --good:#0ca30c; --warn:#e2ae45; --wash:rgba(255,255,255,.06);
   --m-funding:#3987e5; --m-supply:#199e70; --m-anchor:#9085e9; --m-env:#c98500;
   --m-growth:#008300; --m-value:#d95926; --m-research:#d55181;
 }
 :root[data-theme="light"]{
   --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
   --grid:#e1e0d9; --baseline:#c3c2b7; --border:rgba(11,11,11,.10);
-  --pos:#2a78d6; --neg:#e34948; --good:#006300; --wash:rgba(11,11,11,.04);
+  --pos:#2a78d6; --neg:#e34948; --inverse:#7652b8; --good:#006300; --warn:#9a6500; --wash:rgba(11,11,11,.04);
   --m-funding:#2a78d6; --m-supply:#1baf7a; --m-anchor:#4a3aa7; --m-env:#eda100;
   --m-growth:#008300; --m-value:#eb6834; --m-research:#e87ba4;
 }
@@ -39,6 +39,12 @@ nav{position:sticky;top:0;z-index:30;background:var(--page);border-bottom:1px so
 nav .brand{font-weight:700;font-size:14px;margin-right:14px}
 nav a{color:var(--ink2);text-decoration:none;font-size:13px;padding:4px 10px;border-radius:6px}
 nav a:hover,nav a:focus-visible{background:var(--wash);color:var(--ink)}
+@media (max-width:720px){
+  nav{flex-wrap:nowrap;overflow-x:auto;padding:8px 12px;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav .brand{position:sticky;left:0;background:var(--page);z-index:2;white-space:nowrap;padding-right:8px}
+  nav a{white-space:nowrap;padding:4px 8px}
+}
 header.hero{padding:44px 0 10px}
 .eyebrow{font-size:12px;letter-spacing:.16em;color:var(--muted);font-weight:600}
 h1{font-size:31px;line-height:1.25;margin:8px 0 10px;text-wrap:balance;max-width:24ch}
@@ -49,10 +55,44 @@ h1{font-size:31px;line-height:1.25;margin:8px 0 10px;text-wrap:balance;max-width
 .tile .k{font-size:12px;color:var(--muted);letter-spacing:.05em}
 .tile .v{font-size:25px;font-weight:750;margin:2px 0;font-variant-numeric:tabular-nums}
 .tile .s{font-size:12.5px;color:var(--ink2)}
+.evidence-state{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 4px}
+.state-pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink2)}
+.state-pill.live{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 55%,var(--border))}
+.disclosures{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:9px;margin-top:12px}
+.disclosure{border:1px solid var(--border);border-left:3px solid var(--warn);border-radius:8px;padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
+.disclosure b{color:var(--ink)}
 section{margin-top:42px}
+section,header.hero,.fdetail,.gcat{scroll-margin-top:72px}
 h2{font-size:21px;margin:0 0 4px}
 .secnote{color:var(--ink2);font-size:13.5px;margin:0 0 16px;max-width:80ch}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+/* 策略验证与固定卡试算 */
+.strategy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+@media (max-width:800px){.strategy-grid{grid-template-columns:1fr}}
+.metric-card{border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface)}
+.metric-card .label{font-size:12px;color:var(--muted)}
+.metric-card .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.metric-side{border-radius:8px;padding:9px;background:var(--wash)}
+.metric-side b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.metric-side span{font-size:11.5px;color:var(--ink2)}
+.metric-side.v2{box-shadow:inset 3px 0 0 var(--pos)}
+.metric-side.base{box-shadow:inset 3px 0 0 var(--baseline)}
+.strategy-note,.calc-note{font-size:12.5px;color:var(--ink2);margin:12px 0 0}
+.calc-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px;align-items:start}
+@media (max-width:800px){.calc-grid{grid-template-columns:1fr}}
+.calc-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:700px){.calc-fields{grid-template-columns:1fr}}
+.calc-field label{display:block;font-size:12px;color:var(--ink2);margin-bottom:4px}
+.calc-field input{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 10px}
+.calc-field small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.calc-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.action-btn{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:7px;padding:7px 13px;font:inherit;font-size:13px;cursor:pointer}
+.action-btn.primary{background:var(--ink);color:var(--page);border-color:var(--ink)}
+.calc-result{border:1px solid var(--border);border-radius:10px;padding:14px;min-height:160px;background:var(--wash)}
+.calc-score{font-size:28px;font-weight:750;font-variant-numeric:tabular-nums}
+.calc-parts{display:grid;gap:6px;margin-top:10px}
+.calc-part{display:grid;grid-template-columns:1fr auto auto;gap:8px;border-top:1px solid var(--border);padding-top:6px;font-size:12.5px}
+.calc-empty{color:var(--muted);font-size:13px}
 /* 引擎映射 */
 .engmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
 .eng{border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px}
@@ -87,7 +127,7 @@ h2{font-size:21px;margin:0 0 4px}
 .fitem:hover,.fitem:focus-visible{background:var(--wash)}
 .fitem.active{background:var(--wash);box-shadow:inset 3px 0 0 var(--pos)}
 .fitem .ic{font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
-.icpos{color:var(--pos);font-weight:650}.icneg{color:var(--neg);font-weight:650}.icnull{color:var(--muted)}
+.icpos{color:var(--pos);font-weight:650}.icinv{color:var(--inverse);font-weight:650}.icnull{color:var(--muted)}
 .fhead-cols{display:grid;grid-template-columns:1fr 58px 58px;gap:6px;padding:8px 14px 4px;font-size:10.5px;color:var(--muted);position:sticky;top:0;background:var(--surface);z-index:2}
 .fhead-cols span:nth-child(n+2){text-align:right}
 .fdetail{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;min-height:600px}
@@ -98,6 +138,7 @@ h2{font-size:21px;margin:0 0 4px}
 .chip.bad{color:var(--neg);border-color:var(--neg)}
 .chip.warn{color:var(--muted)}
 .fwhy{font-size:13.5px;color:var(--ink2);max-width:70ch;margin:4px 0 14px}
+.factor-note{font-size:12.5px;color:var(--ink2);border:1px solid var(--border);border-left:3px solid var(--warn);border-radius:7px;padding:9px 11px;margin:0 0 14px;background:var(--wash)}
 .statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:16px}
 .stat{border:1px solid var(--border);border-radius:8px;padding:9px 12px}
 .stat .k{font-size:11px;color:var(--muted)}
@@ -107,6 +148,7 @@ h2{font-size:21px;margin:0 0 4px}
 @media (max-width:700px){.qpair{grid-template-columns:1fr}}
 .qbox h4{margin:0 0 4px;font-size:13px;color:var(--ink2)}
 .qsvg{width:100%;height:auto;display:block}
+.category-placeholder{min-height:130px;border:1px dashed var(--border);border-radius:8px;padding:24px 18px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:12.5px}
 .baseline{stroke:var(--baseline);stroke-width:1}
 .bar-pos{fill:var(--pos)}.bar-neg{fill:var(--neg)}
 rect.hoverable:hover{opacity:.75;cursor:default}
@@ -142,13 +184,31 @@ tbody tr{cursor:pointer}
 :root[data-theme="dark"]{--rowhov:#232322}
 :root[data-theme="light"]{--rowhov:#f2f1ee}
 tbody tr:hover td{background:var(--rowhov)}
-.stick1{position:sticky;left:0;background:var(--surface);z-index:3;min-width:56px}
-.stick2{position:sticky;left:78px;background:var(--surface);z-index:3;max-width:150px;overflow:hidden;text-overflow:ellipsis;border-right:1px solid var(--baseline)}
+.stick1{position:sticky;left:0;background:var(--surface);z-index:3;width:78px;min-width:78px}
+.stick2{position:sticky;left:78px;background:var(--surface);z-index:3;width:170px;min-width:170px;max-width:170px;overflow:hidden;text-overflow:ellipsis;border-right:1px solid var(--baseline)}
 thead .stick1,thead .stick2{z-index:5}
 .hscroll-top{overflow-x:auto;overflow-y:hidden;height:16px;margin-bottom:4px}
 .hscroll-top>div{height:1px}
 .pos-t{color:var(--pos);font-weight:600}.neg-t{color:var(--neg);font-weight:600}
 .mono{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--muted)}
+.mobile-cards{display:none;gap:9px}
+.stock-card{border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--surface);cursor:pointer}
+.stock-card:focus-visible{outline:2px solid var(--pos)}
+.stock-card-head{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.stock-card-head b{font-size:14px}.stock-card-head span{font-size:11.5px;color:var(--muted)}
+.stock-card-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}
+.stock-card-metrics div{background:var(--wash);border-radius:7px;padding:6px 7px}
+.stock-card-metrics small{display:block;color:var(--muted);font-size:10.5px}
+.stock-card-metrics strong{font-size:12.5px;font-variant-numeric:tabular-nums}
+@media (max-width:720px){
+  .desktop-table,.desktop-table-hint{display:none!important}
+  .mobile-cards{display:grid}
+  .flist{max-height:330px}
+  .fdetail{padding:15px;min-height:0}
+  .wrap{padding-left:14px;padding-right:14px}
+  header.hero{padding-top:28px}
+  h1{font-size:27px}
+}
 /* 模态 */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:5vh 16px}
 .overlay.open{display:flex}
@@ -156,6 +216,7 @@ thead .stick1,thead .stick2{z-index:5}
   max-height:88vh;overflow-y:auto;padding:24px 26px}
 .modal h3{margin:0;font-size:20px}
 .modal .sub{color:var(--ink2);font-size:13px;margin:2px 0 12px}
+.modal-note{font-size:12px;color:var(--ink2);border-left:3px solid var(--warn);background:var(--wash);padding:8px 10px;border-radius:6px;margin:0 0 13px}
 .retrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:16px}
 .mgroup{margin-top:14px}
 .mgroup h4{margin:0 0 6px;font-size:13px;display:flex;align-items:center;gap:7px}
@@ -186,44 +247,81 @@ a{color:var(--pos)}
 
 <nav aria-label="页面导航">
   <span class="brand">📊 IPO 打新因子看板</span>
-  <a href="#story">故事线</a><a href="#modules">模块地图</a><a href="#explorer">因子透视</a>
+  <a href="#story">结论</a><a href="#strategy">策略验证</a><a href="#calculator">固定卡试算</a>
+  <a href="#modules">模块地图</a><a href="#explorer">因子透视</a>
   <a href="#stocks">个股数据</a><a href="#guide">备注·名词解释</a><a href="#method">方法</a>
 </nav>
 
 <div class="wrap">
 <header class="hero" id="story">
-  <div class="eyebrow">2025-01 ~ 2026-07 · 港股 214 只新股全样本回测 · 数据截至 2026-07-13</div>
-  <h1>什么决定一只新股的首日与 30 日？</h1>
-  <p class="thesis">第一性原理答案：<b>短线是资金现象，中线是资金 + 成长</b>。首日涨跌（D1）几乎完全由申购期抢筹资金决定；
-  30 日跑赢大盘（D30 超额）由资金热度与营收增速共同驱动；而「便宜」「盈利」在本轮市场不但不提供保护，方向反转。</p>
+  <div class="eyebrow">2025-01 ~ 2026-07 · 港股 IPO 研究样本 214 只（主板 211 + GEM 3）· 数据截至 2026-07-13</div>
+  <h1>哪些信息最能预测一只新股的首日与 30 日表现？</h1>
+  <p class="thesis">本样本中，<b>截止前孖展是 D1 排序最强、较稳定的已观测信号</b>；它汇总了题材、供给、基石与市场情绪，
+  是共识变量，不是单一因果。当前 D30 从发行价起算、包含首日跳涨；营收增速与其呈正向历史关联，但不能据此断言持续驱动上市后的 29 天。</p>
+  <div class="evidence-state">
+    <span class="state-pill">历史研究样本</span>
+    <span class="state-pill">2025 训练 / 2026 时间外验证</span>
+    <span class="state-pill live">前瞻双跑中 · 尚未终裁</span>
+  </div>
   <p class="hint">📖 第一次看？<a href="#guide">IC 是什么、图怎么读、哪里可以点——见页末「备注·名词解释与使用说明」</a></p>
   <div class="tiles">
-    <div class="tile"><div class="k">D1 的答案 · 孖展倍数</div><div class="v">IC +0.53</div>
+    <div class="tile"><div class="k">D1 最强历史信号 · 截止前孖展</div><div class="v">IC +0.53</div>
       <div class="s">最冷五分位破发率 52% → 最热 7%</div></div>
-    <div class="tile"><div class="k">D30 的答案 · 营收增速</div><div class="v">IC +0.21</div>
-      <div class="s">D30 超额中位 Q1 −5.2% → Q5 +64.5%</div></div>
-    <div class="tile"><div class="k">反直觉 · 估值因子</div><div class="v">IC −0.31~−0.37</div>
-      <div class="s">越贵、越亏损的票 D30 反而越好</div></div>
-    <div class="tile"><div class="k">引擎进化 · 整机 D1 IC</div><div class="v">0.03 → 0.50</div>
-      <div class="s">专家权重实盘 0.026 → v2 因子卡 0.496（双跑中）</div></div>
+    <div class="tile"><div class="k">D30 累计口径 · 营收增速</div><div class="v">IC +0.21</div>
+      <div class="s">Q1 −5.2% → Q5 +64.5%；目标含 D1 跳涨</div></div>
+    <div class="tile"><div class="k">样本期反向关联 · 估值</div><div class="v" style="color:var(--inverse)">IC −0.31~−0.37</div>
+      <div class="s">成长风格暴露；非因果、未入卡、不可外推</div></div>
+    <div class="tile"><div class="k">时间外验证 · 整机 D1 IC</div><div class="v">0.03 → 0.50</div>
+      <div class="s">旧引擎 0.026 → v2 0.496；前瞻样本仍在累积</div></div>
+  </div>
+  <div class="disclosures" aria-label="重要口径披露">
+    <div class="disclosure"><b>D30 不是独立中线目标：</b>股票端由发行价起算，包含 D1；应与“D1 收盘→D30 后续收益”分开理解。</div>
+    <div class="disclosure"><b>样本窗偏热：</b>2025-2026 属打新强势阶段，冷市稳定性仍须由前瞻双跑补证。</div>
+    <div class="disclosure"><b>D30 成熟度偏置：</b>42 只尚缺 D30，其中 40 只集中于 2026 年 6-7 月热潮，D30 结论偏向较早样本。</div>
   </div>
 </header>
 
+<section id="strategy">
+  <h2>把 IC 翻译成策略结果</h2>
+  <p class="secnote">同一 2026 验证交集、同一覆盖率下比较 DataDriven_v2 历史高分组与 expert_v1 的 buy/strong_buy 档。这里不是“无脑全打”基线，也不是前瞻实盘结论。</p>
+  <div class="panel">
+    <div class="strategy-grid" id="strategyGrid"></div>
+    <p class="strategy-note" id="strategyNote"></p>
+  </div>
+</section>
+
+<section id="calculator">
+  <h2>v2 固定卡档位试算</h2>
+  <p class="secnote">输入申购截止时点可知数据，只执行已注册评分卡的固定分位查表。不会从本页 214 只股票重新估计边界，也不输出买入/回避建议。</p>
+  <div class="panel calc-grid">
+    <div>
+      <div class="calc-fields">
+        <div class="calc-field"><label for="calcMargin">截止前孖展快照（倍）</label><input id="calcMargin" type="number" min="0" step="0.1" inputmode="decimal" placeholder="如 200"><small>主因子，权重 80%</small></div>
+        <div class="calc-field"><label for="calcShares">发行股数（亿股）</label><input id="calcShares" type="number" min="0" step="0.01" inputmode="decimal" placeholder="如 1"><small>二级证据，权重 15%</small></div>
+        <div class="calc-field"><label for="calcValue">公开发售货值（亿港元）</label><input id="calcValue" type="number" min="0" step="0.01" inputmode="decimal" placeholder="如 1"><small>二级证据，权重 5%</small></div>
+      </div>
+      <div class="calc-actions"><button class="action-btn primary" id="calcRun">查看固定卡档位</button><button class="action-btn" id="calcExample">填入示例</button><button class="action-btn" id="calcClear">清空</button></div>
+      <p class="calc-note">边界来自 2025 训练窗 114 只样本；缺失字段按已注册协议仅在已填写因子间归一权重。分数范围 15~90，没有公开固定“买入线”。</p>
+    </div>
+    <div class="calc-result" id="calcResult"><div class="calc-empty">填写至少一个字段后查看它落入训练窗的哪个历史档位。</div></div>
+  </div>
+</section>
+
 <section>
   <h2>从评分引擎到因子证据</h2>
-  <p class="secnote">现行引擎的五个专家维度，逐一放到 214 只全样本上检验——能被数据支持的保留进 v2 因子卡，不能的如实标注。</p>
+  <p class="secnote">现行引擎的五个专家维度，逐一放到 214 只研究样本上检验。请区分“进入冻结卡”“近失二级证据”和“未通过筛选”，不要把在役标记等同于因果证明。</p>
   <div class="panel"><div class="engmap" id="engmap"></div></div>
 </section>
 
 <section id="modules">
   <h2>因子模块地图</h2>
-  <p class="secnote">29 个因子按第一性原理分为 7 个模块。每行两根条：左 = 对 D1 的预测力，右 = 对 D30 超额的预测力（<a href="#g-ic">IC，即预测力评分，−1~+1</a>，蓝正红负，条越长越强）。<b>点击模块卡片</b>进入因子透视。</p>
+  <p class="secnote">29 个因子分为 7 个模块。每行两根条：左 = 对 D1 的预测力，右 = 对当前 D30 累计超额的预测力。<a href="#g-ic">蓝色是符合先验的正 IC，紫色是与先验相反</a>；红色只用于负收益、破发或跑输。<b>点击模块卡片</b>进入因子透视。</p>
   <div class="modgrid" id="modgrid"></div>
 </section>
 
 <section id="explorer">
   <h2>因子透视</h2>
-  <p class="secnote">左侧点选任意因子：五分位分层（涨幅中位 + 破发率）、全样本散点（每个点是一只股票，<b>点击可看个股全量数据</b>）。</p>
+  <p class="secnote">连续因子展示冻结报告的五分位分层与全样本散点。二元/类别因子没有合规的类别分组快照，本页主动隐藏伪五分位，等待数据层导出真实组别统计。</p>
   <div class="explorer">
     <div class="flist" id="flist"></div>
     <div class="fdetail" id="fdetail"></div>
@@ -232,60 +330,65 @@ a{color:var(--pos)}
 
 <section id="stocks">
   <h2>个股数据浏览器</h2>
-  <p class="secnote">全部 214 只样本 × 全部 29 个因子通排展示（表格可横向滚动，代码/名称两列冻结）。表头彩色条 = 所属模块（与模块地图同色），🔒 = 申购截止后才可知的研究对照列。点击任意表头排序，点击任意一行弹出该股档案。</p>
+  <p class="secnote">全部 214 只历史样本 × 29 个因子。桌面端可横向浏览全表，手机端默认改为摘要卡片；点击任一行或卡片查看档案。档案中的 D1/D30 是事后真值，不是申购时可知输入。</p>
   <div class="toolbar">
     <input id="q" type="search" placeholder="搜代码或名称，如 00068 / 布鲁可" aria-label="搜索个股">
+    <span class="tgl desktop-table" role="group" aria-label="个股表列数" style="margin-left:0"><button id="viewCore" class="on">核心列</button><button id="viewAll">全部因子</button></span>
     <span class="count" id="cnt"></span>
-    <span class="count">💡 滚轮悬停表格上 = 横向滚动（到边缘后恢复上下滚动）</span>
+    <span class="count desktop-table-hint">💡 滚轮悬停表格上 = 横向滚动（到边缘后恢复上下滚动）</span>
   </div>
-  <div class="hscroll-top" id="hst" aria-hidden="true"><div></div></div>
-  <div class="twrap" id="twrap"><table id="stbl"><thead></thead><tbody></tbody></table></div>
+  <div class="mobile-cards" id="mobileCards"></div>
+  <div class="hscroll-top desktop-table" id="hst" aria-hidden="true"><div></div></div>
+  <div class="twrap desktop-table" id="twrap"><table id="stbl"><thead></thead><tbody></tbody></table></div>
 </section>
 
 <section id="guide">
   <h2>备注 · 使用说明与名词解释</h2>
   <p class="secnote">对外展示或首次阅读时的配套说明：先看「怎么用」，再查「名词」。</p>
   <div class="panel guide">
-    <div class="gcat">怎么用（四个可交互区域）</div>
+    <div class="gcat">怎么用（六个可交互区域）</div>
     <ol>
-      <li><b>因子模块地图</b>：每张卡片是一类因子。卡内每行两根小条——左条 = 该因子对 <b>D1（首日涨幅）</b>的预测力，右条 = 对 <b>D30 超额（30 日跑赢大盘）</b>的预测力；条越长预测力越强，<b>蓝色 = 正向有效，红色 = 方向与常识相反</b>。👆 点击整张卡片，会自动跳到该模块最强因子的透视页。</li>
-      <li><b>因子透视</b>：左栏按模块列出全部 29 个因子，两列数字分别是 D1 / D30 的 IC（⭐ = 已进新引擎 v2 卡，🔒 = 申购结束后才可知、禁止入模型）。👆 点任一因子，右侧从上到下四层信息：
-        ① 判定徽章 + 一句话结论 → ② IC 与显著性数字 → ③ <b>五分位图</b>：把 214 只股票按该因子从低到高分成 Q1~Q5 五组，柱高 = 每组涨幅中位数，柱子下方的百分比 = 该组破发率（D1 图）或跑输大盘率（D30 图）。<b>好因子的样子：柱子从 Q1 到 Q5 逐级抬高、破发率逐级下降</b>（可点开「孖展快照」对照）→ ④ <b>散点图</b>：每个点是一只真实股票，横轴 = 该股因子值在全样本的排名分位，纵轴 = 涨幅；右上按钮切换 D1 / D30 超额目标。👆 悬停任意点看数值，<b>点击任意点直接打开该股完整档案</b>。</li>
-      <li><b>个股数据浏览器</b>：214 只 × 29 个因子全指标通排。<b>鼠标悬停在表格任意位置滚动滚轮即可横向滚动</b>（滚到最左/最右边缘后自动恢复页面上下滚动），表格顶部也有一根同步滚动条；代码/名称两列冻结不动；表头顶部的彩色条表示该列属于哪个模块（与模块地图同色）；🔒 列为申购截止后才可知的研究对照。搜索框输代码或名称（如 00068 / 布鲁可）；👆 点任意表头排序（例如按 D1 升序找最大破发、按孖展降序找最热门票）；👆 点任意一行弹出该股档案卡。</li>
-      <li><b>对外讲解的建议动线</b>：首屏四张结论卡 → 「从评分引擎到因子证据」（为什么换引擎）→ 模块地图（谁管 D1、谁管 D30）→ 点开「孖展快照」看统治级分层 → 点开「营收增速」看 D30 故事 → 点开「盈利收益率」看反直觉发现 → 任选个股验证。</li>
+      <li><b>首屏结论</b>：先看证据处于历史研究、时间外验证还是前瞻双跑阶段；结论卡下方三条披露与大数字同等重要。</li>
+      <li><b>策略验证</b>：v2 历史高分组与旧引擎买入档按相同覆盖率比较。两边各 68 只，不是“只打 Q5”，更不是“全打基线”。</li>
+      <li><b>固定卡试算</b>：输入截止前可知值，按已注册的 2025 训练边界查 Q1~Q5 与固定卡分数；没有固定买入线，不形成个股收益预测。</li>
+      <li><b>因子模块与透视</b>：蓝色 IC 表示符合先验，紫色表示与先验相反；红色仅表示负收益。连续因子看五分位，二元/类别因子等待真实分组快照。</li>
+      <li><b>个股数据</b>：桌面端看全指标表，手机端看摘要卡。D1/D5/D30 是上市后的真值，🔒 字段是申购结束后才知道的研究对照，均不能冒充申购时输入。</li>
+      <li><b>建议动线</b>：首屏证据状态 → 策略验证 → 固定卡试算 → 孖展快照 → 营收增速 → 保荐/基石的“不足证据” → 个股档案核对。</li>
     </ol>
   </div>
   <div class="panel" style="margin-top:12px">
     <div class="gcat" id="g-ic">读懂数字</div>
     <div class="glossgrid">
-      <div class="gitem"><b>IC（信息系数，本站指 RankIC）</b><span>衡量「因子排名能否预测涨幅排名」的分数，范围 −1 ~ +1，0 = 完全没用。经验标尺：|IC| ≥ 0.1 有用、≥ 0.2 很强、≥ 0.5 接近统治级。例：孖展对 D1 的 IC = +0.53 → 申购越火的票，首日大概率涨得越多。用排名相关（Spearman）而非数值相关，因此不被极端值带偏。</span></div>
+      <div class="gitem"><b>IC（信息系数，本站指 RankIC）</b><span>衡量「因子排名与涨幅排名的历史相关程度」，范围 −1 ~ +1。孖展对 D1 的 IC = +0.53，表示本样本中排序关联很强；它不是解释率，也不证明孖展单独造成涨跌。</span></div>
       <div class="gitem"><b>归一方向（先验方向）</b><span>每个因子先按常识声明方向（如「发行股数越少越稀缺越好」），统一翻转成「越大越好」后再算 IC。所以 <b>IC 为负 ≠ 算错，而是数据与常识唱反调</b>——估值族因子全部为负就是本轮最大发现。</span></div>
       <div class="gitem"><b>D1 / D5 / D30</b><span>上市后第 1 / 5 / 30 个<b>交易日</b>收盘价相对发行价的涨跌幅。D1 = 打新客的首日损益。</span></div>
-      <div class="gitem"><b>D30 超额</b><span>D30 涨幅减去同期恒生指数涨幅。剔除大盘水位后衡量「真跑赢」——大盘涨 10% 你涨 8%，其实是跑输。</span></div>
+      <div class="gitem"><b>D30 超额（当前冻结口径）</b><span>股票端为发行价→第30个交易日收盘的累计涨幅，再减上市日附近→第30日的恒指涨幅。它包含 D1 跳涨，且股票与基准起点并非完全同窗；适合描述打新累计体验，不等于 D1 收盘后的纯中线收益。</span></div>
       <div class="gitem"><b>破发 / 跑输</b><span>破发 = D1 &lt; 0（首日收盘跌破发行价）；跑输 = D30 超额 &lt; 0（30 日没跑过恒指）。</span></div>
-      <div class="gitem"><b>五分位（Q1~Q5）</b><span>把全部股票按因子值从低到高排队，均分五组：Q1 = 最低的 20%，Q5 = 最高的 20%。若 Q1→Q5 涨幅逐级抬升、破发率逐级下降，说明因子能有效分层。</span></div>
+      <div class="gitem"><b>五分位（Q1~Q5）</b><span>仅适用于连续因子：把股票按归一方向从低到高分五组，Q1 最弱、Q5 最强。二元/类别因子不能伪装成五分位，本页会隐藏不合适的图。</span></div>
       <div class="gitem"><b>中位数</b><span>组内一半股票比它好、一半比它差的那个值。新股涨幅极端值多（个别票 +200%），中位数比平均值更抗干扰、更接近「典型体验」。</span></div>
       <div class="gitem"><b>p 值（置换检验）</b><span>「这个 IC 纯属运气」的概率。做法：把涨幅标签随机打乱 1000 次重算 IC，真实 IC 若比几乎所有乱序结果都强，p ≈ 0.001。越小越可信，习惯上 &lt; 0.05 算显著。</span></div>
-      <div class="gitem"><b>BH 显著（多重检验校正）</b><span>同时检验 28 个因子，总会有一两个碰巧显著。Benjamini-Hochberg 校正控制这种「测得多、中得巧」的误报，通过者才算真显著。</span></div>
+      <div class="gitem"><b>BH 显著（多重检验校正）</b><span>同时检验许多因子会产生偶然命中。当前 F2 与财务体检分别校正；合并看板尚未按全部因子联合重算 FDR，因此原始 p 值不能单独当作入选结论。</span></div>
       <div class="gitem"><b>单调（档序 ρ）</b><span>Q1→Q5 的中位涨幅是否逐级变好：ρ = +1 完美递增，≥ 0.8 判定单调。<b>IC 高但不单调的因子不可信</b>（可能只靠两头极端组撑数字）。</span></div>
       <div class="gitem"><b>分段 IC（2025H1 / 2025H2 / 2026）</b><span>把样本按时间切三段分别算 IC，检验因子是否只在某一段行情里灵。入选要求 ≥ 2/3 段为正。</span></div>
       <div class="gitem"><b>火热期 / 非火热 IC</b><span>按近两月新股整体表现把市场分冷热两种状态分别算 IC，识别「只有牛市才灵」的伪因子。</span></div>
     </div>
     <div class="gcat">市场词汇</div>
     <div class="glossgrid">
-      <div class="gitem"><b>孖展（mā zhǎn）</b><span>港股打新中向券商借钱申购的杠杆资金（margin 的粤语音译）。孖展认购倍数 = 认购金额 ÷ 公开发售货值，是散户抢筹热度的<b>实时资金投票</b>，申购期内每天可见。</span></div>
-      <div class="gitem"><b>官方最终超购</b><span>联交所配发结果公告里的公开发售最终认购倍数，申购截止后约 3 天才公布——所以只能当研究对照（🔒），不能进预测模型。好消息：它与截止前可知的孖展快照相关性 0.994，几乎无信息损失。</span></div>
-      <div class="gitem"><b>基石投资者</b><span>IPO 定价前承诺认购并锁定 6 个月的机构。传统观念是背书加分；2026 年数据显示<b>零基石（货源归边的庄家盘）反而利好首日</b>，方向已修正。</span></div>
-      <div class="gitem"><b>保荐人</b><span>牵头这单 IPO 的投行。一线 = 高盛/大摩/中金等。实测「一线保荐」对首日涨幅的 IC 为负——顶级投行定价更激进，留给二级市场的空间更小。</span></div>
-      <div class="gitem"><b>货源归边</b><span>流通筹码集中在少数人手中，抛压小、价格容易被拉动——流通盘占比低、零基石、发行量小都是它的侧写。</span></div>
+      <div class="gitem"><b>孖展（mā zhǎn）</b><span>港股打新中的融资申购资金。v2 使用申购截止日 12:00 或之前的最后可得快照，并以公开发售货值归一；盘尾最终值和绝对孖展总额只作同源研究参照。</span></div>
+      <div class="gitem"><b>官方最终超购</b><span>配发结果公告里的公开发售最终认购倍数，截止后才公布，只能作研究对照（🔒）。它与截止前孖展快照在本样本的排名相关 ρ=0.994，但不代表数值校准、尾部误差或信息完全无损。</span></div>
+      <div class="gitem"><b>基石投资者</b><span>定价前承诺认购并通常锁定 6 个月的投资者。当前“有无/占比/家数”只能描述结构，不能判断具体基石质量；零基石信号未通过正式筛选，并与规模、热度混杂。</span></div>
+      <div class="gitem"><b>保荐人</b><span>牵头上市申请与尽调的投行。当前静态“一线/二线/其他”档次不显著、不单调，且中英文别名映射待数据层复核；页面不再据此推断“顶级投行定价激进”。</span></div>
+      <div class="gitem"><b>货源归边</b><span>流通筹码集中在少数持有人手中。它需要配售集中度、可交易流通量等证据；不能仅凭“零基石”直接下结论。</span></div>
+      <div class="gitem"><b>每手金额 / 入场费</b><span>看板“每手金额”只等于发行价 × 每手股数，不含经纪佣金、平台费及融资成本；它不是券商页面的完整入场费。</span></div>
+      <div class="gitem"><b>A+H 标签</b><span>当前只有是否 A+H 的二元标记，不能替代玩家真正关心的 AH 折价率。折价率没有合规历史快照前，不作价格高低结论。</span></div>
       <div class="gitem"><b>招股书财年（组装纪律）</b><span>财务因子只取<b>申购截止日之前已披露的最后一个完整财年</b>（即招股书里能看到的口径），并做了前视敏感性检验——杜绝「用未来数据预测过去」。</span></div>
     </div>
     <div class="gcat">看板标记</div>
     <div class="glossgrid">
-      <div class="gitem"><b>⭐ v2 卡在役</b><span>该因子已进入正在「双跑」验证的数据驱动新引擎（v2 因子卡：孖展快照 80% + 发行股数 15% + 公开发售货值 5%）。双跑 = 新旧引擎并行记录预测、只记账不切换，累积约 30 只前瞻样本后终裁。</span></div>
+      <div class="gitem"><b>⭐ v2 卡在役</b><span>该因子进入冻结的 v2 双跑卡，不等于单因子全部通过严格筛选：孖展是主因子；发行股数与公开货值是协议注册前声明的近失二级证据。双跑只记账不切生产，前瞻样本到量后终裁。</span></div>
       <div class="gitem"><b>🔒 截止后可知</b><span>申购结束后才公布的数据。红线规则（INV-1）：这类字段永远不允许进评分模型，只作研究上限参照。</span></div>
       <div class="gitem"><b>入选 / 淘汰 / 参照</b><span>入选 = 三条标准全过（IC 稳定为正 + BH 显著 + 五分位单调）；淘汰 = 至少一条不过（红色 IC 再大也淘汰，因为方向不可解释）；参照 = 不参与评比、只作基准的哨兵因子。</span></div>
-      <div class="gitem"><b>蓝色 / 红色（全站统一）</b><span>蓝 = 正向 / 上涨 / 跑赢；红 = 反向 / 破发 / 跑输。散点图中淡色点 = 涨幅超出 −80%~+200% 显示范围，被截尾在边缘，悬停可看真实值。</span></div>
+      <div class="gitem"><b>颜色语义</b><span>蓝 = IC 符合先验或正收益；紫 = IC 与先验相反；红 = 负收益、破发或跑输。散点淡色点表示超出显示范围，悬停看真实值。</span></div>
     </div>
   </div>
 </section>
@@ -293,14 +396,15 @@ a{color:var(--pos)}
 <section id="method">
   <h2>方法与口径</h2>
   <div class="panel"><ul class="foot">
-    <li><b>样本</b>：2025-01 ~ 2026-07 港股主板新股 214 只（factor_dataset.json，冻结于 2026-07-12）；财务字段 214/214 全覆盖（东财年度指标，全部折算 HKD）。</li>
-    <li><b>目标</b>：D1 = 首日收盘/发行价 − 1；D30 超额 = 上市第 1→30 个交易日收益 − 同窗恒指涨幅。破发 = D1 &lt; 0；跑输 = D30 超额 &lt; 0。</li>
-    <li><b>RankIC</b>：Spearman 秩相关，已按先验方向归一（正 = 方向符合先验，负 = 与先验相反）。显著性 = 标签置换 1000 次（固定种子）+ BH-FDR 10%。</li>
+    <li><b>样本</b>：2025-01 ~ 2026-07 港股新股 214 只，其中主板 211 只、GEM 3 只（factor_dataset.json，冻结于 2026-07-12）；财务字段 214/214 全覆盖（东财年度指标，全部折算 HKD）。</li>
+    <li><b>目标</b>：D1 = 首日收盘/发行价 − 1。当前 D30 超额 = 发行价到第 30 个交易日的累计涨幅，减上市日附近到第 30 日的恒指涨幅；它包含 D1，且股票与基准起点并非完全同窗，不应解读成 D1 收盘后的独立中线收益。破发 = D1 &lt; 0；跑输 = 当前 D30 超额 &lt; 0。</li>
+    <li><b>RankIC</b>：Spearman 秩相关，已按先验方向归一（正 = 方向符合先验，负 = 与先验相反）。页面展示的是原始置换 p 值；因子库与财务体检曾分别做 BH-FDR 10% 校正，尚未把两个因子池联合重算 FDR。</li>
     <li><b>可知性红线（INV-1）</b>：所有入卡因子必须在申购截止时点可知；「官方最终超购」「定价位置」等截止后数据仅作研究对照。财务因子只取申购截止日前最后一个完整财年（=招股书已披露口径），并做前视敏感性检验（符号全一致）。</li>
-    <li><b>入选三条标准</b>：全样本归一 IC&gt;0 且 ≥2/3 时段为正；置换检验 BH 显著；五分位单调（档序 ρ≥0.8）。估值类因子即使显著，因方向与先验相反（成长风格暴露、不可解释为因果）仍被淘汰。</li>
-    <li><b>v2 因子卡（在役双跑）</b>：孖展快照 80% + 发行股数 15% + 公开发售货值 5%（权重∝训练窗 IC，2025 训练 / 2026 验证）；对决基线为专家权重引擎实盘记录，三指标全胜。</li>
-    <li><b>风格警示</b>：估值反向与 2025-2026 港股成长行情高度耦合，风格切换时可能翻向——这是它们不入卡的原因。本看板为研究呈现，不构成投资建议。</li>
-    <li><b>数据源</b>：reports/factor_signal_library_2026-07-12.json · reports/quality_signal_library_2026-07-13.json · data/factor_dataset.json。</li>
+    <li><b>连续因子筛选</b>：全样本归一 IC&gt;0 且 ≥2/3 时段为正；置换检验经对应因子池 BH 校正后显著；五分位单调（档序 ρ≥0.8）。二元/类别因子不能套用五分位标准，必须等数据层导出真实类别组检验。估值类即使显著，因方向与先验相反且难以作因果解释，仍被淘汰。</li>
+    <li><b>v2 因子卡（在役双跑）</b>：孖展快照 80% + 发行股数 15% + 公开发售货值 5%（固定训练窗边界与分值，2025 训练 / 2026 验证）。策略区比较 v2 历史高分组与 expert_v1 旧引擎买入档，在同一验证交集、同一覆盖率下 v2 三项策略指标更好；它不是“全打”对照，也尚未构成前瞻实盘终裁。</li>
+    <li><b>样本偏置</b>：窗口集中在 2025-2026 打新强势期，冷市稳定性仍待前瞻双跑补证；42 只尚缺 D30，其中 40 只集中于 2026 年 6-7 月，因此 D30 分析更偏向较早样本。</li>
+    <li><b>风格警示</b>：估值反向与样本期港股成长行情高度耦合，风格切换时可能翻向。页面展示历史关联、分层与验证结果，不证明单一因子导致涨跌，也不构成投资建议。</li>
+    <li><b>数据源</b>：reports/factor_signal_library_2026-07-12.json · reports/quality_signal_library_2026-07-13.json · reports/factor_card_v2_duel_2026-07-12.json · data/factor_dataset.json。</li>
   </ul></div>
 </section>
 </div>
@@ -312,11 +416,59 @@ a{color:var(--pos)}
 
 <script>
 const DATA = __DATA__;
+const STRATEGY = __STRATEGY_DATA__;
 const $ = s => document.querySelector(s);
 const FM = {}; DATA.factors.forEach(f => FM[f.id] = f);
 const MM = {}; DATA.modules.forEach(m => MM[m.id] = m);
 const SM = {}; DATA.stocks.forEach(s => SM[s.t] = s);
 const modColor = id => `var(--m-${id})`;
+
+// 仅覆盖公开呈现文案，不改冻结快照中的数值、结论字段或统计结果。
+const MODULE_STORY = {
+  funding:"截止前孖展是 D1 排序最强的已观察信号；同族三项高度同源，应理解为市场共识汇总，不能叠加成三份独立证据。",
+  supply:"小发行盘与低公开货值是 v2 卡的近失二级证据，提供稀缺度补充，但不等于所有供给因子都通过正式筛选。",
+  anchor:"‘有没有基石’和静态保荐档次都过于粗糙，尚不足以回答谁是优质/劣质基石、哪家保荐人近期战绩更好。",
+  env:"市场冷热可能改变因子表现；当前窗口偏热，环境因子主要用于分层观察，不是稳定的单票方向判断。",
+  growth:"营收增速与当前累计 D30 呈正向历史关联；因目标包含 D1，尚不能归因于上市后 29 天的持续基本面定价。",
+  value:"估值因子在本样本期整体与先验反向，更像成长风格暴露；不应据此推出‘越贵越好’的长期规律。",
+  research:"截止后官方超购是研究上限参照；与截止前孖展排名高度一致，但不代表数值无误差或可绕过可知性红线。"
+};
+const FACTOR_LABEL = {
+  margin_final:"孖展最终超额倍数（RateOver）"
+};
+const FACTOR_WHY = {
+  margin_last_snapshot:"申购截止日 12:00 或之前最后一笔可得券商孖展快照；历史样本中与 D1 排名关联最强。它汇总市场共识，不证明孖展本身造成首日涨幅。",
+  margin_final:"AiPO 的 RateOver 原始口径，用作盘尾同源参照；页面不擅自加 1，也不把它改称官方最终认购倍数。",
+  margin_total_yi:"孖展绝对金额反映关注度，但会受发行货值与跨期资金水位影响；不宜把不同年份的绝对额直接横比。",
+  shares_offered:"发行股数越少，供给越稀缺；它是协议注册前声明的近失二级证据，不是独立通过全部筛选的主因子。",
+  public_offer_value_yi:"公开发售部分货值越小，资金更容易形成高覆盖；它是固定卡的近失二级证据，作用弱于孖展主因子。",
+  lot_value:"发行价 × 每手股数，仅代表每手股票金额；不含经纪佣金、平台费和融资成本，不能等同完整入场费。",
+  is_zero_cornerstone:"当前只记录是否为零基石，无法识别基石身份或质量；该信号未通过正式筛选，并与规模、热度等变量混杂。",
+  cornerstone_pct_of_offer:"当前只描述基石占发行比例，不能区分主权基金、公募、产业资本、关联方等身份质量。",
+  cornerstone_count:"当前只统计基石家数；家数多寡不能替代具体名单、投资者类型、锁定比例和关联关系。",
+  sponsor_tier:"静态一线/二线/其他粗分档未形成稳定、单调证据，且中英文别名映射仍待数据层复核；不能据此推断具体保荐人导致涨跌。",
+  h_share:"当前只是是否 A+H 的二元标签，不包含 A/H 实时价差，不能替代 AH 折价率。",
+  revenue_yoy:"上市前最后完整财年营收同比，与当前累计 D30 呈正向历史关联；由于 D30 包含首日跳涨，不证明它持续驱动之后 29 天。",
+  gross_margin:"上市前最后完整财年的毛利率；D30 历史关联较弱且分段不完全稳定，属于候选证据而非已接入结论。",
+  net_margin:"净利率在本样本期与当前 D30 方向反转，更像风格共振，不支持‘利润率越低越好’的机制结论。",
+  is_profitable:"是否盈利在本样本期与当前 D30 方向反转；二元标签不能展示伪五分位，也不能推出亏损本身带来上涨。",
+  earnings_yield:"PE 的倒数在本样本期与当前 D30 方向反转；结果不能外推为‘越贵越好’，因此未入卡。",
+  sales_yield:"PS 的倒数在本样本期与当前 D30 方向反转；更可能反映成长风格，不是估值越高导致上涨的证据。",
+  book_yield:"PB 的倒数在本样本期与当前 D30 方向反转；缺乏可解释机制且受窗口风格影响，因此未入卡。",
+  ocf_yield:"经营现金流收益率在本样本期与当前 D30 方向反转；缺乏稳定机制，不作为决策因子。",
+  public_oversub_actual:"配发结果公告后才可知的官方最终超购，仅作研究上限参照；与截止前孖展的排名相关很高，不代表数值校准或尾部误差消失。",
+  price_position:"最终定价在招股区间的位置，申购截止后才确定；只能用于事后研究，不得进入申购时评分。"
+};
+const FACTOR_NOTE = {
+  is_zero_cornerstone:"业务上真正值得检验的是‘基石是谁、是否关联方、锁定货源质量如何’，而不是只有 0/1。身份分类与独立增量检验完成前，不把零基石写成利好或利空。",
+  sponsor_tier:"下一步应使用具体保荐人名单的近 12 个月滚动战绩，并先修复别名映射，再做严格时间切分回测；当前不发布粗档分组收益表。",
+  margin_total_yi:"跨期优先看已按公开货值归一的截止前孖展倍数；绝对金额只作同源参考。",
+  h_share:"若要回答 A/H 是否有折溢价，应另建申购时可知的 AH 折价率快照。",
+  revenue_yoy:"更严谨的后续目标是 D1 收盘到 D30 的后续收益，以分离首日定价与上市后表现。"
+};
+const fLabel = f => FACTOR_LABEL[f.id] || f.zh;
+const fWhy = f => FACTOR_WHY[f.id] || f.why;
+const isCategorical = f => f.fmt === "b" || f.fmt === "tier";
 
 // ---------- 格式化 ----------
 function fmtVal(f, v){
@@ -336,8 +488,9 @@ function fmtVal(f, v){
 }
 const pctS = (v, d=1) => v == null ? "—" : (v*100 >= 0 ? "+" : "") + (v*100).toFixed(d) + "%";
 const icS = v => v == null ? "—" : (v >= 0 ? "+" : "") + v.toFixed(3);
-const icCls = v => v == null ? "icnull" : (v > 0 ? "icpos" : "icneg");
-const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const icCls = v => v == null || v === 0 ? "icnull" : (v > 0 ? "icpos" : "icinv");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 
 // ---------- tooltip ----------
 const tt = $("#tt");
@@ -351,11 +504,71 @@ function moveTT(ev){
 }
 function hideTT(){ tt.style.display = "none"; }
 
+// ---------- 冻结策略对决（只展示 strategy_data.json 已导出的结果） ----------
+function metricCard(label, v2, base){
+  return `<div class="metric-card"><div class="label">${label}</div><div class="pair">
+    <div class="metric-side v2"><b>${v2}</b><span>DataDriven_v2</span></div>
+    <div class="metric-side base"><b>${base}</b><span>expert_v1 旧引擎</span></div>
+  </div></div>`;
+}
+function renderStrategy(){
+  const r = STRATEGY.metrics.rank_ic, b = STRATEGY.metrics.buy_tier;
+  $("#strategyGrid").innerHTML = [
+    metricCard("整组 D1 RankIC", r.v2.toFixed(3), r.baseline.toFixed(3)),
+    metricCard(`历史买入档 D1 中位（各 n=${b.v2.buy_n}）`, pctS(b.v2.buy_median), pctS(b.baseline.buy_median)),
+    metricCard("历史买入档正收益率", pctS(b.v2.buy_winrate), pctS(b.baseline.buy_winrate)),
+    metricCard("底部 1/3 捕捉全部破发的比例", pctS(b.v2.avoid_rate), pctS(b.baseline.avoid_rate))
+  ].join("");
+  $("#strategyNote").innerHTML = `2026 时间外验证交集 n=${STRATEGY.n_valid_intersection}，两组按相同覆盖率对齐为各 ${b.v2.buy_n} 只；验证交集共有 ${b.v2.n_breaks} 只破发，绝非“买入档破发 ${b.v2.n_breaks} 只”。v2 与旧引擎的买入档中位差 95% CI 为 ${pctS(b.buy_median_diff_ci95[0])} ~ ${pctS(b.buy_median_diff_ci95[1])}；RankIC 差 95% CI 为 ${r.diff_ci95[0].toFixed(3)} ~ ${r.diff_ci95[1].toFixed(3)}。这是冻结历史验证，前瞻双跑仍在累积。`;
+}
+
+// ---------- 冻结 v2 卡档位试算（固定边界查表，不从明细重估统计） ----------
+const CALC_FIELDS = [
+  {id:"margin_last_snapshot", input:"calcMargin", label:"截止前孖展", unit:"倍"},
+  {id:"shares_offered", input:"calcShares", label:"发行股数", unit:"亿股"},
+  {id:"public_offer_value_yi", input:"calcValue", label:"公开发售货值", unit:"亿港元"}
+];
+function calcCard(){
+  const card = STRATEGY.card, parts = [];
+  for (const field of CALC_FIELDS){
+    const rawText = $("#" + field.input).value.trim();
+    if (!rawText) continue;
+    const entered = Number(rawText);
+    if (!Number.isFinite(entered) || entered < 0){
+      $("#calcResult").innerHTML = `<div class="calc-empty">请输入大于或等于 0 的有效数字。</div>`;
+      return;
+    }
+    const raw = entered * card.input_scales[field.id];
+    const normalized = raw * card.directions[field.id];
+    const bin = card.edges_normalized[field.id].filter(edge => normalized >= edge).length;
+    parts.push({...field, entered, bin:bin + 1, score:card.bin_scores[bin], weight:card.weights[field.id]});
+  }
+  if (!parts.length){
+    $("#calcResult").innerHTML = `<div class="calc-empty">请至少填写一个字段；页面不会用 0 代替缺失值。</div>`;
+    return;
+  }
+  const weightSum = parts.reduce((sum,p) => sum + p.weight, 0);
+  const score = Math.round(parts.reduce((sum,p) => sum + p.weight * p.score, 0) / weightSum);
+  $("#calcResult").innerHTML = `<div class="calc-score">${score} <small>/ 90</small></div>
+    <div class="calc-empty">冻结 v2 卡得分 · ${parts.length}/3 个字段在场${parts.length < 3 ? "，仅在已填字段间归一权重" : ""}</div>
+    <div class="calc-parts">${parts.map(p => `<div class="calc-part"><span>${p.label} ${p.entered.toLocaleString()} ${p.unit}</span><b>Q${p.bin}</b><span>档分 ${p.score} · 权重 ${(p.weight/weightSum*100).toFixed(0)}%</span></div>`).join("")}</div>
+    <p class="calc-note">Q1→Q5 只表示它落在 2025 训练窗固定边界中的相对档位。这里没有收益率、破发概率或买入线，不能据此把 ${score} 分解释成回报预测。</p>`;
+}
+$("#calcRun").addEventListener("click", calcCard);
+$("#calcExample").addEventListener("click", () => {
+  $("#calcMargin").value = "200"; $("#calcShares").value = "1"; $("#calcValue").value = "1"; calcCard();
+});
+$("#calcClear").addEventListener("click", () => {
+  CALC_FIELDS.forEach(f => $("#" + f.input).value = "");
+  $("#calcResult").innerHTML = `<div class="calc-empty">填写至少一个字段后查看它落入训练窗的哪个历史档位。</div>`;
+});
+CALC_FIELDS.forEach(f => $("#" + f.input).addEventListener("keydown", e => { if (e.key === "Enter") calcCard(); }));
+
 // ---------- 引擎映射 ----------
 const ENG = [
-  {dim:"hype 市场热度 25%", to:"孖展族因子", res:"✅ 数据统治级支持：IC 0.53，v2 卡主因子 80%", good:1},
-  {dim:"underwriter 承销商 10%", to:"保荐人档次", res:"❌ 实测 IC 为负——顶级投行定价激进，淘汰", good:0},
-  {dim:"fundamental 基本面 30%", to:"11 个财务因子", res:"⚠️ 只管 D30 不管 D1：营收增速/毛利率正向入选候选，估值类反向", good:2},
+  {dim:"hype 市场热度 25%", to:"孖展族因子", res:"✅ 历史 D1 排序证据最强：IC 0.53；冻结 v2 卡主因子 80%", good:1},
+  {dim:"underwriter 承销商 10%", to:"保荐人档次", res:"❌ 静态粗档不显著、不单调，且别名映射待复核；暂不能判断具体保荐效果", good:0},
+  {dim:"fundamental 基本面 30%", to:"11 个财务因子", res:"⚠️ 当前累计 D30 候选：营收增速/毛利率正向；估值类在样本期反向，均未接入生产", good:2},
   {dim:"industry 行业景气 20%", to:"（LLM 口径）", res:"— 历史输入不可合规重建，无法回测；市场环境族作近似代理（弱）", good:0},
   {dim:"sentiment 舆论情绪 15%", to:"（LLM 口径）", res:"— 同上不可回测；信源质量差，v2 卡暂缓纳入", good:0},
   {dim:"整机对比", to:"专家权重 → v2 因子卡", res:"D1 IC：实盘 0.026 / 离线重打分 ≈0.19 → v2 卡 0.496（2026 验证窗，双跑观察中）", good:1},
@@ -370,10 +583,9 @@ function miniBar(ic){
   if (ic == null) return `<div class="mbar"><em style="left:50%">—</em></div>`;
   const half = 50, w = Math.abs(ic)/ICMAX*half;
   const left = ic >= 0 ? half : half - w;
-  const cls = ic >= 0 ? "bar-pos" : "bar-neg";
   const emx = ic >= 0 ? `calc(${half + w}% + 4px)` : `calc(${half - w}% - 34px)`;
   return `<div class="mbar">
-    <i style="left:${left}%;width:${Math.max(w,0.8)}%;background:var(--${ic>=0?"pos":"neg"})"></i>
+    <i style="left:${left}%;width:${Math.max(w,0.8)}%;background:var(--${ic>=0?"pos":"inverse"})"></i>
     <em style="left:${emx}">${icS(ic)}</em>
     <i style="left:${half}%;width:1px;background:var(--baseline);top:0;height:12px;border-radius:0"></i></div>`;
 }
@@ -382,11 +594,11 @@ $("#modgrid").innerHTML = DATA.modules.map(m => {
     .sort((a,b) => Math.max(Math.abs(b.d1?.ic??0),Math.abs(b.d30?.ic??0)) - Math.max(Math.abs(a.d1?.ic??0),Math.abs(a.d30?.ic??0)))
     .slice(0,4);
   const rows = fs.map(f =>
-    `<div class="mbrow"><span class="fn">${f.zh}</span>${miniBar(f.d1?.ic)}${miniBar(f.d30?.ic)}</div>`).join("");
+    `<div class="mbrow"><span class="fn">${fLabel(f)}</span>${miniBar(f.d1?.ic)}${miniBar(f.d30?.ic)}</div>`).join("");
   return `<div class="mod" tabindex="0" role="button" data-mod="${m.id}" aria-label="进入${m.name}模块">
     <h3><span class="dot" style="background:${modColor(m.id)}"></span>${m.name}
     <span class="mono" style="margin-left:auto">${DATA.factors.filter(f=>f.m===m.id).length} 因子</span></h3>
-    <div class="story">${m.story}</div>
+    <div class="story">${MODULE_STORY[m.id] || m.story}</div>
     <div class="mbhead"><span></span><span>→ D1 IC</span><span>→ D30 超额 IC</span></div>
     <div class="modbars">${rows}</div>
     <div class="eng-s">${m.engine}</div></div>`;
@@ -408,13 +620,16 @@ function buildList(){
     html += `<div class="fgroup"><span class="dot" style="background:${modColor(m.id)}"></span>${m.name}</div>`;
     fs.sort((a,b) => (b.d1?.ic??-9) - (a.d1?.ic??-9)).forEach(f => {
       html += `<button class="fitem" data-fid="${f.id}">
-        <span>${f.zh}${f.v2 ? " ⭐" : ""}${f.know ? "" : " 🔒"}</span>
+        <span>${fLabel(f)}${f.v2 ? " ⭐" : ""}${f.know ? "" : " 🔒"}</span>
         <span class="ic ${icCls(f.d1?.ic)}">${icS(f.d1?.ic)}</span>
         <span class="ic ${icCls(f.d30?.ic)}">${icS(f.d30?.ic)}</span></button>`;
     });
   });
   $("#flist").innerHTML = html;
-  document.querySelectorAll(".fitem").forEach(b => b.addEventListener("click", () => selectFactor(b.dataset.fid)));
+  document.querySelectorAll(".fitem").forEach(b => b.addEventListener("click", () => {
+    selectFactor(b.dataset.fid);
+    if (innerWidth <= 900) $("#fdetail").scrollIntoView({block:"start"});
+  }));
 }
 
 // ---------- 五分位图 ----------
@@ -472,12 +687,12 @@ function scatterSvg(f){
     const xx = L + q/100*(W-L-R);
     s += `<text class="axis-t" x="${xx}" y="${H-16}" text-anchor="middle">${q}%</text>`;
   });
-  s += `<text class="axis-t" x="${(L+W-R)/2}" y="${H-3}" text-anchor="middle">${esc(f.zh)} 分位（全样本排名，低 → 高）</text>`;
+  s += `<text class="axis-t" x="${(L+W-R)/2}" y="${H-3}" text-anchor="middle">${esc(fLabel(f))} 分位（全样本排名，低 → 高）</text>`;
   pts.forEach(p => {
     const clipped = p.y > CLIP || p.y < FLOOR;
     s += `<circle class="scdot" cx="${sx(p.v).toFixed(1)}" cy="${sy(p.y).toFixed(1)}" r="4.2"
       fill="${p.y >= 0 ? "var(--pos)" : "var(--neg)"}" fill-opacity="${clipped ? .35 : .72}"
-      data-t="${p.s.t}" data-tt="<b>${p.s.t} ${esc(p.s.nm)}</b>&lt;br&gt;${esc(f.zh)}：${fmtVal(f, p.v)}&lt;br&gt;${scTarget==="d1"?"D1":"D30超额"}：${pctS(p.y)}${clipped?"（超出显示范围）":""}&lt;br&gt;点击看全部数据"></circle>`;
+      data-t="${p.s.t}" data-tt="<b>${p.s.t} ${esc(p.s.nm)}</b>&lt;br&gt;${esc(fLabel(f))}：${fmtVal(f, p.v)}&lt;br&gt;${scTarget==="d1"?"D1":"D30超额"}：${pctS(p.y)}${clipped?"（超出显示范围）":""}&lt;br&gt;点击看全部数据"></circle>`;
   });
   s += `</svg>`;
   return s;
@@ -496,30 +711,14 @@ function segChips(st){
 function selectFactor(fid){
   curFid = fid;
   const f = FM[fid], m = MM[f.m];
+  const categorical = isCategorical(f);
   document.querySelectorAll(".fitem").forEach(b => b.classList.toggle("active", b.dataset.fid === fid));
   const verdictCls = /入选|在役/.test(f.verdict) ? "hl" : (f.verdict === "淘汰" ? "bad" : "warn");
-  const el = $("#fdetail");
-  el.innerHTML = `
-    <h3><span class="dot" style="background:${modColor(f.m)};width:12px;height:12px"></span> ${f.zh} <span class="mono">${f.id}</span></h3>
-    <div class="chips">
-      <span class="chip ${verdictCls}">${f.verdict}</span>
-      ${f.v2 ? `<span class="chip hl">v2 卡 ${f.v2}</span>` : ""}
-      <span class="chip">${f.know ? "✅ 申购时可知" : "🔒 截止后可知（禁入卡）"}</span>
-      <span class="chip">先验：${f.dir > 0 ? "越大越好" : "越小越好"}</span>
-      <span class="chip">${m.name}</span>
-    </div>
-    <p class="fwhy">${f.why}</p>
-    <div class="statrow">
-      <div class="stat"><div class="k" title="IC=预测力评分（−1~+1，0=无用）；归一=已按先验方向翻转，负值代表与常识相反。n=样本数，p=纯属运气的概率。详见页末备注">D1 归一 IC ⓘ</div><div class="v ${icCls(f.d1?.ic)}">${icS(f.d1?.ic)}</div>
-        <div class="s">n=${f.d1?.n ?? "—"} · p=${f.d1?.p ?? "—"}</div></div>
-      <div class="stat"><div class="k" title="D30 超额=30 日涨幅减同期恒指涨幅，衡量真跑赢。详见页末备注">D30 超额归一 IC ⓘ</div><div class="v ${icCls(f.d30?.ic)}">${icS(f.d30?.ic)}</div>
-        <div class="s">n=${f.d30?.n ?? "—"} · p=${f.d30?.p ?? "—"}</div></div>
-      <div class="stat"><div class="k" title="Q1→Q5 中位涨幅是否逐级变好；档序 ρ≥0.8 判单调。IC 高但不单调的因子不可信">五分位单调（D1 / D30）ⓘ</div>
-        <div class="v" style="font-size:14px">${monoS(f.d1)} / ${monoS(f.d30)}</div>
-        <div class="s">档序 ρ ≥ 0.8 为单调</div></div>
-    </div>
-    <div class="chips">${segChips(f.d1) ? `<span class="chip" style="border:none;padding-left:0">D1 分段：</span>` + segChips(f.d1) : ""}</div>
-    <div class="qpair">
+  const categoryPlaceholder = `<div class="category-placeholder">这是二元/类别因子。冻结快照尚未导出带真实标签的类别组 n、中位收益与破发率，因此不把类别编码伪装成 Q1~Q5。</div>`;
+  const chartHtml = categorical ? `<div class="qpair">
+      <div class="qbox"><h4>D1 类别分组</h4>${categoryPlaceholder}</div>
+      <div class="qbox"><h4>D30 超额类别分组</h4>${categoryPlaceholder}</div>
+    </div>` : `<div class="qpair">
       <div class="qbox"><h4>D1 五分位 · 柱=中位涨幅，柱下=破发率</h4>${quintSvg(f.d1?.bins, "D1", "破发率")}</div>
       <div class="qbox"><h4>D30 超额五分位 · 柱=中位超额，柱下=跑输率</h4>${quintSvg(f.d30?.bins, "D30超额", "跑输率")}</div>
     </div>
@@ -534,8 +733,33 @@ function selectFactor(fid){
         <span style="color:var(--muted)">纵轴截尾于 −80% ~ +200%，淡色点=超出范围（悬停看真值）</span></div>
       <div id="scwrap">${scatterSvg(f)}</div>
     </div>`;
-  $("#tglD1").addEventListener("click", () => { scTarget = "d1"; selectFactor(fid); });
-  $("#tglD30").addEventListener("click", () => { scTarget = "d30"; selectFactor(fid); });
+  const el = $("#fdetail");
+  el.innerHTML = `
+    <h3><span class="dot" style="background:${modColor(f.m)};width:12px;height:12px"></span> ${fLabel(f)} <span class="mono">${f.id}</span></h3>
+    <div class="chips">
+      <span class="chip ${verdictCls}">${f.verdict}</span>
+      ${f.v2 ? `<span class="chip hl">v2 卡 ${f.v2}</span>` : ""}
+      <span class="chip">${f.know ? "✅ 申购时可知" : "🔒 截止后可知（禁入卡）"}</span>
+      <span class="chip">归一方向：${f.dir > 0 ? "越大越好" : "越小越好"}</span>
+      <span class="chip">${m.name}</span>
+    </div>
+    <p class="fwhy">${fWhy(f)}</p>
+    ${FACTOR_NOTE[f.id] ? `<p class="factor-note">${FACTOR_NOTE[f.id]}</p>` : ""}
+    <div class="statrow">
+      <div class="stat"><div class="k" title="IC=预测力评分（−1~+1，0=无用）；归一=已按先验方向翻转，负值代表与常识相反。n=样本数，p=纯属运气的概率。详见页末备注">D1 归一 IC ⓘ</div><div class="v ${icCls(f.d1?.ic)}">${icS(f.d1?.ic)}</div>
+        <div class="s">n=${f.d1?.n ?? "—"} · 原始 p=${f.d1?.p ?? "—"}</div></div>
+      <div class="stat"><div class="k" title="当前 D30 是发行价到第 30 个交易日累计涨幅减恒指区间涨幅；包含 D1，且起点不完全同窗。详见页末备注">当前 D30 超额归一 IC ⓘ</div><div class="v ${icCls(f.d30?.ic)}">${icS(f.d30?.ic)}</div>
+        <div class="s">n=${f.d30?.n ?? "—"} · 原始 p=${f.d30?.p ?? "—"}</div></div>
+      <div class="stat"><div class="k" title="连续因子才看 Q1→Q5 的档序单调；类别因子必须使用带标签的真实组别检验。">${categorical ? "类别组检验" : "五分位单调（D1 / D30）"} ⓘ</div>
+        <div class="v" style="font-size:14px">${categorical ? "不适用（类别因子）" : `${monoS(f.d1)} / ${monoS(f.d30)}`}</div>
+        <div class="s">${categorical ? "等待数据层导出真实类别组" : "档序 ρ ≥ 0.8 为单调"}</div></div>
+    </div>
+    <div class="chips">${segChips(f.d1) ? `<span class="chip" style="border:none;padding-left:0">D1 分段：</span>` + segChips(f.d1) : ""}</div>
+    ${chartHtml}`;
+  if (!categorical){
+    $("#tglD1").addEventListener("click", () => { scTarget = "d1"; selectFactor(fid); });
+    $("#tglD30").addEventListener("click", () => { scTarget = "d30"; selectFactor(fid); });
+  }
   bindHovers(el);
 }
 function monoS(st){
@@ -562,12 +786,15 @@ const IDCOLS = [
 ];
 const FCOLS = [];
 DATA.modules.forEach(m => DATA.factors.filter(f => f.m === m.id).forEach(f => FCOLS.push({
-  k:f.id, h:f.zh + (f.know ? "" : " 🔒"), num:1, get:s=>s.f[f.id], f:v=>fmtVal(f, v),
-  mod:m.id, title:`${m.name} · ${f.zh}${f.know ? "" : "（申购截止后才可知，研究对照）"}`
+  k:f.id, h:fLabel(f) + (f.know ? "" : " 🔒"), num:1, get:s=>s.f[f.id], f:v=>fmtVal(f, v),
+  mod:m.id, title:`${m.name} · ${fLabel(f)}${f.know ? "" : "（申购截止后才可知，研究对照）"}`
 })));
 const COLS = [...IDCOLS, ...FCOLS];
-let sortK = "ld", sortAsc = false, filter = "";
+const CORE_KEYS = new Set(["t","nm","ld","d1","d30","dx","margin_last_snapshot","public_offer_value_yi","lot_value","revenue_yoy"]);
+let sortK = "ld", sortAsc = false, filter = "", fullTable = false;
+const shownCols = () => fullTable ? COLS : COLS.filter(c => CORE_KEYS.has(c.k));
 function renderTable(){
+  const displayCols = shownCols();
   const rows = DATA.stocks
     .filter(s => !filter || s.t.includes(filter) || s.nm.toLowerCase().includes(filter))
     .sort((a,b) => {
@@ -576,22 +803,39 @@ function renderTable(){
       const r = va < vb ? -1 : va > vb ? 1 : 0;
       return sortAsc ? r : -r;
     });
-  $("#stbl thead").innerHTML = "<tr>" + COLS.map(c =>
-    `<th class="${c.num?"num":""} ${c.sticky||""}" data-k="${c.k}" ${c.title?`title="${c.title}"`:""}
+  $("#stbl thead").innerHTML = "<tr>" + displayCols.map(c =>
+    `<th tabindex="0" aria-sort="${sortK===c.k ? (sortAsc?"ascending":"descending") : "none"}" class="${c.num?"num":""} ${c.sticky||""}" data-k="${c.k}" ${c.title?`title="${c.title}"`:""}
       ${c.mod?`style="box-shadow:inset 0 3px 0 var(--m-${c.mod})"`:""}>${c.h}${sortK===c.k ? (sortAsc?" ↑":" ↓") : ""}</th>`).join("") + "</tr>";
-  $("#stbl tbody").innerHTML = rows.map(s => "<tr data-t="+s.t+">" + COLS.map(c => {
+  $("#stbl tbody").innerHTML = rows.map(s => `<tr data-t="${s.t}" tabindex="0" role="button" aria-label="打开 ${esc(s.t)} ${esc(s.nm)} 档案">` + displayCols.map(c => {
     const v = c.get(s), txt = c.f ? c.f(v) : esc(v ?? "—");
     const cls = (c.num?"num ":"") + (c.sticky?c.sticky+" ":"") + (c.col && v != null ? (v >= 0 ? "pos-t" : "neg-t") : "");
     return `<td class="${cls}">${txt}</td>`;
   }).join("") + "</tr>").join("");
-  $("#cnt").textContent = `${rows.length} / ${DATA.stocks.length} 只`;
-  document.querySelectorAll("#stbl thead th").forEach(th => th.addEventListener("click", () => {
+  $("#mobileCards").innerHTML = rows.map(s => `<div class="stock-card" data-t="${s.t}" tabindex="0" role="button" aria-label="打开 ${esc(s.t)} ${esc(s.nm)} 档案">
+    <div class="stock-card-head"><b>${esc(s.t)} ${esc(s.nm)}</b><span>${esc(s.ld)}</span></div>
+    <div class="stock-card-metrics">
+      <div><small>D1 首日</small><strong class="${s.d1 == null ? "" : (s.d1 >= 0 ? "pos-t" : "neg-t")}">${pctS(s.d1)}</strong></div>
+      <div><small>D30 累计</small><strong class="${s.d30 == null ? "" : (s.d30 >= 0 ? "pos-t" : "neg-t")}">${pctS(s.d30)}</strong></div>
+      <div><small>截止前孖展</small><strong>${fmtVal(FM.margin_last_snapshot, s.f.margin_last_snapshot)}</strong></div>
+    </div></div>`).join("");
+  $("#cnt").textContent = `${rows.length} / ${DATA.stocks.length} 只 · ${fullTable ? "全部因子" : "核心列"}`;
+  const changeSort = th => {
     if (sortK === th.dataset.k) sortAsc = !sortAsc; else { sortK = th.dataset.k; sortAsc = th.dataset.k === "t" || th.dataset.k === "nm"; }
     renderTable();
-  }));
-  document.querySelectorAll("#stbl tbody tr").forEach(tr => tr.addEventListener("click", () => openStock(tr.dataset.t)));
+  };
+  document.querySelectorAll("#stbl thead th").forEach(th => {
+    th.addEventListener("click", () => changeSort(th));
+    th.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); changeSort(th); } });
+  });
+  document.querySelectorAll("#stbl tbody tr,#mobileCards .stock-card").forEach(row => {
+    row.addEventListener("click", () => openStock(row.dataset.t, row));
+    row.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openStock(row.dataset.t, row); } });
+  });
+  requestAnimationFrame(syncScrollW);
 }
 $("#q").addEventListener("input", e => { filter = e.target.value.trim().toLowerCase(); renderTable(); });
+$("#viewCore").addEventListener("click", () => { fullTable = false; $("#viewCore").classList.add("on"); $("#viewAll").classList.remove("on"); renderTable(); });
+$("#viewAll").addEventListener("click", () => { fullTable = true; $("#viewAll").classList.add("on"); $("#viewCore").classList.remove("on"); renderTable(); });
 
 // ---------- 表格横向滚动增强：悬停即滚 + 顶部同步滚动条 ----------
 const twrapEl = $("#twrap"), hstEl = $("#hst"), hstInner = hstEl.firstElementChild;
@@ -612,22 +856,25 @@ twrapEl.addEventListener("wheel", e => {
 addEventListener("resize", syncScrollW);
 
 // ---------- 个股模态 ----------
-function openStock(t){
+let modalReturnFocus = null;
+function openStock(t, trigger=document.activeElement){
   const s = SM[t]; if (!s) return;
+  modalReturnFocus = trigger && typeof trigger.focus === "function" ? trigger : null;
   const ret = (lbl, v, breakL) => `<div class="stat"><div class="k">${lbl}</div>
-    <div class="v ${v==null?"":(v>=0?"icpos":"icneg")}">${pctS(v)}</div>${breakL?`<div class="s">${breakL}</div>`:""}</div>`;
+    <div class="v ${v==null?"":(v>=0?"pos-t":"neg-t")}">${pctS(v)}</div>${breakL?`<div class="s">${breakL}</div>`:""}</div>`;
   let groups = "";
   DATA.modules.forEach(m => {
     const fs = DATA.factors.filter(f => f.m === m.id && s.f[f.id] != null);
     if (!fs.length) return;
     groups += `<div class="mgroup"><h4><span class="dot" style="background:${modColor(m.id)}"></span>${m.name}</h4><div class="kv">` +
-      fs.map(f => `<div><span class="k">${f.zh}${f.know?"":" 🔒"}</span><span class="v">${fmtVal(f, s.f[f.id])}</span></div>`).join("") +
+      fs.map(f => `<div><span class="k">${fLabel(f)}${f.know?"":" 🔒"}</span><span class="v">${fmtVal(f, s.f[f.id])}</span></div>`).join("") +
       `</div></div>`;
   });
   $("#modal").innerHTML = `
     <button class="closebtn" id="mclose">关闭 ✕</button>
     <h3>${s.t} ${esc(s.nm)}</h3>
     <div class="sub">上市：${s.ld}${s.sp ? " · 保荐：" + esc(s.sp) : ""}</div>
+    <p class="modal-note">以下 D1 / D5 / D30 都是上市后的历史结果，只能用于复盘；它们不是申购时可知的输入。当前 D30 从发行价起算并包含 D1。</p>
     <div class="retrow">
       ${ret("D1 首日", s.d1, s.d1 == null ? "" : (s.d1 < 0 ? "破发" : "未破发"))}
       ${ret("D5", s.d5, "")}
@@ -637,14 +884,32 @@ function openStock(t){
     ${groups}
     <p class="sub" style="margin-top:14px">🔒 = 申购截止后才可知的研究对照字段；「—」/缺组 = 该股无此字段数据。</p>`;
   $("#overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
   $("#mclose").addEventListener("click", closeModal);
+  requestAnimationFrame(() => $("#mclose").focus());
 }
-function closeModal(){ $("#overlay").classList.remove("open"); }
+function closeModal(){
+  if (!$("#overlay").classList.contains("open")) return;
+  $("#overlay").classList.remove("open");
+  document.body.style.overflow = "";
+  if (modalReturnFocus && modalReturnFocus.isConnected) modalReturnFocus.focus();
+  modalReturnFocus = null;
+}
 $("#overlay").addEventListener("click", e => { if (e.target === $("#overlay")) closeModal(); });
-addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+  if (e.key === "Tab" && $("#overlay").classList.contains("open")){
+    const focusable = [...$("#modal").querySelectorAll("button,[href],input,select,textarea,[tabindex]:not([tabindex='-1'])")].filter(el => !el.disabled);
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+});
 
 // ---------- init ----------
 buildList();
+renderStrategy();
 selectFactor("margin_last_snapshot");
 renderTable();
 syncScrollW();
