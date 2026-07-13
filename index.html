@@ -137,7 +137,14 @@ thead th{font-size:12px;color:var(--ink2);cursor:pointer;user-select:none;backgr
 thead th:hover{color:var(--ink)}
 td.num,th.num{text-align:right}
 tbody tr{cursor:pointer}
-tbody tr:hover{background:var(--wash)}
+:root{--rowhov:#f2f1ee}
+@media (prefers-color-scheme: dark){:root{--rowhov:#232322}}
+:root[data-theme="dark"]{--rowhov:#232322}
+:root[data-theme="light"]{--rowhov:#f2f1ee}
+tbody tr:hover td{background:var(--rowhov)}
+.stick1{position:sticky;left:0;background:var(--surface);z-index:3;min-width:56px}
+.stick2{position:sticky;left:78px;background:var(--surface);z-index:3;max-width:150px;overflow:hidden;text-overflow:ellipsis;border-right:1px solid var(--baseline)}
+thead .stick1,thead .stick2{z-index:5}
 .pos-t{color:var(--pos);font-weight:600}.neg-t{color:var(--neg);font-weight:600}
 .mono{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--muted)}
 /* 模态 */
@@ -223,7 +230,7 @@ a{color:var(--pos)}
 
 <section id="stocks">
   <h2>个股数据浏览器</h2>
-  <p class="secnote">全部 214 只样本。点击表头排序，点击任意一行查看该股全部因子取值与 D1/D5/D30 表现。</p>
+  <p class="secnote">全部 214 只样本 × 全部 29 个因子通排展示（表格可横向滚动，代码/名称两列冻结）。表头彩色条 = 所属模块（与模块地图同色），🔒 = 申购截止后才可知的研究对照列。点击任意表头排序，点击任意一行弹出该股档案。</p>
   <div class="toolbar">
     <input id="q" type="search" placeholder="搜代码或名称，如 00068 / 布鲁可" aria-label="搜索个股">
     <span class="count" id="cnt"></span>
@@ -240,7 +247,7 @@ a{color:var(--pos)}
       <li><b>因子模块地图</b>：每张卡片是一类因子。卡内每行两根小条——左条 = 该因子对 <b>D1（首日涨幅）</b>的预测力，右条 = 对 <b>D30 超额（30 日跑赢大盘）</b>的预测力；条越长预测力越强，<b>蓝色 = 正向有效，红色 = 方向与常识相反</b>。👆 点击整张卡片，会自动跳到该模块最强因子的透视页。</li>
       <li><b>因子透视</b>：左栏按模块列出全部 29 个因子，两列数字分别是 D1 / D30 的 IC（⭐ = 已进新引擎 v2 卡，🔒 = 申购结束后才可知、禁止入模型）。👆 点任一因子，右侧从上到下四层信息：
         ① 判定徽章 + 一句话结论 → ② IC 与显著性数字 → ③ <b>五分位图</b>：把 214 只股票按该因子从低到高分成 Q1~Q5 五组，柱高 = 每组涨幅中位数，柱子下方的百分比 = 该组破发率（D1 图）或跑输大盘率（D30 图）。<b>好因子的样子：柱子从 Q1 到 Q5 逐级抬高、破发率逐级下降</b>（可点开「孖展快照」对照）→ ④ <b>散点图</b>：每个点是一只真实股票，横轴 = 该股因子值在全样本的排名分位，纵轴 = 涨幅；右上按钮切换 D1 / D30 超额目标。👆 悬停任意点看数值，<b>点击任意点直接打开该股完整档案</b>。</li>
-      <li><b>个股数据浏览器</b>：搜索框输代码或名称（如 00068 / 布鲁可）；👆 点表头按任意列排序（例如按 D1 升序找最大破发）；👆 点任意一行弹出该股档案——D1/D5/D30/D30 超额四个成绩 + 按七个模块分组的全部因子取值。</li>
+      <li><b>个股数据浏览器</b>：214 只 × 29 个因子全指标通排。表格<b>横向滚动</b>查看全部列（代码/名称两列冻结不动）；表头顶部的彩色条表示该列属于哪个模块（与模块地图同色）；🔒 列为申购截止后才可知的研究对照。搜索框输代码或名称（如 00068 / 布鲁可）；👆 点任意表头排序（例如按 D1 升序找最大破发、按孖展降序找最热门票）；👆 点任意一行弹出该股档案卡。</li>
       <li><b>对外讲解的建议动线</b>：首屏四张结论卡 → 「从评分引擎到因子证据」（为什么换引擎）→ 模块地图（谁管 D1、谁管 D30）→ 点开「孖展快照」看统治级分层 → 点开「营收增速」看 D30 故事 → 点开「盈利收益率」看反直觉发现 → 任选个股验证。</li>
     </ol>
   </div>
@@ -539,17 +546,22 @@ function bindHovers(root){
   });
 }
 
-// ---------- 个股表 ----------
-const COLS = [
-  {k:"t", h:"代码", num:0, get:s=>s.t},
-  {k:"nm", h:"名称", num:0, get:s=>s.nm},
+// ---------- 个股表（全指标通排）----------
+const IDCOLS = [
+  {k:"t", h:"代码", num:0, get:s=>s.t, sticky:"stick1"},
+  {k:"nm", h:"名称", num:0, get:s=>s.nm, sticky:"stick2"},
   {k:"ld", h:"上市日", num:0, get:s=>s.ld},
-  {k:"mg", h:"孖展", num:1, get:s=>s.f.margin_last_snapshot ?? s.f.margin_final, f:v=>v==null?"—":v.toFixed(1)+"×"},
-  {k:"ry", h:"营收增速", num:1, get:s=>s.f.revenue_yoy, f:v=>v==null?"—":v.toFixed(1)+"%"},
-  {k:"gm", h:"毛利率", num:1, get:s=>s.f.gross_margin, f:v=>v==null?"—":v.toFixed(1)+"%"},
-  {k:"d1", h:"D1", num:1, get:s=>s.d1, f:v=>pctS(v), col:1},
-  {k:"dx", h:"D30 超额", num:1, get:s=>s.dx, f:v=>pctS(v), col:1},
+  {k:"d1", h:"D1", num:1, get:s=>s.d1, f:v=>pctS(v), col:1, title:"首日涨幅（<0=破发）"},
+  {k:"d5", h:"D5", num:1, get:s=>s.d5, f:v=>pctS(v), col:1, title:"第 5 个交易日涨幅"},
+  {k:"d30", h:"D30", num:1, get:s=>s.d30, f:v=>pctS(v), col:1, title:"第 30 个交易日涨幅"},
+  {k:"dx", h:"D30超额", num:1, get:s=>s.dx, f:v=>pctS(v), col:1, title:"D30 减同期恒指（<0=跑输大盘）"},
 ];
+const FCOLS = [];
+DATA.modules.forEach(m => DATA.factors.filter(f => f.m === m.id).forEach(f => FCOLS.push({
+  k:f.id, h:f.zh + (f.know ? "" : " 🔒"), num:1, get:s=>s.f[f.id], f:v=>fmtVal(f, v),
+  mod:m.id, title:`${m.name} · ${f.zh}${f.know ? "" : "（申购截止后才可知，研究对照）"}`
+})));
+const COLS = [...IDCOLS, ...FCOLS];
 let sortK = "ld", sortAsc = false, filter = "";
 function renderTable(){
   const rows = DATA.stocks
@@ -561,10 +573,11 @@ function renderTable(){
       return sortAsc ? r : -r;
     });
   $("#stbl thead").innerHTML = "<tr>" + COLS.map(c =>
-    `<th class="${c.num?"num":""}" data-k="${c.k}">${c.h}${sortK===c.k ? (sortAsc?" ↑":" ↓") : ""}</th>`).join("") + "</tr>";
+    `<th class="${c.num?"num":""} ${c.sticky||""}" data-k="${c.k}" ${c.title?`title="${c.title}"`:""}
+      ${c.mod?`style="box-shadow:inset 0 3px 0 var(--m-${c.mod})"`:""}>${c.h}${sortK===c.k ? (sortAsc?" ↑":" ↓") : ""}</th>`).join("") + "</tr>";
   $("#stbl tbody").innerHTML = rows.map(s => "<tr data-t="+s.t+">" + COLS.map(c => {
     const v = c.get(s), txt = c.f ? c.f(v) : esc(v ?? "—");
-    const cls = (c.num?"num ":"") + (c.col && v != null ? (v >= 0 ? "pos-t" : "neg-t") : "");
+    const cls = (c.num?"num ":"") + (c.sticky?c.sticky+" ":"") + (c.col && v != null ? (v >= 0 ? "pos-t" : "neg-t") : "");
     return `<td class="${cls}">${txt}</td>`;
   }).join("") + "</tr>").join("");
   $("#cnt").textContent = `${rows.length} / ${DATA.stocks.length} 只`;
