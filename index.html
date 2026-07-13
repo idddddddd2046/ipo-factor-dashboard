@@ -145,6 +145,8 @@ tbody tr:hover td{background:var(--rowhov)}
 .stick1{position:sticky;left:0;background:var(--surface);z-index:3;min-width:56px}
 .stick2{position:sticky;left:78px;background:var(--surface);z-index:3;max-width:150px;overflow:hidden;text-overflow:ellipsis;border-right:1px solid var(--baseline)}
 thead .stick1,thead .stick2{z-index:5}
+.hscroll-top{overflow-x:auto;overflow-y:hidden;height:16px;margin-bottom:4px}
+.hscroll-top>div{height:1px}
 .pos-t{color:var(--pos);font-weight:600}.neg-t{color:var(--neg);font-weight:600}
 .mono{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--muted)}
 /* 模态 */
@@ -234,8 +236,10 @@ a{color:var(--pos)}
   <div class="toolbar">
     <input id="q" type="search" placeholder="搜代码或名称，如 00068 / 布鲁可" aria-label="搜索个股">
     <span class="count" id="cnt"></span>
+    <span class="count">💡 滚轮悬停表格上 = 横向滚动（到边缘后恢复上下滚动）</span>
   </div>
-  <div class="twrap"><table id="stbl"><thead></thead><tbody></tbody></table></div>
+  <div class="hscroll-top" id="hst" aria-hidden="true"><div></div></div>
+  <div class="twrap" id="twrap"><table id="stbl"><thead></thead><tbody></tbody></table></div>
 </section>
 
 <section id="guide">
@@ -247,7 +251,7 @@ a{color:var(--pos)}
       <li><b>因子模块地图</b>：每张卡片是一类因子。卡内每行两根小条——左条 = 该因子对 <b>D1（首日涨幅）</b>的预测力，右条 = 对 <b>D30 超额（30 日跑赢大盘）</b>的预测力；条越长预测力越强，<b>蓝色 = 正向有效，红色 = 方向与常识相反</b>。👆 点击整张卡片，会自动跳到该模块最强因子的透视页。</li>
       <li><b>因子透视</b>：左栏按模块列出全部 29 个因子，两列数字分别是 D1 / D30 的 IC（⭐ = 已进新引擎 v2 卡，🔒 = 申购结束后才可知、禁止入模型）。👆 点任一因子，右侧从上到下四层信息：
         ① 判定徽章 + 一句话结论 → ② IC 与显著性数字 → ③ <b>五分位图</b>：把 214 只股票按该因子从低到高分成 Q1~Q5 五组，柱高 = 每组涨幅中位数，柱子下方的百分比 = 该组破发率（D1 图）或跑输大盘率（D30 图）。<b>好因子的样子：柱子从 Q1 到 Q5 逐级抬高、破发率逐级下降</b>（可点开「孖展快照」对照）→ ④ <b>散点图</b>：每个点是一只真实股票，横轴 = 该股因子值在全样本的排名分位，纵轴 = 涨幅；右上按钮切换 D1 / D30 超额目标。👆 悬停任意点看数值，<b>点击任意点直接打开该股完整档案</b>。</li>
-      <li><b>个股数据浏览器</b>：214 只 × 29 个因子全指标通排。表格<b>横向滚动</b>查看全部列（代码/名称两列冻结不动）；表头顶部的彩色条表示该列属于哪个模块（与模块地图同色）；🔒 列为申购截止后才可知的研究对照。搜索框输代码或名称（如 00068 / 布鲁可）；👆 点任意表头排序（例如按 D1 升序找最大破发、按孖展降序找最热门票）；👆 点任意一行弹出该股档案卡。</li>
+      <li><b>个股数据浏览器</b>：214 只 × 29 个因子全指标通排。<b>鼠标悬停在表格任意位置滚动滚轮即可横向滚动</b>（滚到最左/最右边缘后自动恢复页面上下滚动），表格顶部也有一根同步滚动条；代码/名称两列冻结不动；表头顶部的彩色条表示该列属于哪个模块（与模块地图同色）；🔒 列为申购截止后才可知的研究对照。搜索框输代码或名称（如 00068 / 布鲁可）；👆 点任意表头排序（例如按 D1 升序找最大破发、按孖展降序找最热门票）；👆 点任意一行弹出该股档案卡。</li>
       <li><b>对外讲解的建议动线</b>：首屏四张结论卡 → 「从评分引擎到因子证据」（为什么换引擎）→ 模块地图（谁管 D1、谁管 D30）→ 点开「孖展快照」看统治级分层 → 点开「营收增速」看 D30 故事 → 点开「盈利收益率」看反直觉发现 → 任选个股验证。</li>
     </ol>
   </div>
@@ -589,6 +593,24 @@ function renderTable(){
 }
 $("#q").addEventListener("input", e => { filter = e.target.value.trim().toLowerCase(); renderTable(); });
 
+// ---------- 表格横向滚动增强：悬停即滚 + 顶部同步滚动条 ----------
+const twrapEl = $("#twrap"), hstEl = $("#hst"), hstInner = hstEl.firstElementChild;
+function syncScrollW(){ hstInner.style.width = $("#stbl").scrollWidth + "px"; }
+let syncing = false;
+hstEl.addEventListener("scroll", () => { if (syncing) return; syncing = true; twrapEl.scrollLeft = hstEl.scrollLeft; syncing = false; });
+twrapEl.addEventListener("scroll", () => { if (syncing) return; syncing = true; hstEl.scrollLeft = twrapEl.scrollLeft; syncing = false; });
+twrapEl.addEventListener("wheel", e => {
+  if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;          // 触控板原生横向手势不拦截
+  const max = twrapEl.scrollWidth - twrapEl.clientWidth;
+  if (max <= 0) return;
+  const cur = twrapEl.scrollLeft;
+  if ((e.deltaY > 0 && cur < max - 1) || (e.deltaY < 0 && cur > 1)) {
+    e.preventDefault();                                           // 表格内滚轮 → 横向；到边缘后放行给页面
+    twrapEl.scrollLeft = Math.max(0, Math.min(max, cur + e.deltaY));
+  }
+}, {passive:false});
+addEventListener("resize", syncScrollW);
+
 // ---------- 个股模态 ----------
 function openStock(t){
   const s = SM[t]; if (!s) return;
@@ -625,5 +647,6 @@ addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 buildList();
 selectFactor("margin_last_snapshot");
 renderTable();
+syncScrollW();
 </script>
 </body></html>
