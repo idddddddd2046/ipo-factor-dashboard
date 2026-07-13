@@ -54,6 +54,22 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 
 `fmt=b` 与 `fmt=tier` 是二元/类别因子；现有 `bins` 不能当成带语义标签的五分位。渲染层必须隐藏这类伪 Q 图，直到数据层显式导出 `groups[{value,label,n,median,break_rate}]`。
 
+### 2026-07-13 数据层已交付的新字段（codex 审阅后修正，可接线渲染）
+
+数据层已按上面 codex 契约补齐，以下字段现存在于 dashboard_data.json：
+
+| 字段（factors[]/stocks[]/meta） | 含义 |
+|---|---|
+| `factors[].d30after` | **对齐口径「D1收盘→D30后续超额」四件套**（结构同 d1/d30：ic/n/p/seg/hot/cold/mono/monoRho/bins）。修正现口径 D30 从发行价起算、含首日跳涨、与 HSI 起点不对齐的 bug。可能为 null。**建议渲染层用它替代/并列现有 d30 图**，回答「首日炒作结束后是否继续跑赢」。实测：孖展 d30after IC=−0.03（现口径 +0.375 全是首日功劳），营收增速仍 +0.18。|
+| `factors[].groups` | 类别因子真实分组（履约 line-55 契约），按目标分键：`{d1:[...], d30:[...], d30after:[...]}`，每元素 `{value,label,n,median,break_rate}`。仅 `is_zero_cornerstone/sponsor_tier/h_share/is_profitable` 有；连续因子为 null。**渲染层可用它替换类别占位符**。保荐档次已用中英别名修正档重算。|
+| `factors[].d1.fixed`（仅 sponsor_tier） | =true，标记该因子 D1 IC 已用别名修正档覆盖（−0.057→+0.03，证伪「定价激进」负向机制）。|
+| `stocks[].dxa` | 该股「D1收盘→D30后续超额」（对齐口径），供散点/表格增加剥离首日目标。可能 null。|
+| `stocks[].f.margin_final` | 已 +1（RateOver→认购倍数），不再出现负值。|
+| `meta.corrections` | 本次修正说明字典（d30_dual_target/sponsor/cornerstone/evidence_tiers/margin_final），**建议渲染成首屏级披露横幅**。|
+| `meta.window` | 已改为「211 主板 + 3 GEM」。|
+
+因子 `verdict` 现含 `口径重构中·降级`（sponsor_tier）与 `行情依赖·观察信号`（is_zero_cornerstone）；`why` 文案已去掉「定价激进」「货源归边」等经不起追问的因果断言。
+
 ## stocks[]
 
 | 字段 | 含义 |
