@@ -1,0 +1,651 @@
+<title>IPO 打新因子看板</title>
+<style>
+:root{
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --baseline:#c3c2b7; --border:rgba(11,11,11,.10);
+  --pos:#2a78d6; --neg:#e34948; --good:#006300; --wash:rgba(11,11,11,.04);
+  --m-funding:#2a78d6; --m-supply:#1baf7a; --m-anchor:#4a3aa7; --m-env:#eda100;
+  --m-growth:#008300; --m-value:#eb6834; --m-research:#e87ba4;
+}
+@media (prefers-color-scheme: dark){:root{
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
+  --pos:#3987e5; --neg:#e66767; --good:#0ca30c; --wash:rgba(255,255,255,.06);
+  --m-funding:#3987e5; --m-supply:#199e70; --m-anchor:#9085e9; --m-env:#c98500;
+  --m-growth:#008300; --m-value:#d95926; --m-research:#d55181;
+}}
+:root[data-theme="dark"]{
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
+  --pos:#3987e5; --neg:#e66767; --good:#0ca30c; --wash:rgba(255,255,255,.06);
+  --m-funding:#3987e5; --m-supply:#199e70; --m-anchor:#9085e9; --m-env:#c98500;
+  --m-growth:#008300; --m-value:#d95926; --m-research:#d55181;
+}
+:root[data-theme="light"]{
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --baseline:#c3c2b7; --border:rgba(11,11,11,.10);
+  --pos:#2a78d6; --neg:#e34948; --good:#006300; --wash:rgba(11,11,11,.04);
+  --m-funding:#2a78d6; --m-supply:#1baf7a; --m-anchor:#4a3aa7; --m-env:#eda100;
+  --m-growth:#008300; --m-value:#eb6834; --m-research:#e87ba4;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--page);color:var(--ink);
+  font:15px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:0 22px 70px}
+nav{position:sticky;top:0;z-index:30;background:var(--page);border-bottom:1px solid var(--border);
+  display:flex;gap:4px;align-items:center;padding:10px 22px;flex-wrap:wrap}
+nav .brand{font-weight:700;font-size:14px;margin-right:14px}
+nav a{color:var(--ink2);text-decoration:none;font-size:13px;padding:4px 10px;border-radius:6px}
+nav a:hover,nav a:focus-visible{background:var(--wash);color:var(--ink)}
+header.hero{padding:44px 0 10px}
+.eyebrow{font-size:12px;letter-spacing:.16em;color:var(--muted);font-weight:600}
+h1{font-size:31px;line-height:1.25;margin:8px 0 10px;text-wrap:balance;max-width:24ch}
+.thesis{font-size:16px;color:var(--ink2);max-width:62ch;margin:0 0 22px}
+.thesis b{color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin:6px 0 8px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px 17px}
+.tile .k{font-size:12px;color:var(--muted);letter-spacing:.05em}
+.tile .v{font-size:25px;font-weight:750;margin:2px 0;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12.5px;color:var(--ink2)}
+section{margin-top:42px}
+h2{font-size:21px;margin:0 0 4px}
+.secnote{color:var(--ink2);font-size:13.5px;margin:0 0 16px;max-width:80ch}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+/* 引擎映射 */
+.engmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.eng{border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px}
+.eng .dim{font-weight:700}
+.eng .arr{color:var(--muted);margin:2px 0}
+.eng .res{color:var(--ink2)}
+/* 模块地图 */
+.modgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.mod{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;
+  transition:border-color .15s}
+.mod:hover,.mod:focus-visible{border-color:var(--baseline)}
+.mod h3{margin:0;font-size:15.5px;display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.mod .story{font-size:13px;color:var(--ink2);margin:6px 0 10px;min-height:2.6em}
+.mod .eng-s{font-size:11.5px;color:var(--muted);margin-top:8px}
+.modbars{display:flex;flex-direction:column;gap:3px}
+.mbrow{display:grid;grid-template-columns:110px 1fr 1fr;gap:8px;align-items:center;font-size:12px}
+.mbrow .fn{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbar{height:12px;position:relative;background:none}
+.mbar i{position:absolute;top:1px;height:10px;border-radius:2px;display:block}
+.mbar em{position:absolute;top:-1px;font-size:10px;font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums}
+.mbhead{display:grid;grid-template-columns:110px 1fr 1fr;gap:8px;font-size:10.5px;color:var(--muted);margin-bottom:2px}
+/* 因子透视 */
+.explorer{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start}
+@media (max-width:900px){.explorer{grid-template-columns:1fr}}
+.flist{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;max-height:720px;overflow-y:auto}
+.fgroup{padding:9px 14px 3px;font-size:11px;letter-spacing:.08em;color:var(--muted);font-weight:700;
+  display:flex;align-items:center;gap:6px;border-top:1px solid var(--grid)}
+.fgroup:first-child{border-top:none}
+.fitem{display:grid;grid-template-columns:1fr 58px 58px;gap:6px;width:100%;text-align:left;border:none;background:none;
+  color:var(--ink);padding:7px 14px;font:inherit;font-size:13px;cursor:pointer;align-items:center}
+.fitem:hover,.fitem:focus-visible{background:var(--wash)}
+.fitem.active{background:var(--wash);box-shadow:inset 3px 0 0 var(--pos)}
+.fitem .ic{font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.icpos{color:var(--pos);font-weight:650}.icneg{color:var(--neg);font-weight:650}.icnull{color:var(--muted)}
+.fhead-cols{display:grid;grid-template-columns:1fr 58px 58px;gap:6px;padding:8px 14px 4px;font-size:10.5px;color:var(--muted);position:sticky;top:0;background:var(--surface);z-index:2}
+.fhead-cols span:nth-child(n+2){text-align:right}
+.fdetail{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;min-height:600px}
+.fdetail h3{margin:0;font-size:19px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{font-size:11.5px;border:1px solid var(--border);border-radius:999px;padding:2px 9px;color:var(--ink2)}
+.chip.hl{color:var(--good);border-color:var(--good);font-weight:600}
+.chip.bad{color:var(--neg);border-color:var(--neg)}
+.chip.warn{color:var(--muted)}
+.fwhy{font-size:13.5px;color:var(--ink2);max-width:70ch;margin:4px 0 14px}
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:16px}
+.stat{border:1px solid var(--border);border-radius:8px;padding:9px 12px}
+.stat .k{font-size:11px;color:var(--muted)}
+.stat .v{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .s{font-size:11px;color:var(--ink2)}
+.qpair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 18px}
+@media (max-width:700px){.qpair{grid-template-columns:1fr}}
+.qbox h4{margin:0 0 4px;font-size:13px;color:var(--ink2)}
+.qsvg{width:100%;height:auto;display:block}
+.baseline{stroke:var(--baseline);stroke-width:1}
+.bar-pos{fill:var(--pos)}.bar-neg{fill:var(--neg)}
+rect.hoverable:hover{opacity:.75;cursor:default}
+.qval{font-size:10px;fill:var(--ink2);font-variant-numeric:tabular-nums}
+.qtick{font-size:10px;fill:var(--muted)}
+.scatterbox h4{margin:12px 0 4px;font-size:13px;color:var(--ink2)}
+.tgl{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-left:10px;vertical-align:middle}
+.tgl button{border:none;background:none;color:var(--ink2);font:inherit;font-size:12px;padding:3px 12px;cursor:pointer}
+.tgl button.on{background:var(--wash);color:var(--ink);font-weight:650}
+.scsvg{width:100%;height:auto;display:block}
+.scdot{cursor:pointer}
+.scdot:hover{stroke:var(--ink);stroke-width:1.5}
+.axis-t{font-size:10.5px;fill:var(--muted)}
+.gline{stroke:var(--grid);stroke-width:1}
+.zline{stroke:var(--baseline);stroke-width:1.2}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin:6px 0;flex-wrap:wrap}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block;vertical-align:-1px;margin-right:5px}
+/* 个股表 */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.toolbar input{font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface);
+  border:1px solid var(--border);border-radius:7px;padding:6px 12px;width:230px}
+.toolbar input:focus-visible{outline:2px solid var(--pos)}
+.count{font-size:12.5px;color:var(--muted)}
+.twrap{overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 11px;border-bottom:1px solid var(--grid);text-align:left;white-space:nowrap}
+thead th{font-size:12px;color:var(--ink2);cursor:pointer;user-select:none;background:var(--surface);position:sticky;top:0}
+thead th:hover{color:var(--ink)}
+td.num,th.num{text-align:right}
+tbody tr{cursor:pointer}
+:root{--rowhov:#f2f1ee}
+@media (prefers-color-scheme: dark){:root{--rowhov:#232322}}
+:root[data-theme="dark"]{--rowhov:#232322}
+:root[data-theme="light"]{--rowhov:#f2f1ee}
+tbody tr:hover td{background:var(--rowhov)}
+.stick1{position:sticky;left:0;background:var(--surface);z-index:3;min-width:56px}
+.stick2{position:sticky;left:78px;background:var(--surface);z-index:3;max-width:150px;overflow:hidden;text-overflow:ellipsis;border-right:1px solid var(--baseline)}
+thead .stick1,thead .stick2{z-index:5}
+.hscroll-top{overflow-x:auto;overflow-y:hidden;height:16px;margin-bottom:4px}
+.hscroll-top>div{height:1px}
+.pos-t{color:var(--pos);font-weight:600}.neg-t{color:var(--neg);font-weight:600}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--muted)}
+/* 模态 */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:5vh 16px}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;max-width:760px;width:100%;
+  max-height:88vh;overflow-y:auto;padding:24px 26px}
+.modal h3{margin:0;font-size:20px}
+.modal .sub{color:var(--ink2);font-size:13px;margin:2px 0 12px}
+.retrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:16px}
+.mgroup{margin-top:14px}
+.mgroup h4{margin:0 0 6px;font-size:13px;display:flex;align-items:center;gap:7px}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 16px;font-size:13px}
+.kv div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--grid);padding:3px 0}
+.kv .k{color:var(--ink2)}
+.kv .v{font-variant-numeric:tabular-nums;font-weight:600}
+.closebtn{float:right;border:1px solid var(--border);background:none;color:var(--ink2);border-radius:7px;
+  font:inherit;font-size:13px;padding:3px 12px;cursor:pointer}
+.closebtn:hover{background:var(--wash)}
+.tooltip{position:fixed;z-index:60;background:var(--ink);color:var(--page);font-size:12px;line-height:1.5;
+  padding:7px 10px;border-radius:7px;pointer-events:none;display:none;max-width:280px}
+.foot{font-size:13px;color:var(--ink2);max-width:84ch}
+.foot li{margin-bottom:6px}
+a{color:var(--pos)}
+.hint{font-size:13px;margin:2px 0 0}
+.glossgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
+.gitem{border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13px;background:var(--surface)}
+.gitem b{display:block;margin-bottom:3px;font-size:13.5px}
+.gitem span{color:var(--ink2)}
+.gcat{font-size:12px;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:18px 0 8px}
+.gcat:first-child{margin-top:0}
+.guide ol{margin:0;padding-left:20px;font-size:13.5px;color:var(--ink2)}
+.guide li{margin-bottom:12px}
+.guide b{color:var(--ink)}
+[title]{cursor:help}
+</style>
+
+<nav aria-label="页面导航">
+  <span class="brand">📊 IPO 打新因子看板</span>
+  <a href="#story">故事线</a><a href="#modules">模块地图</a><a href="#explorer">因子透视</a>
+  <a href="#stocks">个股数据</a><a href="#guide">备注·名词解释</a><a href="#method">方法</a>
+</nav>
+
+<div class="wrap">
+<header class="hero" id="story">
+  <div class="eyebrow">2025-01 ~ 2026-07 · 港股 214 只新股全样本回测 · 数据截至 2026-07-13</div>
+  <h1>什么决定一只新股的首日与 30 日？</h1>
+  <p class="thesis">第一性原理答案：<b>短线是资金现象，中线是资金 + 成长</b>。首日涨跌（D1）几乎完全由申购期抢筹资金决定；
+  30 日跑赢大盘（D30 超额）由资金热度与营收增速共同驱动；而「便宜」「盈利」在本轮市场不但不提供保护，方向反转。</p>
+  <p class="hint">📖 第一次看？<a href="#guide">IC 是什么、图怎么读、哪里可以点——见页末「备注·名词解释与使用说明」</a></p>
+  <div class="tiles">
+    <div class="tile"><div class="k">D1 的答案 · 孖展倍数</div><div class="v">IC +0.53</div>
+      <div class="s">最冷五分位破发率 52% → 最热 7%</div></div>
+    <div class="tile"><div class="k">D30 的答案 · 营收增速</div><div class="v">IC +0.21</div>
+      <div class="s">D30 超额中位 Q1 −5.2% → Q5 +64.5%</div></div>
+    <div class="tile"><div class="k">反直觉 · 估值因子</div><div class="v">IC −0.31~−0.37</div>
+      <div class="s">越贵、越亏损的票 D30 反而越好</div></div>
+    <div class="tile"><div class="k">引擎进化 · 整机 D1 IC</div><div class="v">0.03 → 0.50</div>
+      <div class="s">专家权重实盘 0.026 → v2 因子卡 0.496（双跑中）</div></div>
+  </div>
+</header>
+
+<section>
+  <h2>从评分引擎到因子证据</h2>
+  <p class="secnote">现行引擎的五个专家维度，逐一放到 214 只全样本上检验——能被数据支持的保留进 v2 因子卡，不能的如实标注。</p>
+  <div class="panel"><div class="engmap" id="engmap"></div></div>
+</section>
+
+<section id="modules">
+  <h2>因子模块地图</h2>
+  <p class="secnote">29 个因子按第一性原理分为 7 个模块。每行两根条：左 = 对 D1 的预测力，右 = 对 D30 超额的预测力（<a href="#g-ic">IC，即预测力评分，−1~+1</a>，蓝正红负，条越长越强）。<b>点击模块卡片</b>进入因子透视。</p>
+  <div class="modgrid" id="modgrid"></div>
+</section>
+
+<section id="explorer">
+  <h2>因子透视</h2>
+  <p class="secnote">左侧点选任意因子：五分位分层（涨幅中位 + 破发率）、全样本散点（每个点是一只股票，<b>点击可看个股全量数据</b>）。</p>
+  <div class="explorer">
+    <div class="flist" id="flist"></div>
+    <div class="fdetail" id="fdetail"></div>
+  </div>
+</section>
+
+<section id="stocks">
+  <h2>个股数据浏览器</h2>
+  <p class="secnote">全部 214 只样本 × 全部 29 个因子通排展示（表格可横向滚动，代码/名称两列冻结）。表头彩色条 = 所属模块（与模块地图同色），🔒 = 申购截止后才可知的研究对照列。点击任意表头排序，点击任意一行弹出该股档案。</p>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="搜代码或名称，如 00068 / 布鲁可" aria-label="搜索个股">
+    <span class="count" id="cnt"></span>
+    <span class="count">💡 滚轮悬停表格上 = 横向滚动（到边缘后恢复上下滚动）</span>
+  </div>
+  <div class="hscroll-top" id="hst" aria-hidden="true"><div></div></div>
+  <div class="twrap" id="twrap"><table id="stbl"><thead></thead><tbody></tbody></table></div>
+</section>
+
+<section id="guide">
+  <h2>备注 · 使用说明与名词解释</h2>
+  <p class="secnote">对外展示或首次阅读时的配套说明：先看「怎么用」，再查「名词」。</p>
+  <div class="panel guide">
+    <div class="gcat">怎么用（四个可交互区域）</div>
+    <ol>
+      <li><b>因子模块地图</b>：每张卡片是一类因子。卡内每行两根小条——左条 = 该因子对 <b>D1（首日涨幅）</b>的预测力，右条 = 对 <b>D30 超额（30 日跑赢大盘）</b>的预测力；条越长预测力越强，<b>蓝色 = 正向有效，红色 = 方向与常识相反</b>。👆 点击整张卡片，会自动跳到该模块最强因子的透视页。</li>
+      <li><b>因子透视</b>：左栏按模块列出全部 29 个因子，两列数字分别是 D1 / D30 的 IC（⭐ = 已进新引擎 v2 卡，🔒 = 申购结束后才可知、禁止入模型）。👆 点任一因子，右侧从上到下四层信息：
+        ① 判定徽章 + 一句话结论 → ② IC 与显著性数字 → ③ <b>五分位图</b>：把 214 只股票按该因子从低到高分成 Q1~Q5 五组，柱高 = 每组涨幅中位数，柱子下方的百分比 = 该组破发率（D1 图）或跑输大盘率（D30 图）。<b>好因子的样子：柱子从 Q1 到 Q5 逐级抬高、破发率逐级下降</b>（可点开「孖展快照」对照）→ ④ <b>散点图</b>：每个点是一只真实股票，横轴 = 该股因子值在全样本的排名分位，纵轴 = 涨幅；右上按钮切换 D1 / D30 超额目标。👆 悬停任意点看数值，<b>点击任意点直接打开该股完整档案</b>。</li>
+      <li><b>个股数据浏览器</b>：214 只 × 29 个因子全指标通排。<b>鼠标悬停在表格任意位置滚动滚轮即可横向滚动</b>（滚到最左/最右边缘后自动恢复页面上下滚动），表格顶部也有一根同步滚动条；代码/名称两列冻结不动；表头顶部的彩色条表示该列属于哪个模块（与模块地图同色）；🔒 列为申购截止后才可知的研究对照。搜索框输代码或名称（如 00068 / 布鲁可）；👆 点任意表头排序（例如按 D1 升序找最大破发、按孖展降序找最热门票）；👆 点任意一行弹出该股档案卡。</li>
+      <li><b>对外讲解的建议动线</b>：首屏四张结论卡 → 「从评分引擎到因子证据」（为什么换引擎）→ 模块地图（谁管 D1、谁管 D30）→ 点开「孖展快照」看统治级分层 → 点开「营收增速」看 D30 故事 → 点开「盈利收益率」看反直觉发现 → 任选个股验证。</li>
+    </ol>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <div class="gcat" id="g-ic">读懂数字</div>
+    <div class="glossgrid">
+      <div class="gitem"><b>IC（信息系数，本站指 RankIC）</b><span>衡量「因子排名能否预测涨幅排名」的分数，范围 −1 ~ +1，0 = 完全没用。经验标尺：|IC| ≥ 0.1 有用、≥ 0.2 很强、≥ 0.5 接近统治级。例：孖展对 D1 的 IC = +0.53 → 申购越火的票，首日大概率涨得越多。用排名相关（Spearman）而非数值相关，因此不被极端值带偏。</span></div>
+      <div class="gitem"><b>归一方向（先验方向）</b><span>每个因子先按常识声明方向（如「发行股数越少越稀缺越好」），统一翻转成「越大越好」后再算 IC。所以 <b>IC 为负 ≠ 算错，而是数据与常识唱反调</b>——估值族因子全部为负就是本轮最大发现。</span></div>
+      <div class="gitem"><b>D1 / D5 / D30</b><span>上市后第 1 / 5 / 30 个<b>交易日</b>收盘价相对发行价的涨跌幅。D1 = 打新客的首日损益。</span></div>
+      <div class="gitem"><b>D30 超额</b><span>D30 涨幅减去同期恒生指数涨幅。剔除大盘水位后衡量「真跑赢」——大盘涨 10% 你涨 8%，其实是跑输。</span></div>
+      <div class="gitem"><b>破发 / 跑输</b><span>破发 = D1 &lt; 0（首日收盘跌破发行价）；跑输 = D30 超额 &lt; 0（30 日没跑过恒指）。</span></div>
+      <div class="gitem"><b>五分位（Q1~Q5）</b><span>把全部股票按因子值从低到高排队，均分五组：Q1 = 最低的 20%，Q5 = 最高的 20%。若 Q1→Q5 涨幅逐级抬升、破发率逐级下降，说明因子能有效分层。</span></div>
+      <div class="gitem"><b>中位数</b><span>组内一半股票比它好、一半比它差的那个值。新股涨幅极端值多（个别票 +200%），中位数比平均值更抗干扰、更接近「典型体验」。</span></div>
+      <div class="gitem"><b>p 值（置换检验）</b><span>「这个 IC 纯属运气」的概率。做法：把涨幅标签随机打乱 1000 次重算 IC，真实 IC 若比几乎所有乱序结果都强，p ≈ 0.001。越小越可信，习惯上 &lt; 0.05 算显著。</span></div>
+      <div class="gitem"><b>BH 显著（多重检验校正）</b><span>同时检验 28 个因子，总会有一两个碰巧显著。Benjamini-Hochberg 校正控制这种「测得多、中得巧」的误报，通过者才算真显著。</span></div>
+      <div class="gitem"><b>单调（档序 ρ）</b><span>Q1→Q5 的中位涨幅是否逐级变好：ρ = +1 完美递增，≥ 0.8 判定单调。<b>IC 高但不单调的因子不可信</b>（可能只靠两头极端组撑数字）。</span></div>
+      <div class="gitem"><b>分段 IC（2025H1 / 2025H2 / 2026）</b><span>把样本按时间切三段分别算 IC，检验因子是否只在某一段行情里灵。入选要求 ≥ 2/3 段为正。</span></div>
+      <div class="gitem"><b>火热期 / 非火热 IC</b><span>按近两月新股整体表现把市场分冷热两种状态分别算 IC，识别「只有牛市才灵」的伪因子。</span></div>
+    </div>
+    <div class="gcat">市场词汇</div>
+    <div class="glossgrid">
+      <div class="gitem"><b>孖展（mā zhǎn）</b><span>港股打新中向券商借钱申购的杠杆资金（margin 的粤语音译）。孖展认购倍数 = 认购金额 ÷ 公开发售货值，是散户抢筹热度的<b>实时资金投票</b>，申购期内每天可见。</span></div>
+      <div class="gitem"><b>官方最终超购</b><span>联交所配发结果公告里的公开发售最终认购倍数，申购截止后约 3 天才公布——所以只能当研究对照（🔒），不能进预测模型。好消息：它与截止前可知的孖展快照相关性 0.994，几乎无信息损失。</span></div>
+      <div class="gitem"><b>基石投资者</b><span>IPO 定价前承诺认购并锁定 6 个月的机构。传统观念是背书加分；2026 年数据显示<b>零基石（货源归边的庄家盘）反而利好首日</b>，方向已修正。</span></div>
+      <div class="gitem"><b>保荐人</b><span>牵头这单 IPO 的投行。一线 = 高盛/大摩/中金等。实测「一线保荐」对首日涨幅的 IC 为负——顶级投行定价更激进，留给二级市场的空间更小。</span></div>
+      <div class="gitem"><b>货源归边</b><span>流通筹码集中在少数人手中，抛压小、价格容易被拉动——流通盘占比低、零基石、发行量小都是它的侧写。</span></div>
+      <div class="gitem"><b>招股书财年（组装纪律）</b><span>财务因子只取<b>申购截止日之前已披露的最后一个完整财年</b>（即招股书里能看到的口径），并做了前视敏感性检验——杜绝「用未来数据预测过去」。</span></div>
+    </div>
+    <div class="gcat">看板标记</div>
+    <div class="glossgrid">
+      <div class="gitem"><b>⭐ v2 卡在役</b><span>该因子已进入正在「双跑」验证的数据驱动新引擎（v2 因子卡：孖展快照 80% + 发行股数 15% + 公开发售货值 5%）。双跑 = 新旧引擎并行记录预测、只记账不切换，累积约 30 只前瞻样本后终裁。</span></div>
+      <div class="gitem"><b>🔒 截止后可知</b><span>申购结束后才公布的数据。红线规则（INV-1）：这类字段永远不允许进评分模型，只作研究上限参照。</span></div>
+      <div class="gitem"><b>入选 / 淘汰 / 参照</b><span>入选 = 三条标准全过（IC 稳定为正 + BH 显著 + 五分位单调）；淘汰 = 至少一条不过（红色 IC 再大也淘汰，因为方向不可解释）；参照 = 不参与评比、只作基准的哨兵因子。</span></div>
+      <div class="gitem"><b>蓝色 / 红色（全站统一）</b><span>蓝 = 正向 / 上涨 / 跑赢；红 = 反向 / 破发 / 跑输。散点图中淡色点 = 涨幅超出 −80%~+200% 显示范围，被截尾在边缘，悬停可看真实值。</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="method">
+  <h2>方法与口径</h2>
+  <div class="panel"><ul class="foot">
+    <li><b>样本</b>：2025-01 ~ 2026-07 港股主板新股 214 只（factor_dataset.json，冻结于 2026-07-12）；财务字段 214/214 全覆盖（东财年度指标，全部折算 HKD）。</li>
+    <li><b>目标</b>：D1 = 首日收盘/发行价 − 1；D30 超额 = 上市第 1→30 个交易日收益 − 同窗恒指涨幅。破发 = D1 &lt; 0；跑输 = D30 超额 &lt; 0。</li>
+    <li><b>RankIC</b>：Spearman 秩相关，已按先验方向归一（正 = 方向符合先验，负 = 与先验相反）。显著性 = 标签置换 1000 次（固定种子）+ BH-FDR 10%。</li>
+    <li><b>可知性红线（INV-1）</b>：所有入卡因子必须在申购截止时点可知；「官方最终超购」「定价位置」等截止后数据仅作研究对照。财务因子只取申购截止日前最后一个完整财年（=招股书已披露口径），并做前视敏感性检验（符号全一致）。</li>
+    <li><b>入选三条标准</b>：全样本归一 IC&gt;0 且 ≥2/3 时段为正；置换检验 BH 显著；五分位单调（档序 ρ≥0.8）。估值类因子即使显著，因方向与先验相反（成长风格暴露、不可解释为因果）仍被淘汰。</li>
+    <li><b>v2 因子卡（在役双跑）</b>：孖展快照 80% + 发行股数 15% + 公开发售货值 5%（权重∝训练窗 IC，2025 训练 / 2026 验证）；对决基线为专家权重引擎实盘记录，三指标全胜。</li>
+    <li><b>风格警示</b>：估值反向与 2025-2026 港股成长行情高度耦合，风格切换时可能翻向——这是它们不入卡的原因。本看板为研究呈现，不构成投资建议。</li>
+    <li><b>数据源</b>：reports/factor_signal_library_2026-07-12.json · reports/quality_signal_library_2026-07-13.json · data/factor_dataset.json。</li>
+  </ul></div>
+</section>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="个股详情">
+  <div class="modal" id="modal"></div>
+</div>
+<div class="tooltip" id="tt"></div>
+
+<script>
+const DATA = __DATA__;
+const $ = s => document.querySelector(s);
+const FM = {}; DATA.factors.forEach(f => FM[f.id] = f);
+const MM = {}; DATA.modules.forEach(m => MM[m.id] = m);
+const SM = {}; DATA.stocks.forEach(s => SM[s.t] = s);
+const modColor = id => `var(--m-${id})`;
+
+// ---------- 格式化 ----------
+function fmtVal(f, v){
+  if (v == null) return "—";
+  switch(f.fmt){
+    case "x": return v.toFixed(1) + "×";
+    case "yi": return v.toFixed(1) + " 亿";
+    case "p1": return (v*100).toFixed(1) + "%";
+    case "pv": return v.toFixed(1) + "%";
+    case "mc": return (v/1e8).toFixed(0) + " 亿港元";
+    case "sh": return (v/1e8).toFixed(2) + " 亿股";
+    case "hk": return "HK$" + Math.round(v).toLocaleString();
+    case "b": return v ? "是" : "否";
+    case "tier": return {3:"一线",2:"二线",1:"其他"}[v] || v;
+    default: return typeof v === "number" ? (Number.isInteger(v) ? v : v.toFixed(2)) : v;
+  }
+}
+const pctS = (v, d=1) => v == null ? "—" : (v*100 >= 0 ? "+" : "") + (v*100).toFixed(d) + "%";
+const icS = v => v == null ? "—" : (v >= 0 ? "+" : "") + v.toFixed(3);
+const icCls = v => v == null ? "icnull" : (v > 0 ? "icpos" : "icneg");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+// ---------- tooltip ----------
+const tt = $("#tt");
+function showTT(html, ev){ tt.innerHTML = html; tt.style.display = "block"; moveTT(ev); }
+function moveTT(ev){
+  const pad = 14, w = tt.offsetWidth, h = tt.offsetHeight;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - pad;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - pad;
+  tt.style.left = x + "px"; tt.style.top = y + "px";
+}
+function hideTT(){ tt.style.display = "none"; }
+
+// ---------- 引擎映射 ----------
+const ENG = [
+  {dim:"hype 市场热度 25%", to:"孖展族因子", res:"✅ 数据统治级支持：IC 0.53，v2 卡主因子 80%", good:1},
+  {dim:"underwriter 承销商 10%", to:"保荐人档次", res:"❌ 实测 IC 为负——顶级投行定价激进，淘汰", good:0},
+  {dim:"fundamental 基本面 30%", to:"11 个财务因子", res:"⚠️ 只管 D30 不管 D1：营收增速/毛利率正向入选候选，估值类反向", good:2},
+  {dim:"industry 行业景气 20%", to:"（LLM 口径）", res:"— 历史输入不可合规重建，无法回测；市场环境族作近似代理（弱）", good:0},
+  {dim:"sentiment 舆论情绪 15%", to:"（LLM 口径）", res:"— 同上不可回测；信源质量差，v2 卡暂缓纳入", good:0},
+  {dim:"整机对比", to:"专家权重 → v2 因子卡", res:"D1 IC：实盘 0.026 / 离线重打分 ≈0.19 → v2 卡 0.496（2026 验证窗，双跑观察中）", good:1},
+];
+$("#engmap").innerHTML = ENG.map(e =>
+  `<div class="eng"><div class="dim">${e.dim}</div><div class="arr">↓ 可回测代理</div>
+   <div><b>${e.to}</b></div><div class="res">${e.res}</div></div>`).join("");
+
+// ---------- 模块地图 ----------
+const ICMAX = 0.56;
+function miniBar(ic){
+  if (ic == null) return `<div class="mbar"><em style="left:50%">—</em></div>`;
+  const half = 50, w = Math.abs(ic)/ICMAX*half;
+  const left = ic >= 0 ? half : half - w;
+  const cls = ic >= 0 ? "bar-pos" : "bar-neg";
+  const emx = ic >= 0 ? `calc(${half + w}% + 4px)` : `calc(${half - w}% - 34px)`;
+  return `<div class="mbar">
+    <i style="left:${left}%;width:${Math.max(w,0.8)}%;background:var(--${ic>=0?"pos":"neg"})"></i>
+    <em style="left:${emx}">${icS(ic)}</em>
+    <i style="left:${half}%;width:1px;background:var(--baseline);top:0;height:12px;border-radius:0"></i></div>`;
+}
+$("#modgrid").innerHTML = DATA.modules.map(m => {
+  const fs = DATA.factors.filter(f => f.m === m.id)
+    .sort((a,b) => Math.max(Math.abs(b.d1?.ic??0),Math.abs(b.d30?.ic??0)) - Math.max(Math.abs(a.d1?.ic??0),Math.abs(a.d30?.ic??0)))
+    .slice(0,4);
+  const rows = fs.map(f =>
+    `<div class="mbrow"><span class="fn">${f.zh}</span>${miniBar(f.d1?.ic)}${miniBar(f.d30?.ic)}</div>`).join("");
+  return `<div class="mod" tabindex="0" role="button" data-mod="${m.id}" aria-label="进入${m.name}模块">
+    <h3><span class="dot" style="background:${modColor(m.id)}"></span>${m.name}
+    <span class="mono" style="margin-left:auto">${DATA.factors.filter(f=>f.m===m.id).length} 因子</span></h3>
+    <div class="story">${m.story}</div>
+    <div class="mbhead"><span></span><span>→ D1 IC</span><span>→ D30 超额 IC</span></div>
+    <div class="modbars">${rows}</div>
+    <div class="eng-s">${m.engine}</div></div>`;
+}).join("");
+document.querySelectorAll(".mod").forEach(el => {
+  const go = () => { selectFactor(DATA.factors.filter(f=>f.m===el.dataset.mod)
+      .sort((a,b)=>Math.abs(b.d1?.ic??0)+Math.abs(b.d30?.ic??0)-Math.abs(a.d1?.ic??0)-Math.abs(a.d30?.ic??0))[0].id);
+    $("#explorer").scrollIntoView(); };
+  el.addEventListener("click", go);
+  el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+});
+
+// ---------- 因子列表 ----------
+function buildList(){
+  let html = `<div class="fhead-cols"><span>因子（⭐=v2卡 🔒=不可知）</span><span title="对首日涨幅的预测力 IC">D1</span><span title="对 30 日跑赢恒指的预测力 IC">D30超</span></div>`;
+  DATA.modules.forEach(m => {
+    const fs = DATA.factors.filter(f => f.m === m.id);
+    if (!fs.length) return;
+    html += `<div class="fgroup"><span class="dot" style="background:${modColor(m.id)}"></span>${m.name}</div>`;
+    fs.sort((a,b) => (b.d1?.ic??-9) - (a.d1?.ic??-9)).forEach(f => {
+      html += `<button class="fitem" data-fid="${f.id}">
+        <span>${f.zh}${f.v2 ? " ⭐" : ""}${f.know ? "" : " 🔒"}</span>
+        <span class="ic ${icCls(f.d1?.ic)}">${icS(f.d1?.ic)}</span>
+        <span class="ic ${icCls(f.d30?.ic)}">${icS(f.d30?.ic)}</span></button>`;
+    });
+  });
+  $("#flist").innerHTML = html;
+  document.querySelectorAll(".fitem").forEach(b => b.addEventListener("click", () => selectFactor(b.dataset.fid)));
+}
+
+// ---------- 五分位图 ----------
+function quintSvg(bins, label, breakLabel){
+  const W = 320, H = 130, PAD = 10, span = 40, base = 22 + span;
+  if (!bins || !bins.length)
+    return `<svg class="qsvg" viewBox="0 0 ${W} ${H}"><text x="${W/2}" y="${H/2}" class="qtick" text-anchor="middle">档位坍缩（二值/无方差）或样本不足</text></svg>`;
+  const mmax = Math.max(...bins.map(b => Math.abs(b.median)), 0.01);
+  const slot = (W - 2*PAD) / 5, bw = slot - 14;
+  let s = `<svg class="qsvg" viewBox="0 0 ${W} ${H}" role="img">
+    <line x1="${PAD}" y1="${base}" x2="${W-PAD}" y2="${base}" class="baseline"/>`;
+  bins.forEach(b => {
+    const i = b.bin - 1, x = PAD + i*slot + 7;
+    const h = Math.abs(b.median)/mmax*span;
+    const y = b.median >= 0 ? base - h : base;
+    const ty = b.median >= 0 ? y - 5 : y + h + 12;
+    s += `<rect class="hoverable ${b.median>=0?"bar-pos":"bar-neg"}" x="${x.toFixed(1)}" y="${y.toFixed(1)}"
+      width="${bw.toFixed(1)}" height="${Math.max(h,1.5).toFixed(1)}" rx="3"
+      data-tt="Q${b.bin}（n=${b.n}）&lt;br&gt;${label}中位 ${pctS(b.median)}&lt;br&gt;${breakLabel} ${(b.break_rate*100).toFixed(0)}%"></rect>
+      <text class="qval" x="${(x+bw/2).toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle">${(b.median*100).toFixed(1).replace(/^(?!-)/,"+")}</text>
+      <text class="qtick" x="${(x+bw/2).toFixed(1)}" y="${H-18}" text-anchor="middle">Q${b.bin}</text>
+      <text class="qtick" x="${(x+bw/2).toFixed(1)}" y="${H-5}" text-anchor="middle">${(b.break_rate*100).toFixed(0)}%</text>`;
+  });
+  s += `<text class="qtick" x="${PAD}" y="${H-5}" text-anchor="start"></text></svg>`;
+  return s;
+}
+
+// ---------- 散点 ----------
+let scTarget = "d1";
+function percentiles(vals){
+  const sorted = [...vals].sort((a,b)=>a-b);
+  return v => { let lo=0, hi=sorted.length; while(lo<hi){const m=(lo+hi)>>1; if(sorted[m]<=v)lo=m+1; else hi=m;} return lo/sorted.length*100; };
+}
+function scatterSvg(f){
+  const W = 720, H = 320, L = 52, R = 14, T = 12, B = 36;
+  const pts = DATA.stocks.map(s => {
+    const v = s.f[f.id], y = scTarget === "d1" ? s.d1 : s.dx;
+    return v != null && y != null ? {s, v, y} : null;
+  }).filter(Boolean);
+  if (pts.length < 10) return `<svg class="scsvg" viewBox="0 0 ${W} ${H}"><text x="${W/2}" y="${H/2}" class="qtick" text-anchor="middle">样本不足</text></svg>`;
+  const CLIP = 2.0, FLOOR = -0.8;
+  const px = percentiles(pts.map(p => p.v));
+  const ymax = Math.min(Math.max(...pts.map(p=>p.y), 0.2), CLIP);
+  const ymin = Math.max(Math.min(...pts.map(p=>p.y), -0.1), FLOOR);
+  const sx = v => L + px(v)/100 * (W-L-R);
+  const sy = y => T + (ymax - Math.min(Math.max(y, ymin), ymax)) / (ymax - ymin) * (H-T-B);
+  let s = `<svg class="scsvg" viewBox="0 0 ${W} ${H}" role="img">`;
+  const step = (ymax - ymin) > 1.5 ? 0.5 : 0.25;
+  for (let g = Math.ceil(ymin/step)*step; g <= ymax + 1e-9; g += step){
+    const yy = sy(g);
+    s += `<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" class="${Math.abs(g)<1e-9?"zline":"gline"}"/>
+      <text class="axis-t" x="${L-6}" y="${(yy+3).toFixed(1)}" text-anchor="end">${(g*100).toFixed(0)}%</text>`;
+  }
+  [0,25,50,75,100].forEach(q => {
+    const xx = L + q/100*(W-L-R);
+    s += `<text class="axis-t" x="${xx}" y="${H-16}" text-anchor="middle">${q}%</text>`;
+  });
+  s += `<text class="axis-t" x="${(L+W-R)/2}" y="${H-3}" text-anchor="middle">${esc(f.zh)} 分位（全样本排名，低 → 高）</text>`;
+  pts.forEach(p => {
+    const clipped = p.y > CLIP || p.y < FLOOR;
+    s += `<circle class="scdot" cx="${sx(p.v).toFixed(1)}" cy="${sy(p.y).toFixed(1)}" r="4.2"
+      fill="${p.y >= 0 ? "var(--pos)" : "var(--neg)"}" fill-opacity="${clipped ? .35 : .72}"
+      data-t="${p.s.t}" data-tt="<b>${p.s.t} ${esc(p.s.nm)}</b>&lt;br&gt;${esc(f.zh)}：${fmtVal(f, p.v)}&lt;br&gt;${scTarget==="d1"?"D1":"D30超额"}：${pctS(p.y)}${clipped?"（超出显示范围）":""}&lt;br&gt;点击看全部数据"></circle>`;
+  });
+  s += `</svg>`;
+  return s;
+}
+
+// ---------- 因子详情 ----------
+let curFid = null;
+function segChips(st){
+  if (!st) return "";
+  const seg = st.seg || {};
+  return ["2025H1","2025H2","2026"].map(k =>
+    `<span class="chip">${k} <b class="${icCls(seg[k])}">${icS(seg[k])}</b></span>`).join("") +
+    `<span class="chip">火热期 <b class="${icCls(st.hot)}">${icS(st.hot)}</b></span>` +
+    `<span class="chip">非火热 <b class="${icCls(st.cold)}">${icS(st.cold)}</b></span>`;
+}
+function selectFactor(fid){
+  curFid = fid;
+  const f = FM[fid], m = MM[f.m];
+  document.querySelectorAll(".fitem").forEach(b => b.classList.toggle("active", b.dataset.fid === fid));
+  const verdictCls = /入选|在役/.test(f.verdict) ? "hl" : (f.verdict === "淘汰" ? "bad" : "warn");
+  const el = $("#fdetail");
+  el.innerHTML = `
+    <h3><span class="dot" style="background:${modColor(f.m)};width:12px;height:12px"></span> ${f.zh} <span class="mono">${f.id}</span></h3>
+    <div class="chips">
+      <span class="chip ${verdictCls}">${f.verdict}</span>
+      ${f.v2 ? `<span class="chip hl">v2 卡 ${f.v2}</span>` : ""}
+      <span class="chip">${f.know ? "✅ 申购时可知" : "🔒 截止后可知（禁入卡）"}</span>
+      <span class="chip">先验：${f.dir > 0 ? "越大越好" : "越小越好"}</span>
+      <span class="chip">${m.name}</span>
+    </div>
+    <p class="fwhy">${f.why}</p>
+    <div class="statrow">
+      <div class="stat"><div class="k" title="IC=预测力评分（−1~+1，0=无用）；归一=已按先验方向翻转，负值代表与常识相反。n=样本数，p=纯属运气的概率。详见页末备注">D1 归一 IC ⓘ</div><div class="v ${icCls(f.d1?.ic)}">${icS(f.d1?.ic)}</div>
+        <div class="s">n=${f.d1?.n ?? "—"} · p=${f.d1?.p ?? "—"}</div></div>
+      <div class="stat"><div class="k" title="D30 超额=30 日涨幅减同期恒指涨幅，衡量真跑赢。详见页末备注">D30 超额归一 IC ⓘ</div><div class="v ${icCls(f.d30?.ic)}">${icS(f.d30?.ic)}</div>
+        <div class="s">n=${f.d30?.n ?? "—"} · p=${f.d30?.p ?? "—"}</div></div>
+      <div class="stat"><div class="k" title="Q1→Q5 中位涨幅是否逐级变好；档序 ρ≥0.8 判单调。IC 高但不单调的因子不可信">五分位单调（D1 / D30）ⓘ</div>
+        <div class="v" style="font-size:14px">${monoS(f.d1)} / ${monoS(f.d30)}</div>
+        <div class="s">档序 ρ ≥ 0.8 为单调</div></div>
+    </div>
+    <div class="chips">${segChips(f.d1) ? `<span class="chip" style="border:none;padding-left:0">D1 分段：</span>` + segChips(f.d1) : ""}</div>
+    <div class="qpair">
+      <div class="qbox"><h4>D1 五分位 · 柱=中位涨幅，柱下=破发率</h4>${quintSvg(f.d1?.bins, "D1", "破发率")}</div>
+      <div class="qbox"><h4>D30 超额五分位 · 柱=中位超额，柱下=跑输率</h4>${quintSvg(f.d30?.bins, "D30超额", "跑输率")}</div>
+    </div>
+    <div class="scatterbox">
+      <h4>全样本散点（每点一只股票，点击进入个股）
+        <span class="tgl" role="group" aria-label="目标切换">
+          <button id="tglD1" class="${scTarget==="d1"?"on":""}">D1</button>
+          <button id="tglD30" class="${scTarget==="d30"?"on":""}">D30 超额</button>
+        </span></h4>
+      <div class="legend"><span><span class="sw" style="background:var(--pos)"></span>上涨 / 正超额</span>
+        <span><span class="sw" style="background:var(--neg)"></span>破发 / 跑输</span>
+        <span style="color:var(--muted)">纵轴截尾于 −80% ~ +200%，淡色点=超出范围（悬停看真值）</span></div>
+      <div id="scwrap">${scatterSvg(f)}</div>
+    </div>`;
+  $("#tglD1").addEventListener("click", () => { scTarget = "d1"; selectFactor(fid); });
+  $("#tglD30").addEventListener("click", () => { scTarget = "d30"; selectFactor(fid); });
+  bindHovers(el);
+}
+function monoS(st){
+  if (!st || st.mono == null) return "—";
+  return st.mono ? `✅ ${st.monoRho > 0 ? "+" : ""}${st.monoRho}` : `❌ ${st.monoRho}`;
+}
+function bindHovers(root){
+  root.querySelectorAll("[data-tt]").forEach(elm => {
+    elm.addEventListener("mousemove", ev => showTT(elm.dataset.tt.replace(/&lt;br&gt;/g, "<br>"), ev));
+    elm.addEventListener("mouseleave", hideTT);
+    if (elm.dataset.t) elm.addEventListener("click", () => openStock(elm.dataset.t));
+  });
+}
+
+// ---------- 个股表（全指标通排）----------
+const IDCOLS = [
+  {k:"t", h:"代码", num:0, get:s=>s.t, sticky:"stick1"},
+  {k:"nm", h:"名称", num:0, get:s=>s.nm, sticky:"stick2"},
+  {k:"ld", h:"上市日", num:0, get:s=>s.ld},
+  {k:"d1", h:"D1", num:1, get:s=>s.d1, f:v=>pctS(v), col:1, title:"首日涨幅（<0=破发）"},
+  {k:"d5", h:"D5", num:1, get:s=>s.d5, f:v=>pctS(v), col:1, title:"第 5 个交易日涨幅"},
+  {k:"d30", h:"D30", num:1, get:s=>s.d30, f:v=>pctS(v), col:1, title:"第 30 个交易日涨幅"},
+  {k:"dx", h:"D30超额", num:1, get:s=>s.dx, f:v=>pctS(v), col:1, title:"D30 减同期恒指（<0=跑输大盘）"},
+];
+const FCOLS = [];
+DATA.modules.forEach(m => DATA.factors.filter(f => f.m === m.id).forEach(f => FCOLS.push({
+  k:f.id, h:f.zh + (f.know ? "" : " 🔒"), num:1, get:s=>s.f[f.id], f:v=>fmtVal(f, v),
+  mod:m.id, title:`${m.name} · ${f.zh}${f.know ? "" : "（申购截止后才可知，研究对照）"}`
+})));
+const COLS = [...IDCOLS, ...FCOLS];
+let sortK = "ld", sortAsc = false, filter = "";
+function renderTable(){
+  const rows = DATA.stocks
+    .filter(s => !filter || s.t.includes(filter) || s.nm.toLowerCase().includes(filter))
+    .sort((a,b) => {
+      const c = COLS.find(c=>c.k===sortK), va = c.get(a), vb = c.get(b);
+      if (va == null) return 1; if (vb == null) return -1;
+      const r = va < vb ? -1 : va > vb ? 1 : 0;
+      return sortAsc ? r : -r;
+    });
+  $("#stbl thead").innerHTML = "<tr>" + COLS.map(c =>
+    `<th class="${c.num?"num":""} ${c.sticky||""}" data-k="${c.k}" ${c.title?`title="${c.title}"`:""}
+      ${c.mod?`style="box-shadow:inset 0 3px 0 var(--m-${c.mod})"`:""}>${c.h}${sortK===c.k ? (sortAsc?" ↑":" ↓") : ""}</th>`).join("") + "</tr>";
+  $("#stbl tbody").innerHTML = rows.map(s => "<tr data-t="+s.t+">" + COLS.map(c => {
+    const v = c.get(s), txt = c.f ? c.f(v) : esc(v ?? "—");
+    const cls = (c.num?"num ":"") + (c.sticky?c.sticky+" ":"") + (c.col && v != null ? (v >= 0 ? "pos-t" : "neg-t") : "");
+    return `<td class="${cls}">${txt}</td>`;
+  }).join("") + "</tr>").join("");
+  $("#cnt").textContent = `${rows.length} / ${DATA.stocks.length} 只`;
+  document.querySelectorAll("#stbl thead th").forEach(th => th.addEventListener("click", () => {
+    if (sortK === th.dataset.k) sortAsc = !sortAsc; else { sortK = th.dataset.k; sortAsc = th.dataset.k === "t" || th.dataset.k === "nm"; }
+    renderTable();
+  }));
+  document.querySelectorAll("#stbl tbody tr").forEach(tr => tr.addEventListener("click", () => openStock(tr.dataset.t)));
+}
+$("#q").addEventListener("input", e => { filter = e.target.value.trim().toLowerCase(); renderTable(); });
+
+// ---------- 表格横向滚动增强：悬停即滚 + 顶部同步滚动条 ----------
+const twrapEl = $("#twrap"), hstEl = $("#hst"), hstInner = hstEl.firstElementChild;
+function syncScrollW(){ hstInner.style.width = $("#stbl").scrollWidth + "px"; }
+let syncing = false;
+hstEl.addEventListener("scroll", () => { if (syncing) return; syncing = true; twrapEl.scrollLeft = hstEl.scrollLeft; syncing = false; });
+twrapEl.addEventListener("scroll", () => { if (syncing) return; syncing = true; hstEl.scrollLeft = twrapEl.scrollLeft; syncing = false; });
+twrapEl.addEventListener("wheel", e => {
+  if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;          // 触控板原生横向手势不拦截
+  const max = twrapEl.scrollWidth - twrapEl.clientWidth;
+  if (max <= 0) return;
+  const cur = twrapEl.scrollLeft;
+  if ((e.deltaY > 0 && cur < max - 1) || (e.deltaY < 0 && cur > 1)) {
+    e.preventDefault();                                           // 表格内滚轮 → 横向；到边缘后放行给页面
+    twrapEl.scrollLeft = Math.max(0, Math.min(max, cur + e.deltaY));
+  }
+}, {passive:false});
+addEventListener("resize", syncScrollW);
+
+// ---------- 个股模态 ----------
+function openStock(t){
+  const s = SM[t]; if (!s) return;
+  const ret = (lbl, v, breakL) => `<div class="stat"><div class="k">${lbl}</div>
+    <div class="v ${v==null?"":(v>=0?"icpos":"icneg")}">${pctS(v)}</div>${breakL?`<div class="s">${breakL}</div>`:""}</div>`;
+  let groups = "";
+  DATA.modules.forEach(m => {
+    const fs = DATA.factors.filter(f => f.m === m.id && s.f[f.id] != null);
+    if (!fs.length) return;
+    groups += `<div class="mgroup"><h4><span class="dot" style="background:${modColor(m.id)}"></span>${m.name}</h4><div class="kv">` +
+      fs.map(f => `<div><span class="k">${f.zh}${f.know?"":" 🔒"}</span><span class="v">${fmtVal(f, s.f[f.id])}</span></div>`).join("") +
+      `</div></div>`;
+  });
+  $("#modal").innerHTML = `
+    <button class="closebtn" id="mclose">关闭 ✕</button>
+    <h3>${s.t} ${esc(s.nm)}</h3>
+    <div class="sub">上市：${s.ld}${s.sp ? " · 保荐：" + esc(s.sp) : ""}</div>
+    <div class="retrow">
+      ${ret("D1 首日", s.d1, s.d1 == null ? "" : (s.d1 < 0 ? "破发" : "未破发"))}
+      ${ret("D5", s.d5, "")}
+      ${ret("D30", s.d30, "")}
+      ${ret("D30 超额（vs 恒指）", s.dx, s.dx == null ? "" : (s.dx < 0 ? "跑输大盘" : "跑赢大盘"))}
+    </div>
+    ${groups}
+    <p class="sub" style="margin-top:14px">🔒 = 申购截止后才可知的研究对照字段；「—」/缺组 = 该股无此字段数据。</p>`;
+  $("#overlay").classList.add("open");
+  $("#mclose").addEventListener("click", closeModal);
+}
+function closeModal(){ $("#overlay").classList.remove("open"); }
+$("#overlay").addEventListener("click", e => { if (e.target === $("#overlay")) closeModal(); });
+addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+// ---------- init ----------
+buildList();
+selectFactor("margin_last_snapshot");
+renderTable();
+syncScrollW();
+</script>
