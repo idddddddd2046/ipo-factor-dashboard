@@ -70,6 +70,13 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 
 因子 `verdict` 现含 `口径重构中·降级`（sponsor_tier）与 `行情依赖·观察信号`（is_zero_cornerstone）；`why` 文案已去掉「定价激进」「货源归边」等经不起追问的因果断言。
 
+### 2026-07-14 新增字段（基石身份/集中度因子全样本落地）
+
+| 字段（meta.p2_hardening） | 含义 |
+|---|---|
+| `meta.p2_hardening.cornerstone_identity` | **已更正**：旧串曾判「基石名单待抓取、数据阻塞」——系误判（全样本名单+每家配售股数早已缓存）。新串为全样本结论。|
+| `meta.p2_hardening.cornerstone_factors` | 新增结构化证据块：`coverage`（172 具名/214 总/42 零基石）、`asof_note`、`block_permutation.cs_inst_share_d1`，及 `factors` 字典（`cs_inst_share`/`cs_hhi`/`cs_n_named`/`cs_opaque_share`，各含 `ic_d1/p_d1/n_d1/ic_d30after/break_q1_q5/break_rank/drop20_rank` + 中文名）。**主结论**：`cs_inst_share`（机构/主权基石份额，股数加权）D1 归一 IC=**+0.182**（perm-p=0.012，block-p=0.037），d30after +0.176，破发率 29%→18%，**as-of 干净的显著因子**；集中度 `cs_hhi` 越高→严重破发越多（仅破发模型见效）；`cs_opaque_share` 无预测力（英文规则识别不出红旗，待 LLM 消歧）。`render_hint` 给了建议渲法。**是否入卡属统计门（用户裁决），渲染层只呈证据不改分。**|
+
 ## stocks[]
 
 | 字段 | 含义 |
