@@ -13069,7 +13069,8 @@
       "drop20_rank": -0.0962
      }
     },
-    "render_hint": "建议渲成\"基石质量证据\"小表:机构份额是显著正向因子(as-of干净);集中度/家数只在破发模型见效;不透明份额待LLM升级。"
+    "render_hint": "建议渲成\"基石质量证据\"小表:规则版机构份额(cs_inst_share)是显著正向因子(as-of干净,+0.18); 集中度/家数只在破发模型见效;LLM六分类升级已试但未beat规则版(见llm_upgrade_result)。",
+    "llm_upgrade_result": "已试 DeepSeek 六分类(主权/资管/公募/保险/产业/不透明SPV,1070名去重): LLM版机构份额 D1 IC=+0.087(block-p0.23不显著),未beat规则版+0.182(block-p0.037); LLM不透明份额仍无预测力。诚实负结果:规则版cs_inst_share仍为入卡候选。"
    }
   }
  }
