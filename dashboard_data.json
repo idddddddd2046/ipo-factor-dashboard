@@ -13009,15 +13009,15 @@
     },
     "asof_note": "基石股数源自配发公告，重述招股书基石协议金额（申购前已知），对 D1 as-of 安全；中文名 mojibake，身份分类依赖英文 token。",
     "block_permutation": {
-     "cs_inst_share_d1": 0.037
+     "cs_inst_share_d1": 0.036
     },
     "factors": {
      "cs_inst_share": {
       "zh": "机构/主权基石份额(股数加权)",
-      "ic_d1": 0.1823,
+      "ic_d1": 0.1844,
       "p_d1": 0.012,
       "n_d1": 172,
-      "ic_d30after": 0.176,
+      "ic_d30after": 0.1805,
       "p_d30after": 0.036,
       "break_q1_q5": [
        0.294,
@@ -13070,7 +13070,8 @@
      }
     },
     "render_hint": "建议渲成\"基石质量证据\"小表:规则版机构份额(cs_inst_share)是显著正向因子(as-of干净,+0.18); 集中度/家数只在破发模型见效;LLM六分类升级已试但未beat规则版(见llm_upgrade_result)。",
-    "llm_upgrade_result": "已试 DeepSeek 六分类(主权/资管/公募/保险/产业/不透明SPV,1070名去重): LLM版机构份额 D1 IC=+0.087(block-p0.23不显著),未beat规则版+0.182(block-p0.037); LLM不透明份额仍无预测力。诚实负结果:规则版cs_inst_share仍为入卡候选。"
+    "llm_upgrade_result": "已试 DeepSeek 六分类(主权/资管/公募/保险/产业/不透明SPV,1070名去重): LLM版机构份额 D1 IC=+0.087(block-p0.23不显著),未beat规则版+0.182(block-p0.037); LLM不透明份额仍无预测力。诚实负结果:规则版cs_inst_share仍为入卡候选。",
+    "card_status": "已入卡(2026-07-14,用户签字K=16):增强生产cornerstone维度raw分(权重不动),inst_bonus=clamp((份额−0.5)×16,−5,+8);词边界分类修子串误判后 D1 IC +0.184(block-p0.036);改前改后仅2只边界buy→neutral降档,方向全对。集中度红旗只披露不驱动分。"
    }
   }
  }
