@@ -1,0 +1,16 @@
+{
+  "as_of": "2026-07-19",
+  "source_report": "reports/dual_run_weekly_2026-07-13.md",
+  "forward_n": 0,
+  "target_n": 30,
+  "status": "collecting",
+  "protocol_date": "2026-07-12",
+  "operational_baseline": {
+    "effective_from": "2026-07-14",
+    "commit": "69bf8095cb9ea09e474cea2d9f3965524db50bcc",
+    "label": "expert_v1 + cs_inst_share（K=16）",
+    "reason": "用户签字后，机构基石份额于双跑启动后进入现行 cornerstone 维度；维度权重不变，但现行引擎输出可能变化。",
+    "no_mixed_actual_samples": true,
+    "addendum": "docs/f4_forward_baseline_addendum_2026-07-19.md"
+  }
+}

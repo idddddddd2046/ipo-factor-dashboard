@@ -1,6 +1,6 @@
 # 看板冻结数据字段字典
 
-看板使用两份数据：`dashboard_data.json` 保存因子与个股研究快照，`strategy_data.json` 保存冻结 v2 卡及策略对决快照。**两者都是 ipo-tool 私有仓冻结报告的只读导出**——渲染层可以增删展示、重排、加解释，但不得改写统计数值或在浏览器重估它们。
+看板使用三份数据：`dashboard_data.json` 保存因子与个股研究快照，`strategy_data.json` 保存冻结 v2 卡及策略对决快照，`forward_status.json` 保存 F4 前瞻进度与运营基线版本。**三者都是 ipo-tool 私有仓冻结报告/补充说明的只读导出**——渲染层可以增删展示、重排、加解释，但不得改写统计数值或在浏览器重估它们。
 
 ## dashboard_data.json 顶层结构
 
@@ -75,7 +75,11 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 | 字段（meta.p2_hardening） | 含义 |
 |---|---|
 | `meta.p2_hardening.cornerstone_identity` | **已更正**：旧串曾判「基石名单待抓取、数据阻塞」——系误判（全样本名单+每家配售股数早已缓存）。新串为全样本结论。|
-| `meta.p2_hardening.cornerstone_factors` | 新增结构化证据块：`coverage`（172 具名/214 总/42 零基石）、`asof_note`、`block_permutation.cs_inst_share_d1`，及 `factors` 字典（`cs_inst_share`/`cs_hhi`/`cs_n_named`/`cs_opaque_share`，各含 `ic_d1/p_d1/n_d1/ic_d30after/break_q1_q5/break_rank/drop20_rank` + 中文名）。**主结论**：`cs_inst_share`（机构/主权基石份额，股数加权）D1 归一 IC=**+0.182**（perm-p=0.012，block-p=0.037），d30after +0.176，破发率 29%→18%，**as-of 干净的显著因子**；集中度 `cs_hhi` 越高→严重破发越多（仅破发模型见效）；`cs_opaque_share` 无预测力（英文规则识别不出红旗，待 LLM 消歧）。`render_hint` 给了建议渲法。**是否入卡属统计门（用户裁决），渲染层只呈证据不改分。**|
+| `meta.p2_hardening.cornerstone_factors` | 新增结构化证据块：`coverage`（172 具名/214 总/42 零基石）、`asof_note`、`block_permutation.cs_inst_share_d1`，及 `factors` 字典（`cs_inst_share`/`cs_hhi`/`cs_n_named`/`cs_opaque_share`，各含 `ic_d1/p_d1/n_d1/ic_d30after/break_q1_q5/break_rank/drop20_rank` + 中文名）。**主结论**：`cs_inst_share`（机构/主权基石份额，股数加权）经词边界修正后 D1 归一 IC=**+0.184**（perm-p=0.012，block-p=0.036），d30after +0.181，破发率 29%→18%，**as-of 干净的显著因子**；集中度 `cs_hhi` 越高→严重破发越多（仅破发模型见效）；`cs_opaque_share` 无预测力。`render_hint` 给了建议渲法。该因子已按用户签字 K=16 进入现行 cornerstone 维度；集中度与不透明标签仍只披露。|
+
+`cornerstone_factors.card_status` 已在 2026-07-14 更新为用户签字 K=16 后的生产状态：
+`cs_inst_share` 微调现行 `cornerstone` raw 分，维度权重表不变。它不属于 DataDriven_v2 的三因子冻结卡，
+页面必须同时标明两套引擎归属。
 
 ## stocks[]
 
@@ -110,6 +114,21 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 重要口径：`buy_tier.baseline` 是 **expert_v1 旧引擎买入档**，不是全样本或“无脑全打”；两边 `buy_n=68`。`n_breaks=20` 是验证交集的全部破发数，不是任一买入档的破发数。当前没有导出每手损益、费用、策略成员或收益直方图，渲染层不得自行补算或暗示这些结果。
 
 固定卡试算步骤仅为：输入单位换算 → 乘冻结方向 → 对冻结边界查 Q 档 → 取固定档分 → 对在场因子权重归一。输出是固定卡分数和档位，不是收益率、破发概率或买入建议。
+
+## forward_status.json
+
+| 字段 | 含义 |
+|---|---|
+| `as_of` / `source_report` | 快照日期与 ipo-tool 权威双跑周报 |
+| `forward_n` / `target_n` | 已有前瞻 D1 真值的干净样本数 / 触发终裁附录门槛 |
+| `status` | 当前阶段，现为 `collecting` |
+| `protocol_date` | 注册协议生效日；仅披露，不修改注册文件 |
+| `operational_baseline.effective_from/commit/label` | 现行 expert_v1 运营基线版本边界 |
+| `operational_baseline.no_mixed_actual_samples` | 版本变化时是否尚无已实现前瞻样本 |
+| `operational_baseline.addendum` | 私有仓版本偏差补充说明 |
+
+当前来源为 `ipo-tool/reports/dashboard_forward_status_2026-07-19.json`，该文件依据只读双跑周报和
+`docs/f4_forward_baseline_addendum_2026-07-19.md` 生成/登记。公开仓只复制快照，不读取或改写生产日志。
 
 ## 如何重新导出（数据层，在 ipo-tool 私有仓）
 

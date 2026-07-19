@@ -4,8 +4,9 @@
 用法：
     python build.py
 
-原理：template.html 里有 `__DATA__` / `__STRATEGY_DATA__` 两个占位符，
-本脚本把 dashboard_data.json 与 strategy_data.json 原样塞进去，再包上 <!doctype> 骨架，输出 index.html。
+原理：template.html 里有 `__DATA__` / `__STRATEGY_DATA__` / `__FORWARD_STATUS__` 三个占位符，
+本脚本把 dashboard_data.json、strategy_data.json 与 forward_status.json 原样塞进去，
+再包上 <!doctype> 骨架，输出 index.html。
 GitHub Pages 读取的就是仓库根目录的 index.html，push 后自动重建。
 
 修改看板：
@@ -18,10 +19,12 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 data = json.loads((ROOT / "dashboard_data.json").read_text(encoding="utf-8"))
 strategy = json.loads((ROOT / "strategy_data.json").read_text(encoding="utf-8"))
+forward_status = json.loads((ROOT / "forward_status.json").read_text(encoding="utf-8"))
 template = (ROOT / "template.html").read_text(encoding="utf-8")
 
 body = template.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
 body = body.replace("__STRATEGY_DATA__", json.dumps(strategy, ensure_ascii=False, separators=(",", ":")))
+body = body.replace("__FORWARD_STATUS__", json.dumps(forward_status, ensure_ascii=False, separators=(",", ":")))
 page = (
     '<!doctype html><html lang="zh-Hans"><head><meta charset="utf-8">'
     '<meta name="viewport" content="width=device-width, initial-scale=1">'
