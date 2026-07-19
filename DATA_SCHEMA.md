@@ -123,12 +123,17 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 | `forward_n` / `target_n` | 已有前瞻 D1 真值的干净样本数 / 触发终裁附录门槛 |
 | `status` | 当前阶段，现为 `collecting` |
 | `protocol_date` | 注册协议生效日；仅披露，不修改注册文件 |
+| `asset_dates.factor_research/strategy_duel` | 因子研究快照与策略对决各自的冻结日期，避免用一个“更新时间”掩盖不同数据年龄 |
+| `freshness_policy` | 周报时区、每周计划时点、宽限小时数与快照告警天数。页面只据此提示延迟，不读取生产日志 |
 | `operational_baseline.effective_from/commit/label` | 现行 expert_v1 运营基线版本边界 |
 | `operational_baseline.no_mixed_actual_samples` | 版本变化时是否尚无已实现前瞻样本 |
 | `operational_baseline.addendum` | 私有仓版本偏差补充说明 |
 
 当前来源为 `ipo-tool/reports/dashboard_forward_status_2026-07-19.json`，该文件依据只读双跑周报和
 `docs/f4_forward_baseline_addendum_2026-07-19.md` 生成/登记。公开仓只复制快照，不读取或改写生产日志。
+`build.py` 会交叉核对上述资产日期、`strategy_data.generated_at`、`dashboard_data.meta.p2_hardening.date`
+与周报来源日期；任一错配即停止构建。浏览器访问时会按新加坡时间动态判断是否已经越过下一次周报
+时点及 6 小时宽限期，越界后显示“数据更新延迟”，但不会擅自改写 `forward_n`。
 
 ## 如何重新导出（数据层，在 ipo-tool 私有仓）
 

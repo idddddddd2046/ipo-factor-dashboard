@@ -5,6 +5,17 @@
   "target_n": 30,
   "status": "collecting",
   "protocol_date": "2026-07-12",
+  "asset_dates": {
+    "factor_research": "2026-07-14",
+    "strategy_duel": "2026-07-12"
+  },
+  "freshness_policy": {
+    "timezone": "Asia/Singapore",
+    "weekly_schedule": "Monday 08:30",
+    "grace_hours": 6,
+    "snapshot_warn_days": 8,
+    "meaning": "周报未过预定时点与宽限期时，0/30 表示正常等待真实上市结果；超过宽限期仍无新周报才提示更新延迟。"
+  },
   "operational_baseline": {
     "effective_from": "2026-07-14",
     "commit": "69bf8095cb9ea09e474cea2d9f3965524db50bcc",

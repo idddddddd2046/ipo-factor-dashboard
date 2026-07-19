@@ -58,6 +58,8 @@ h1{font-size:31px;line-height:1.25;margin:8px 0 10px;text-wrap:balance;max-width
 .evidence-state{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 4px}
 .state-pill{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:3px 10px;color:var(--ink2)}
 .state-pill.live{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 55%,var(--border))}
+.state-pill.fresh{color:var(--good);border-color:color-mix(in srgb,var(--good) 55%,var(--border))}
+.state-pill.stale{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 55%,var(--border))}
 .disclosures{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:9px;margin-top:12px}
 .disclosure{border:1px solid var(--border);border-left:3px solid var(--warn);border-radius:8px;padding:10px 12px;background:var(--surface);font-size:12.5px;color:var(--ink2)}
 .disclosure b{color:var(--ink)}
@@ -278,7 +280,7 @@ a{color:var(--pos)}
 
 <div class="wrap">
 <header class="hero" id="story">
-  <div class="eyebrow">2025-01 ~ 2026-07 · 港股 IPO 研究样本 214 只（主板 211 + GEM 3）· 因子数据截至 2026-07-14</div>
+  <div class="eyebrow">2025-01 ~ 2026-07 · 港股 IPO 研究样本 214 只（主板 211 + GEM 3）· 因子数据截至 <span id="factorAsOf">—</span></div>
   <h1>哪些信息最能预测一只新股的首日与 30 日表现？</h1>
   <p class="thesis">本样本中，<b>截止前孖展是 D1 排序最强、较稳定的已观测信号</b>；它汇总了题材、供给、基石与市场情绪，
   是共识变量，不是单一因果。剥离首日跳涨后，孖展对后续收益的 IC 降至 −0.03，而营收增速仍为 +0.18；这更接近“首日炒作结束后还能否继续跑赢”的问题。</p>
@@ -286,6 +288,7 @@ a{color:var(--pos)}
     <span class="state-pill">历史研究样本</span>
     <span class="state-pill">2025 训练 / 2026 时间外验证</span>
     <span class="state-pill live" id="forwardPill">前瞻双跑中 · 尚未终裁</span>
+    <span class="state-pill" id="freshnessPill">正在核对数据日期</span>
   </div>
   <p class="hint">📖 第一次看？<a href="#guide">IC 是什么、图怎么读、哪里可以点——见页末「备注·名词解释与使用说明」</a></p>
   <div class="tiles">
@@ -546,6 +549,47 @@ function moveTT(ev){
 function hideTT(){ tt.style.display = "none"; }
 
 // ---------- 口径修正、基石证据与前瞻状态（只展示冻结导出） ----------
+function isoParts(value){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+  return m ? {y:+m[1],m:+m[2],d:+m[3]} : null;
+}
+function singaporeToday(){
+  const parts = new Intl.DateTimeFormat("en",{
+    timeZone:"Asia/Singapore",year:"numeric",month:"numeric",day:"numeric"
+  }).formatToParts(new Date());
+  const pick = type => +parts.find(x => x.type === type).value;
+  return {y:pick("year"),m:pick("month"),d:pick("day")};
+}
+function dayNumber(p){ return Math.floor(Date.UTC(p.y,p.m-1,p.d)/86400000); }
+function formatSingapore(ms){
+  return new Intl.DateTimeFormat("zh-CN",{
+    timeZone:"Asia/Singapore",month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false
+  }).format(new Date(ms));
+}
+function freshnessView(){
+  const policy = FORWARD.freshness_policy || {};
+  const sourceMatch = /(\d{4}-\d{2}-\d{2})/.exec(FORWARD.source_report || "");
+  const report = isoParts(sourceMatch?.[1]);
+  const snapshot = isoParts(FORWARD.as_of);
+  if (!report || !snapshot) {
+    return {stale:true,label:"数据日期不可核对",detail:"公开状态缺少可解析的来源日期。"};
+  }
+  const reportUtc = Date.UTC(report.y,report.m-1,report.d);
+  const reportDow = new Date(reportUtc).getUTCDay();
+  const daysToMonday = ((8-reportDow)%7) || 7;
+  // 周一 08:30 SGT = 00:30 UTC；公开页只监控是否越过周报宽限期，不读取生产日志。
+  const nextScheduled = reportUtc + daysToMonday*86400000 + 30*60000;
+  const graceUntil = nextScheduled + Number(policy.grace_hours || 0)*3600000;
+  const ageDays = dayNumber(singaporeToday()) - dayNumber(snapshot);
+  const stale = Date.now() > graceUntil || ageDays > Number(policy.snapshot_warn_days || 8);
+  return {
+    stale,
+    label: stale ? `数据更新延迟 · 最近周报 ${sourceMatch[1]}` : `数据正常 · 状态截至 ${FORWARD.as_of}`,
+    detail: stale
+      ? `已超过预定周报宽限期（${formatSingapore(graceUntil)}）。历史研究仍可读，但 ${FORWARD.forward_n}/${FORWARD.target_n} 进度可能已过期。`
+      : `${FORWARD.forward_n}/${FORWARD.target_n} 与已发布周报一致；下次预定周报 ${formatSingapore(nextScheduled)}，宽限至 ${formatSingapore(graceUntil)}。`,
+  };
+}
 function renderCorrections(){
   const c = DATA.meta?.corrections || {};
   const rows = [
@@ -558,6 +602,12 @@ function renderCorrections(){
   $("#correctionBanner").innerHTML = `<h3>本版已纠正的五个容易误读点</h3>
     <ul>${rows.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
   $("#forwardPill").textContent = `前瞻双跑 ${FORWARD.forward_n}/${FORWARD.target_n} · 尚未终裁`;
+  $("#factorAsOf").textContent = FORWARD.asset_dates?.factor_research || "—";
+  const freshness = freshnessView();
+  const freshnessPill = $("#freshnessPill");
+  freshnessPill.textContent = freshness.label;
+  freshnessPill.title = freshness.detail;
+  freshnessPill.classList.add(freshness.stale ? "stale" : "fresh");
 }
 
 function renderEvidence(){
@@ -591,8 +641,11 @@ function renderEvidence(){
       <div class="big">${FORWARD.forward_n} / ${FORWARD.target_n}</div>
       <p>达到 30 只前，只能说历史对决胜出，不能说新引擎已经通过前瞻实盘。</p>
       <p><b>运营基线：</b>${esc(baseline.label || "—")}，自 ${esc(baseline.effective_from || "—")} 起固定。</p>
+      <div class="status-line" id="forwardFreshnessLine"></div>
       <div class="status-line">${baseline.no_mixed_actual_samples ? "当前尚无混合基线的前瞻真值样本" : "终裁时须按版本拆分"} · rules/code SHA 对账</div>
     </article>`;
+  const freshness = freshnessView();
+  $("#forwardFreshnessLine").textContent = freshness.detail;
 
   const labels = {
     cs_inst_share:"现行维度已采用",
