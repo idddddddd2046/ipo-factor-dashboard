@@ -80,6 +80,23 @@ h1{font-size:31px;line-height:1.25;margin:8px 0 10px;text-wrap:balance;max-width
 .proof-table{margin-top:14px;overflow-x:auto}
 .proof-table table{font-size:12.5px}
 .proof-table th{cursor:default}
+.long-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:14px}
+.long-card{border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface)}
+.long-card .label{font-size:12px;color:var(--muted)}
+.long-card .value{font-size:23px;font-weight:750;font-variant-numeric:tabular-nums;margin:3px 0}
+.long-card .detail{font-size:12px;color:var(--ink2)}
+.long-card.supported{box-shadow:inset 3px 0 0 var(--good)}
+.long-card.observe{box-shadow:inset 3px 0 0 var(--warn)}
+.long-card.gap{box-shadow:inset 3px 0 0 var(--baseline)}
+.long-boundary{border:1px solid var(--border);border-left:3px solid var(--warn);border-radius:8px;
+  padding:10px 12px;background:var(--wash);font-size:12.5px;color:var(--ink2);margin:12px 0}
+.long-table{overflow-x:auto}
+.long-table table{font-size:12.5px}
+.long-table th{cursor:default}
+.long-table td:first-child,.long-table td:nth-child(2){white-space:normal;min-width:160px}
+.status-supported{color:var(--good);font-weight:650}
+.status-observe{color:var(--warn);font-weight:650}
+.status-small{color:var(--muted);font-weight:650}
 .group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;min-height:130px;align-items:stretch}
 .group-card{border:1px solid var(--border);border-radius:8px;padding:11px;background:var(--wash)}
 .group-card b{display:block;font-size:13px;margin-bottom:4px}
@@ -273,7 +290,7 @@ a{color:var(--pos)}
 <nav aria-label="页面导航">
   <span class="brand">📊 IPO 打新因子看板</span>
   <a href="#story">结论</a><a href="#strategy">策略验证</a><a href="#calculator">固定卡试算</a>
-  <a href="#evidence">新增证据</a>
+  <a href="#evidence">新增证据</a><a href="#long-horizon">长期核验</a>
   <a href="#modules">模块地图</a><a href="#explorer">因子透视</a>
   <a href="#stocks">个股数据</a><a href="#guide">备注·名词解释</a><a href="#method">方法</a>
 </nav>
@@ -281,9 +298,9 @@ a{color:var(--pos)}
 <div class="wrap">
 <header class="hero" id="story">
   <div class="eyebrow">2025-01 ~ 2026-07 · 港股 IPO 研究样本 214 只（主板 211 + GEM 3）· 因子数据截至 <span id="factorAsOf">—</span></div>
-  <h1>哪些信息最能预测一只新股的首日与 30 日表现？</h1>
+  <h1>哪些信息能预测新股的首日、30 日与长期表现？</h1>
   <p class="thesis">本样本中，<b>截止前孖展是 D1 排序最强、较稳定的已观测信号</b>；它汇总了题材、供给、基石与市场情绪，
-  是共识变量，不是单一因果。剥离首日跳涨后，孖展对后续收益的 IC 降至 −0.03，而营收增速仍为 +0.18；这更接近“首日炒作结束后还能否继续跑赢”的问题。</p>
+  是共识变量，不是单一因果。剥离首日跳涨后，孖展对后续收益的 IC 降至 −0.03；到 D180，专家规则整体反而转负，必须另看基石质量、资产负债表等长期候选。</p>
   <div class="evidence-state">
     <span class="state-pill">历史研究样本</span>
     <span class="state-pill">2025 训练 / 2026 时间外验证</span>
@@ -300,6 +317,8 @@ a{color:var(--pos)}
       <div class="s">已按 K=16 入现行引擎；不属于 v2 三因子卡</div></div>
     <div class="tile"><div class="k">时间外验证 · 整机 D1 IC</div><div class="v">0.03 → 0.50</div>
       <div class="s">旧引擎 0.026 → v2 0.496；前瞻样本仍在累积</div></div>
+    <div class="tile"><div class="k">D180 首日后超额 · 完整基石评级</div><div class="v" id="longCsHero">—</div>
+      <div class="s">长期候选，不代表进入生产权重；D365 样本仍不足</div></div>
   </div>
   <div class="disclosures" aria-label="重要口径披露">
     <div class="disclosure"><b>页面主次口径：</b>D1 与“D1 收盘→D30 后续超额”回答两个独立阶段；旧 D30 累计口径仍保留作历史复盘，但不再冒充纯中线目标。</div>
@@ -348,6 +367,22 @@ a{color:var(--pos)}
   <div class="proof-table" id="cornerstoneTable"></div>
 </section>
 
+<section id="long-horizon">
+  <h2>长期核验：首日好票，半年后还好吗？</h2>
+  <p class="secnote">新增 2024–2025 共 181 只审计样本。主目标为 D1 收盘至 D180/D365、相对恒指的超额收益；与上方 214 只 D1/D30 因子库是不同样本窗，不可混成一张万能分数。</p>
+  <div class="long-summary" id="longSummary"></div>
+  <div class="long-boundary" id="longBoundary"></div>
+  <div class="panel">
+    <h3 style="margin-top:0">长期因子核验进度</h3>
+    <p class="secnote">IC 已按预设方向归一：例如“不透明 SPV 越少越好”“负债率越低越好”。单项 p 值较小仍不等于通过，最终看同一批因子的 BH-FDR 联合筛选。</p>
+    <div class="long-table" id="longFactorTable"></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h3 style="margin-top:0">关系型基石与锁定压力：证据补齐进度</h3>
+    <div id="backfillProgress"></div>
+  </div>
+</section>
+
 <section id="modules">
   <h2>因子模块地图</h2>
   <p class="secnote">29 个基础因子分为 7 个模块。每行两根条：左 = 对 D1 的预测力，右 = 对“D1 收盘→D30 后续超额”的预测力。基石机构份额是后续新增的现行引擎证据，单列在上方，不混入冻结的 29 因子列表。<a href="#g-ic">蓝色是符合先验的正 IC，紫色是与先验相反</a>。</p>
@@ -386,6 +421,7 @@ a{color:var(--pos)}
       <li><b>首屏结论</b>：先看证据处于历史研究、时间外验证还是前瞻双跑阶段；结论卡下方三条披露与大数字同等重要。</li>
       <li><b>策略验证</b>：v2 历史高分组与旧引擎买入档按相同覆盖率比较。两边各 68 只，不是“只打 Q5”，更不是“全打基线”。</li>
       <li><b>固定卡试算</b>：输入截止前可知值，按已注册的 2025 训练边界查 Q1~Q5 与固定卡分数；没有固定买入线，不形成个股收益预测。</li>
+      <li><b>长期核验</b>：先看专家规则从 D1 到 D180 是否衰减，再看完整基石评级、身份构成、集中度和财务质量的独立长期结果；“长期候选”不等于已入生产。</li>
       <li><b>因子模块与透视</b>：蓝色 IC 表示符合先验，紫色表示与先验相反；红色仅表示负收益。连续因子看五分位，二元/类别因子等待真实分组快照。</li>
       <li><b>个股数据</b>：桌面端看全指标表，手机端看摘要卡。D1/D5/D30/上市后超额都是上市后的真值，🔒 字段是申购结束后才知道的研究对照，均不能冒充申购时输入。</li>
       <li><b>建议动线</b>：首屏证据状态 → 策略验证 → 新增基石/稳健性证据 → 固定卡试算 → 孖展快照 → 营收增速 → 个股档案核对。</li>
@@ -398,6 +434,7 @@ a{color:var(--pos)}
       <div class="gitem"><b>归一方向（先验方向）</b><span>每个因子先按常识声明方向（如「发行股数越少越稀缺越好」），统一翻转成「越大越好」后再算 IC。所以 <b>IC 为负 ≠ 算错，而是数据与常识唱反调</b>——估值族因子全部为负就是本轮最大发现。</span></div>
       <div class="gitem"><b>D1 / D5 / D30</b><span>上市后第 1 / 5 / 30 个<b>交易日</b>收盘价相对发行价的涨跌幅。D1 = 打新客的首日损益。</span></div>
       <div class="gitem"><b>上市后超额（对齐口径）</b><span>D1 收盘→第30个交易日的个股收益，减同一时段恒指收益。它剥离首日跳涨，用来回答首日收盘后还能否继续跑赢。</span></div>
+      <div class="gitem"><b>D180 / D365 首日后超额</b><span>D1 收盘到第 180 / 365 个交易日的个股收益，减同一时段恒指收益。长期核验优先使用该口径，避免把首日炒作误当成长期质量。</span></div>
       <div class="gitem"><b>D30 累计超额（旧口径）</b><span>股票端为发行价→第30个交易日收盘的累计涨幅，再减上市日附近→第30日的恒指涨幅。它包含 D1，且起点并非完全同窗；仅保留作历史累计体验。</span></div>
       <div class="gitem"><b>破发 / 跑输</b><span>破发 = D1 &lt; 0；上市后跑输 = 对齐后的 D1→D30 超额 &lt; 0。旧累计 D30 跑输另行标注。</span></div>
       <div class="gitem"><b>五分位（Q1~Q5）</b><span>仅适用于连续因子：把股票按归一方向从低到高分五组，Q1 最弱、Q5 最强。二元/类别因子不能伪装成五分位，本页会隐藏不合适的图。</span></div>
@@ -413,6 +450,8 @@ a{color:var(--pos)}
       <div class="gitem"><b>孖展（mā zhǎn）</b><span>港股打新中的融资申购资金。v2 使用申购截止日 12:00 或之前的最后可得快照，并以公开发售货值归一；盘尾最终值和绝对孖展总额只作同源研究参照。</span></div>
       <div class="gitem"><b>官方最终超购</b><span>配发结果公告里的公开发售最终认购倍数，截止后才公布，只能作研究对照（🔒）。它与截止前孖展快照在本样本的排名相关 ρ=0.994，但不代表数值校准、尾部误差或信息完全无损。</span></div>
       <div class="gitem"><b>基石投资者</b><span>定价前承诺认购并通常锁定 6 个月的投资者。规则版“机构/主权基石股数占比”已在全样本显示显著正向关联并进入现行 cornerstone 维度；零基石、集中度和不透明标签仍只能作风险披露。</span></div>
+      <div class="gitem"><b>关系型基石</b><span>关联方、客户或供应商身份必须由招股书原文证明。机构名称只能帮助定位，不能独立证明关系；页面显示 0 覆盖代表尚未补齐证据，不代表没有风险。</span></div>
+      <div class="gitem"><b>锁定到期压力</b><span>锁定期届满时可释放股份相对可交易流通股的比例。必须同时取得锁定天数、释放股数和流通股分母，不能用“基石通常锁六个月”代替个票计算。</span></div>
       <div class="gitem"><b>保荐人</b><span>牵头上市申请与尽调的投行。静态“一线/二线/其他”档次已完成别名修正但仍不显著、不单调；近 12 月具体机构战绩方向更合理，却因覆盖不足尚未入卡。</span></div>
       <div class="gitem"><b>货源归边</b><span>流通筹码集中在少数持有人手中。它需要配售集中度、可交易流通量等证据；不能仅凭“零基石”直接下结论。</span></div>
       <div class="gitem"><b>每手金额 / 入场费</b><span>看板“每手金额”只等于发行价 × 每手股数，不含经纪佣金、平台费及融资成本；它不是券商页面的完整入场费。</span></div>
@@ -439,10 +478,11 @@ a{color:var(--pos)}
     <li><b>连续与类别因子</b>：连续因子看归一 IC、分段稳定、置换检验与五分位单调；二元/类别因子只展示数据层导出的真实标签组，不套用伪 Q1~Q5。估值类即使显著，因方向与先验相反且难以作因果解释，仍被淘汰。</li>
     <li><b>v2 因子卡（在役双跑）</b>：孖展快照 80% + 发行股数 15% + 公开发售货值 5%（固定训练窗边界与分值，2025 训练 / 2026 验证）。策略区比较 v2 历史高分组与 expert_v1 旧引擎买入档，在同一验证交集、同一覆盖率下 v2 三项策略指标更好；它不是“全打”对照，也尚未构成前瞻实盘终裁。</li>
     <li><b>基石机构份额</b>：`cs_inst_share` 于 2026-07-14 经用户签字，以 K=16 微调现行 cornerstone 维度 raw 分，维度权重不变；它不属于 DataDriven_v2 的 80/15/5 三因子卡。LLM 六分类未击败规则版，未进入生产。</li>
+    <li><b>长期核验</b>：2024–2025 共 181 只；D180 成熟 141 只、D365 成熟 73 只。专家规则历史仿真不是当年生产预测；完整基石评级和基石占发售比例只在 D180 首日后超额通过联合筛选，尚未进入任何长期生产卡。</li>
     <li><b>双跑版本边界</b>：F4 于 2026-07-12 启动，现行引擎在 2026-07-14 加入基石机构份额。因当时前瞻真值仍为 0，运营基线从该提交起固定，并以 rules/code SHA 对账；达到 30 只前不作终裁。</li>
     <li><b>样本偏置</b>：窗口集中在 2025-2026 打新强势期，冷市稳定性仍待前瞻双跑补证；42 只尚缺 D30，其中 40 只集中于 2026 年 6-7 月，因此 D30 分析更偏向较早样本。</li>
     <li><b>风格警示</b>：估值反向与样本期港股成长行情高度耦合，风格切换时可能翻向。页面展示历史关联、分层与验证结果，不证明单一因子导致涨跌，也不构成投资建议。</li>
-    <li><b>数据源</b>：reports/factor_signal_library_2026-07-12.json · reports/quality_signal_library_2026-07-13.json · reports/factor_card_v2_duel_2026-07-12.json · data/factor_dataset.json。</li>
+    <li><b>数据源</b>：reports/factor_signal_library_2026-07-12.json · reports/quality_signal_library_2026-07-13.json · reports/factor_card_v2_duel_2026-07-12.json · reports/long_horizon_factor_pool_2026-07-23.json · reports/expert_v1_historical_simulation_2024_2025_2026-07-23.json · data/factor_dataset.json。</li>
   </ul></div>
 </section>
 </div>
@@ -456,6 +496,7 @@ a{color:var(--pos)}
 const DATA = __DATA__;
 const STRATEGY = __STRATEGY_DATA__;
 const FORWARD = __FORWARD_STATUS__;
+const LONG = __LONG_HORIZON_DATA__;
 const $ = s => document.querySelector(s);
 const FM = {}; DATA.factors.forEach(f => FM[f.id] = f);
 const MM = {}; DATA.modules.forEach(m => MM[m.id] = m);
@@ -664,6 +705,67 @@ function renderEvidence(){
     <thead><tr><th>基石证据</th><th class="num">D1 IC</th><th class="num">上市后超额 IC</th><th class="num">破发 Q1→Q5</th><th>当前用途</th></tr></thead>
     <tbody>${rows}</tbody></table>
     <p class="secnote" style="margin-top:8px">${esc(cf.llm_upgrade_result || "")}</p>`;
+}
+
+// ---------- D180 / D365 长期核验（只展示私有仓冻结导出） ----------
+const LONG_LABELS = {
+  cornerstone_production_score:"完整基石评级（T1–T4 + 覆盖档 + 机构份额）",
+  cornerstone_pct_of_offer:"基石占发售比例",
+  cs_sovereign_pension_share:"主权 / 养老金份额",
+  cs_public_mutual_fund_share:"长线公募份额",
+  cs_insurance_share:"保险资金份额",
+  cs_industrial_strategic_share:"产业战略投资者份额",
+  cs_opaque_spv_share:"不透明 SPV / 疑似壳基石份额",
+  cs_short_term_capital_share:"短线 / 量化资本份额",
+  cs_largest_pct:"最大单一基石集中度",
+  cs_hhi:"基石集中度 HHI",
+  cs_category_effective_n:"基石身份多样性",
+  debt_asset_ratio:"资产负债率",
+  net_margin:"净利率",
+  profit_yoy:"股东利润同比",
+  ocf_yield:"经营现金流收益率",
+  ocf_profit_conversion:"经营现金流 / 利润转换",
+};
+const LONG_VERDICT = {
+  candidate_supported:"通过联合筛选", observe:"观察", small_sample:"小样本", insufficient:"不足",
+};
+function longOutcome(outcome){
+  if (!outcome || outcome.status === "insufficient") return "n=" + (outcome?.n ?? "—") + " · 不足";
+  return "n=" + outcome.n + " · " + icS(outcome.ic);
+}
+function renderLongHorizon(){
+  const expert = LONG.expert_rule_replay.strict_core;
+  const factors = LONG.long_factor_pool.display_factors;
+  const factorMap = Object.fromEntries(factors.map(f => [f.id, f]));
+  const cs = factorMap.cornerstone_production_score;
+  const pct = factorMap.cornerstone_pct_of_offer;
+  const backfill = LONG.evidence_backfill;
+  const existing = Object.values(backfill.existing_coverage || {});
+  const evidenceReady = existing.length ? Math.max(...existing) : 0;
+  $("#longCsHero").textContent = "IC " + icS(cs.d180_post_d1_excess.ic);
+  $("#longSummary").innerHTML = [
+    '<article class="long-card observe"><div class="label">专家规则：首日 → 半年</div><div class="value">' + icS(expert.d1.rank_ic) + ' → ' + icS(expert.d180.rank_ic) + '</div><div class="detail">D1 n=' + expert.d1.n + '；D180 n=' + expert.d180.n + '。首日排序有效，长期转负。</div></article>',
+    '<article class="long-card supported"><div class="label">完整基石评级 · D180 首日后超额</div><div class="value">IC ' + icS(cs.d180_post_d1_excess.ic) + '</div><div class="detail">n=' + cs.d180_post_d1_excess.n + '，通过 BH-FDR 10% 联合筛选。</div></article>',
+    '<article class="long-card supported"><div class="label">基石占发售比例 · D180 首日后超额</div><div class="value">IC ' + icS(pct.d180_post_d1_excess.ic) + '</div><div class="detail">n=' + pct.d180_post_d1_excess.n + '，通过联合筛选；仍需监控锁定到期压力。</div></article>',
+    '<article class="long-card gap"><div class="label">关系 / 锁定逐页证据</div><div class="value">' + evidenceReady + ' / ' + backfill.summary.needs_source_evidence + '</div><div class="detail">当前没有可安全回填值；0 表示缺证据，不表示风险为 0。</div></article>',
+  ].join("");
+  $("#longBoundary").innerHTML = "<b>先看结论边界：</b>" + esc(LONG.public_copy.supported) + " " + esc(LONG.public_copy.observe) + " " + esc(LONG.public_copy.insufficient) + " <b>" + esc(LONG.public_copy.boundary) + "</b>";
+
+  const rows = factors.map(f => {
+    const supported = Boolean(f.d180_post_d1_excess?.bh_fdr_10pct);
+    const verdict = supported ? "candidate_supported" : (f.d365?.verdict === "small_sample" ? "small_sample" : "observe");
+    const statusClass = supported ? "status-supported" : (verdict === "small_sample" ? "status-small" : "status-observe");
+    const direction = f.direction < 0 ? "越低越好" : "越高越好";
+    return '<tr><td><b>' + esc(LONG_LABELS[f.id] || f.id) + '</b><div class="mono">' + esc(f.id) + '</div></td><td>' + esc(f.meaning) + '<div class="mono">先验：' + direction + '</div></td><td class="num">' + longOutcome(f.d180) + '</td><td class="num">' + longOutcome(f.d180_post_d1_excess) + '</td><td class="num">' + longOutcome(f.d365) + '</td><td class="' + statusClass + '">' + LONG_VERDICT[verdict] + '</td></tr>';
+  }).join("");
+  $("#longFactorTable").innerHTML = '<table><thead><tr><th>因子</th><th>业务口径</th><th class="num">D180</th><th class="num">D180 首日后超额</th><th class="num">D365</th><th>当前裁决</th></tr></thead><tbody>' + rows + '</tbody></table>';
+
+  const s = backfill.summary;
+  $("#backfillProgress").innerHTML = '<div class="long-summary">' +
+    '<article class="long-card observe"><div class="label">第一批优先样本</div><div class="value">' + s.priority_wave_1_d180_testable + ' 只</div><div class="detail">已有完整基石评级与 D180 首日后超额真值，补证后可立即检验。</div></article>' +
+    '<article class="long-card gap"><div class="label">第二批等待成熟</div><div class="value">' + s.priority_wave_2_not_yet_d180_testable + ' 只</div><div class="detail">先补招股书证据，等待 D180 到期。</div></article>' +
+    '<article class="long-card gap"><div class="label">本轮可安全回填</div><div class="value">' + s.planned_updates + ' 条</div><div class="detail">尚未取得逐页原文，因此保持缺失，不写 0、不猜关系。</div></article></div>' +
+    '<p class="secnote" style="margin-bottom:0"><b>待补四项：</b>关联方基石份额、客户/供应商战略基石份额、锁定到期可释放股份/流通股、老股出售比例。每个数值必须同时有来源链接、PDF 页码、原文、分子、分母和置信度。</p>';
 }
 
 // ---------- 冻结策略对决（只展示 strategy_data.json 已导出的结果） ----------
@@ -1090,6 +1192,7 @@ addEventListener("keydown", e => {
 // ---------- init ----------
 renderCorrections();
 renderEvidence();
+renderLongHorizon();
 buildList();
 renderStrategy();
 selectFactor("margin_last_snapshot");

@@ -1,0 +1,893 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-22T16:47:22.424512+00:00",
+  "as_of": "2026-07-22",
+  "sources": [
+    "reports/long_horizon_factor_pool_2026-07-23.json",
+    "reports/expert_v1_historical_simulation_2024_2025_2026-07-23.json",
+    "reports/long_horizon_evidence_backfill_plan_2026-07-23.json"
+  ],
+  "scope": {
+    "rows": 181,
+    "d180_mature": 141,
+    "d365_mature": 73,
+    "cornerstone_production_score": 114,
+    "cornerstone_six_category": 89,
+    "years": "2024-2025",
+    "objective": "D180/D365 长期表现；与现行 D1 生产评分隔离"
+  },
+  "expert_rule_replay": {
+    "label": "现行专家规则审计级历史仿真",
+    "not_historical_production_predictions": true,
+    "strict_core": {
+      "d1": {
+        "n": 181,
+        "rank_ic": 0.3427,
+        "ci95": [
+          0.2017,
+          0.4629
+        ],
+        "top_bottom_median_spread": 0.255
+      },
+      "d30": {
+        "n": 181,
+        "rank_ic": 0.0673,
+        "ci95": [
+          -0.0838,
+          0.2106
+        ],
+        "top_bottom_median_spread": 0.199
+      },
+      "d180": {
+        "n": 141,
+        "rank_ic": -0.1747,
+        "ci95": [
+          -0.3292,
+          -0.0165
+        ],
+        "top_bottom_median_spread": -0.3433
+      },
+      "d180_post_d1_excess": {
+        "n": 136,
+        "rank_ic": -0.2377,
+        "ci95": [
+          -0.3923,
+          -0.069
+        ],
+        "top_bottom_median_spread": -0.2672
+      },
+      "d365": {
+        "n": 73,
+        "rank_ic": -0.1538,
+        "ci95": [
+          -0.3877,
+          0.0811
+        ],
+        "top_bottom_median_spread": -0.1987
+      }
+    },
+    "conclusion": "擅长首日供需排序，D30明显衰减，D180转为负向；不能当长期质量分。"
+  },
+  "long_factor_pool": {
+    "availability_counts": {
+      "evaluated": 29,
+      "diagnostic_only": 1,
+      "proxy_only": 3,
+      "data_gap": 14
+    },
+    "bh_significant": {
+      "d180": [],
+      "d180_post_d1_excess": [
+        "cornerstone_pct_of_offer",
+        "cornerstone_production_score"
+      ],
+      "d365": [],
+      "d365_post_d1_excess": []
+    },
+    "display_factors": [
+      {
+        "id": "cornerstone_production_score",
+        "family": "cornerstone_grade",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "现行 T1/T2/T3/T4、覆盖档及机构份额加成后的基石评级",
+        "d180": {
+          "n": 74,
+          "status": "available",
+          "ic": 0.1977,
+          "ci95": [
+            -0.0347,
+            0.4082
+          ],
+          "p": 0.078921,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 69,
+          "status": "available",
+          "ic": 0.4211,
+          "ci95": [
+            0.2053,
+            0.6002
+          ],
+          "p": 0.000999,
+          "bh_fdr_10pct": true,
+          "verdict": "candidate_supported"
+        },
+        "d365": {
+          "n": 8,
+          "status": "available",
+          "ic": -0.5892,
+          "ci95": [
+            -0.9172,
+            0.1783
+          ],
+          "p": 0.11988,
+          "bh_fdr_10pct": false,
+          "verdict": "small_sample"
+        }
+      },
+      {
+        "id": "cornerstone_pct_of_offer",
+        "family": "cornerstone_structure",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "基石占发售比例；同时监控锁定到期供给风险",
+        "d180": {
+          "n": 74,
+          "status": "available",
+          "ic": 0.2111,
+          "ci95": [
+            -0.0371,
+            0.4344
+          ],
+          "p": 0.072927,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 69,
+          "status": "available",
+          "ic": 0.5175,
+          "ci95": [
+            0.321,
+            0.6657
+          ],
+          "p": 0.000999,
+          "bh_fdr_10pct": true,
+          "verdict": "candidate_supported"
+        },
+        "d365": {
+          "n": 8,
+          "status": "available",
+          "ic": -0.6099,
+          "ci95": [
+            -1.0,
+            0.2632
+          ],
+          "p": 0.112887,
+          "bh_fdr_10pct": false,
+          "verdict": "small_sample"
+        }
+      },
+      {
+        "id": "cs_sovereign_pension_share",
+        "family": "cornerstone_identity",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "主权/养老金基石份额",
+        "d180": {
+          "n": 61,
+          "status": "available",
+          "ic": 0.1173,
+          "ci95": [
+            0.0734,
+            0.2635
+          ],
+          "p": 0.46953,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 57,
+          "status": "available",
+          "ic": 0.1543,
+          "ci95": [
+            0.1138,
+            0.3091
+          ],
+          "p": 0.361638,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "cs_public_mutual_fund_share",
+        "family": "cornerstone_identity",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "公募基金基石份额",
+        "d180": {
+          "n": 61,
+          "status": "available",
+          "ic": 0.1015,
+          "ci95": [
+            -0.1796,
+            0.3534
+          ],
+          "p": 0.466533,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 57,
+          "status": "available",
+          "ic": -0.1351,
+          "ci95": [
+            -0.3504,
+            0.1068
+          ],
+          "p": 0.337662,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "cs_insurance_share",
+        "family": "cornerstone_identity",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "保险资金基石份额",
+        "d180": {
+          "n": 61,
+          "status": "available",
+          "ic": -0.1686,
+          "ci95": [
+            -0.3829,
+            0.0889
+          ],
+          "p": 0.172827,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 57,
+          "status": "available",
+          "ic": 0.0808,
+          "ci95": [
+            -0.1167,
+            0.2856
+          ],
+          "p": 0.556444,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "cs_industrial_strategic_share",
+        "family": "cornerstone_identity",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "产业战略投资者份额；关系协同尚未单独验证",
+        "d180": {
+          "n": 61,
+          "status": "available",
+          "ic": 0.1491,
+          "ci95": [
+            -0.1279,
+            0.391
+          ],
+          "p": 0.243756,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 57,
+          "status": "available",
+          "ic": 0.2889,
+          "ci95": [
+            0.009,
+            0.5275
+          ],
+          "p": 0.033966,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "cs_opaque_spv_share",
+        "family": "cornerstone_identity",
+        "direction": -1,
+        "availability": "evaluated",
+        "meaning": "不透明 SPV/疑似壳基石份额",
+        "d180": {
+          "n": 61,
+          "status": "available",
+          "ic": 0.2586,
+          "ci95": [
+            0.0357,
+            0.4511
+          ],
+          "p": 0.042957,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 57,
+          "status": "available",
+          "ic": 0.2341,
+          "ci95": [
+            -0.0605,
+            0.4684
+          ],
+          "p": 0.090909,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "cs_short_term_capital_share",
+        "family": "cornerstone_identity",
+        "direction": -1,
+        "availability": "evaluated",
+        "meaning": "名称可明确识别的短线/量化资本份额",
+        "d180": {
+          "n": 61,
+          "status": "available",
+          "ic": 0.1924,
+          "ci95": [
+            -0.0267,
+            0.3656
+          ],
+          "p": 0.143856,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 57,
+          "status": "available",
+          "ic": 0.1409,
+          "ci95": [
+            -0.1148,
+            0.3746
+          ],
+          "p": 0.252747,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "cs_largest_pct",
+        "family": "cornerstone_structure",
+        "direction": -1,
+        "availability": "evaluated",
+        "meaning": "最大单一基石份额，越高越集中",
+        "d180": {
+          "n": 93,
+          "status": "available",
+          "ic": -0.0235,
+          "ci95": [
+            -0.236,
+            0.1823
+          ],
+          "p": 0.817183,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 89,
+          "status": "available",
+          "ic": 0.0644,
+          "ci95": [
+            -0.1365,
+            0.2629
+          ],
+          "p": 0.538462,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 36,
+          "status": "available",
+          "ic": 0.2512,
+          "ci95": [
+            -0.1283,
+            0.5444
+          ],
+          "p": 0.13986,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        }
+      },
+      {
+        "id": "cs_hhi",
+        "family": "cornerstone_structure",
+        "direction": -1,
+        "availability": "evaluated",
+        "meaning": "基石股数 HHI，越高越集中",
+        "d180": {
+          "n": 93,
+          "status": "available",
+          "ic": 0.0047,
+          "ci95": [
+            -0.2039,
+            0.214
+          ],
+          "p": 0.958042,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 89,
+          "status": "available",
+          "ic": 0.1145,
+          "ci95": [
+            -0.0852,
+            0.2967
+          ],
+          "p": 0.275724,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 36,
+          "status": "available",
+          "ic": 0.2439,
+          "ci95": [
+            -0.132,
+            0.5438
+          ],
+          "p": 0.151848,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        }
+      },
+      {
+        "id": "cs_category_effective_n",
+        "family": "cornerstone_structure",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "身份类别多样性，按类别份额熵计算",
+        "d180": {
+          "n": 61,
+          "status": "available",
+          "ic": -0.136,
+          "ci95": [
+            -0.4058,
+            0.152
+          ],
+          "p": 0.291708,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 57,
+          "status": "available",
+          "ic": 0.0711,
+          "ci95": [
+            -0.1894,
+            0.3322
+          ],
+          "p": 0.597403,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "debt_asset_ratio",
+        "family": "balance_sheet",
+        "direction": -1,
+        "availability": "evaluated",
+        "meaning": "申购时点前最近财年资产负债率",
+        "d180": {
+          "n": 137,
+          "status": "available",
+          "ic": 0.1883,
+          "ci95": [
+            0.0123,
+            0.3484
+          ],
+          "p": 0.027972,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 132,
+          "status": "available",
+          "ic": 0.1631,
+          "ci95": [
+            0.0001,
+            0.3379
+          ],
+          "p": 0.070929,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 69,
+          "status": "available",
+          "ic": 0.3292,
+          "ci95": [
+            0.1022,
+            0.5441
+          ],
+          "p": 0.008991,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        }
+      },
+      {
+        "id": "net_margin",
+        "family": "fundamental_quality",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "申购时点前最近财年净利率",
+        "d180": {
+          "n": 128,
+          "status": "available",
+          "ic": 0.06,
+          "ci95": [
+            -0.1401,
+            0.2429
+          ],
+          "p": 0.468531,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 123,
+          "status": "available",
+          "ic": 0.0908,
+          "ci95": [
+            -0.0954,
+            0.2678
+          ],
+          "p": 0.315684,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 66,
+          "status": "available",
+          "ic": 0.2045,
+          "ci95": [
+            -0.0425,
+            0.4314
+          ],
+          "p": 0.0999,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        }
+      },
+      {
+        "id": "profit_yoy",
+        "family": "fundamental",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "申购时点前最近财年股东利润同比；负基数需谨慎解释",
+        "d180": {
+          "n": 136,
+          "status": "available",
+          "ic": 0.0339,
+          "ci95": [
+            -0.1328,
+            0.2044
+          ],
+          "p": 0.679321,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 131,
+          "status": "available",
+          "ic": 0.1332,
+          "ci95": [
+            -0.0457,
+            0.319
+          ],
+          "p": 0.138861,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 69,
+          "status": "available",
+          "ic": -0.086,
+          "ci95": [
+            -0.3343,
+            0.1656
+          ],
+          "p": 0.485514,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        }
+      },
+      {
+        "id": "ocf_yield",
+        "family": "fundamental_quality",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "经营现金流相对上市估值收益率",
+        "d180": {
+          "n": 67,
+          "status": "available",
+          "ic": -0.1622,
+          "ci95": [
+            -0.4004,
+            0.0981
+          ],
+          "p": 0.181818,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 62,
+          "status": "available",
+          "ic": 0.0115,
+          "ci95": [
+            -0.2574,
+            0.2855
+          ],
+          "p": 0.944056,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 7,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      },
+      {
+        "id": "ocf_profit_conversion",
+        "family": "fundamental_quality",
+        "direction": 1,
+        "availability": "evaluated",
+        "meaning": "盈利公司经营现金流/股东利润代理，仅在盈利收益率为正时计算",
+        "d180": {
+          "n": 40,
+          "status": "available",
+          "ic": -0.064,
+          "ci95": [
+            -0.3828,
+            0.2838
+          ],
+          "p": 0.691309,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d180_post_d1_excess": {
+          "n": 37,
+          "status": "available",
+          "ic": -0.0223,
+          "ci95": [
+            -0.3647,
+            0.3257
+          ],
+          "p": 0.887113,
+          "bh_fdr_10pct": false,
+          "verdict": "observe"
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false,
+          "verdict": "insufficient"
+        }
+      }
+    ],
+    "data_gaps": [
+      {
+        "id": "cs_related_party_share",
+        "family": "cornerstone_relationship",
+        "direction": -1,
+        "availability": "data_gap",
+        "meaning": "关联方基石份额；必须依据招股书关系披露"
+      },
+      {
+        "id": "cs_customer_supplier_share",
+        "family": "cornerstone_relationship",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "客户/供应商战略基石份额；同时需披露关联交易风险"
+      },
+      {
+        "id": "cs_lockup_overhang_pct",
+        "family": "ownership_overhang",
+        "direction": -1,
+        "availability": "data_gap",
+        "meaning": "各锁定期到期可释放股份/流通股"
+      },
+      {
+        "id": "secondary_sell_down_pct",
+        "family": "ownership_overhang",
+        "direction": -1,
+        "availability": "data_gap",
+        "meaning": "老股出售占发行比例"
+      },
+      {
+        "id": "peer_relative_valuation_discount",
+        "family": "valuation",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "申购时点同业相对估值折价/AH锚"
+      },
+      {
+        "id": "free_cash_flow_yield",
+        "family": "fundamental_quality",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "上市估值对应自由现金流收益率"
+      },
+      {
+        "id": "roic",
+        "family": "fundamental_quality",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "投入资本回报率"
+      },
+      {
+        "id": "revenue_growth_stability",
+        "family": "fundamental_quality",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "三年营收增速稳定性"
+      },
+      {
+        "id": "margin_trend",
+        "family": "fundamental_quality",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "毛利率/经营利润率多期趋势"
+      },
+      {
+        "id": "net_cash_to_market_cap",
+        "family": "balance_sheet",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "净现金相对上市市值"
+      },
+      {
+        "id": "customer_concentration",
+        "family": "business_risk",
+        "direction": -1,
+        "availability": "data_gap",
+        "meaning": "前五大客户收入占比"
+      },
+      {
+        "id": "proceeds_productive_use_share",
+        "family": "capital_allocation",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "募资用于研发、产能及有效扩张的比例"
+      },
+      {
+        "id": "sponsor_prior_d180_excess",
+        "family": "governance_intermediary",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "保荐人过去项目D180首日后超额战绩"
+      },
+      {
+        "id": "industry_relative_momentum",
+        "family": "industry",
+        "direction": 1,
+        "availability": "data_gap",
+        "meaning": "上市时点行业相对恒指/A股同业动量"
+      }
+    ],
+    "production_change": false,
+    "promotion_rule": "pool entry is not production approval; a separate preregistered card and user gate are required"
+  },
+  "evidence_backfill": {
+    "mode": "dry_run",
+    "database_writes": false,
+    "summary": {
+      "cohort": 181,
+      "cornerstone_score_available": 114,
+      "priority_wave_1_d180_testable": 69,
+      "priority_wave_2_not_yet_d180_testable": 45,
+      "planned_updates": 0,
+      "needs_source_evidence": 114
+    },
+    "existing_coverage": {
+      "cs_related_party_share": 0,
+      "cs_customer_supplier_share": 0,
+      "cs_lockup_overhang_pct": 0,
+      "secondary_sell_down_pct": 0
+    },
+    "acceptance_gate": {
+      "required_per_value": [
+        "source_url",
+        "pdf_page",
+        "verbatim_evidence",
+        "numerator_shares",
+        "denominator_shares",
+        "confidence"
+      ],
+      "confidence_allowed": [
+        "high",
+        "medium"
+      ],
+      "low_confidence_policy": "保留为缺失，不回填数值",
+      "relationship_rule": "投资者名称只能用于定位，不能独立证明关联方、客户或供应商"
+    }
+  },
+  "public_copy": {
+    "supported": "完整基石评级与基石占发售比例通过 D180 首日后超额的联合筛选。",
+    "observe": "单一身份、集中度、多样性和财务质量项仍只观察；低杠杆方向较好但未过联合筛选。",
+    "insufficient": "D365 基石样本不足；关系型基石与锁定压力仍缺招股书逐页证据。",
+    "boundary": "因子池登记不等于入生产权重，网站不提供长期个股评分或买卖建议。"
+  }
+}

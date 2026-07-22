@@ -4,8 +4,9 @@
 用法：
     python build.py
 
-原理：template.html 里有 `__DATA__` / `__STRATEGY_DATA__` / `__FORWARD_STATUS__` 三个占位符，
-本脚本把 dashboard_data.json、strategy_data.json 与 forward_status.json 原样塞进去，
+原理：template.html 里有四个 JSON 占位符，
+本脚本把 dashboard_data.json、strategy_data.json、forward_status.json 与
+long_horizon_data.json 原样塞进去，
 再包上 <!doctype> 骨架，输出 index.html。
 GitHub Pages 读取的就是仓库根目录的 index.html，push 后自动重建。
 
@@ -19,10 +20,17 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-PLACEHOLDERS = ("__DATA__", "__STRATEGY_DATA__", "__FORWARD_STATUS__")
+PLACEHOLDERS = (
+    "__DATA__",
+    "__STRATEGY_DATA__",
+    "__FORWARD_STATUS__",
+    "__LONG_HORIZON_DATA__",
+)
 
 
-def validate_inputs(data: dict, strategy: dict, forward_status: dict, template: str) -> None:
+def validate_inputs(
+    data: dict, strategy: dict, forward_status: dict, long_horizon: dict, template: str
+) -> None:
     """阻止来源日期、前瞻计数或模板占位符失配后仍发布。"""
     for placeholder in PLACEHOLDERS:
         if template.count(placeholder) != 1:
@@ -46,6 +54,18 @@ def validate_inputs(data: dict, strategy: dict, forward_status: dict, template: 
     if max(factor_date, strategy_date) > as_of:
         raise ValueError("资产日期不能晚于公开状态快照日期")
 
+    long_date = date.fromisoformat(long_horizon["as_of"])
+    if long_date < date(2026, 7, 22):
+        raise ValueError("长期核验快照早于 D180/D365 审计截止日")
+    if long_horizon.get("long_factor_pool", {}).get("production_change") is not False:
+        raise ValueError("长期因子池不得越过生产 Gate")
+    scope = long_horizon.get("scope", {})
+    if scope.get("rows") != 181 or scope.get("d180_mature") != 141:
+        raise ValueError("长期核验样本契约不一致")
+    backfill = long_horizon.get("evidence_backfill", {})
+    if backfill.get("database_writes") is not False:
+        raise ValueError("关系/锁定补齐必须保持 dry-run")
+
     report_match = re.search(r"(\d{4}-\d{2}-\d{2})", forward_status["source_report"])
     if not report_match or date.fromisoformat(report_match.group(1)) > as_of:
         raise ValueError("source_report 日期缺失或晚于公开状态快照")
@@ -61,16 +81,20 @@ def main() -> None:
     data = json.loads((ROOT / "dashboard_data.json").read_text(encoding="utf-8"))
     strategy = json.loads((ROOT / "strategy_data.json").read_text(encoding="utf-8"))
     forward_status = json.loads((ROOT / "forward_status.json").read_text(encoding="utf-8"))
+    long_horizon = json.loads((ROOT / "long_horizon_data.json").read_text(encoding="utf-8"))
     template = (ROOT / "template.html").read_text(encoding="utf-8")
-    validate_inputs(data, strategy, forward_status, template)
+    validate_inputs(data, strategy, forward_status, long_horizon, template)
 
     body = template.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     body = body.replace("__STRATEGY_DATA__", json.dumps(strategy, ensure_ascii=False, separators=(",", ":")))
     body = body.replace("__FORWARD_STATUS__", json.dumps(forward_status, ensure_ascii=False, separators=(",", ":")))
+    body = body.replace(
+        "__LONG_HORIZON_DATA__", json.dumps(long_horizon, ensure_ascii=False, separators=(",", ":"))
+    )
     page = (
         '<!doctype html><html lang="zh-Hans"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        '<meta name="description" content="港股 IPO 打新因子看板：29 因子对 D1/D30 与破发的预测力，可下钻个股">'
+        '<meta name="description" content="港股 IPO 打新因子看板：D1/D30 因子、D180/D365 长期核验与基石证据进度">'
         + body[: body.index("</style>") + 8]
         + "</head><body>"
         + body[body.index("</style>") + 8 :]
@@ -80,7 +104,8 @@ def main() -> None:
     print(
         f"built index.html {len(page)//1024} KB  "
         f"(stocks={len(data['stocks'])}, factors={len(data['factors'])}, "
-        f"forward={forward_status['forward_n']}/{forward_status['target_n']})"
+        f"forward={forward_status['forward_n']}/{forward_status['target_n']}, "
+        f"long_d180={long_horizon['scope']['d180_mature']})"
     )
 
 

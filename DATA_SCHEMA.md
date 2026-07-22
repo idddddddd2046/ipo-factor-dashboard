@@ -1,6 +1,6 @@
 # 看板冻结数据字段字典
 
-看板使用三份数据：`dashboard_data.json` 保存因子与个股研究快照，`strategy_data.json` 保存冻结 v2 卡及策略对决快照，`forward_status.json` 保存 F4 前瞻进度与运营基线版本。**三者都是 ipo-tool 私有仓冻结报告/补充说明的只读导出**——渲染层可以增删展示、重排、加解释，但不得改写统计数值或在浏览器重估它们。
+看板使用四份数据：`dashboard_data.json` 保存因子与个股研究快照，`strategy_data.json` 保存冻结 v2 卡及策略对决快照，`forward_status.json` 保存 F4 前瞻进度与运营基线版本，`long_horizon_data.json` 保存 D180/D365 核验与证据补齐进度。**四者都是 ipo-tool 私有仓冻结报告/补充说明的只读导出**——渲染层可以增删展示、重排、加解释，但不得改写统计数值或在浏览器重估它们。
 
 ## dashboard_data.json 顶层结构
 
@@ -134,6 +134,17 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 `build.py` 会交叉核对上述资产日期、`strategy_data.generated_at`、`dashboard_data.meta.p2_hardening.date`
 与周报来源日期；任一错配即停止构建。浏览器访问时会按新加坡时间动态判断是否已经越过下一次周报
 时点及 6 小时宽限期，越界后显示“数据更新延迟”，但不会擅自改写 `forward_n`。
+
+## long_horizon_data.json
+
+该快照由私有仓 `scripts/export_long_horizon_dashboard_snapshot.py` 从三份冻结产物导出：长期因子池、
+专家规则审计级历史仿真、关系/锁定证据 dry-run 计划。关键边界：
+
+- `expert_rule_replay.not_historical_production_predictions=true`：2024–2025 没有当时的完整生产留痕，页面必须称“历史仿真”，不能称实盘预测。
+- `long_factor_pool.production_change=false`：通过 D180 联合筛选只代表长期候选，不得写成已入生产。
+- `display_factors[].d180_post_d1_excess`：D1 收盘后到 D180、相对恒指的主要长期目标。
+- `evidence_backfill.database_writes=false`：关联方、客户/供应商、锁定压力仍在证据补齐阶段；0 覆盖不能解释为该风险为 0。
+- D365 基石类有效样本不足，只能展示“小样本/不足”，不能用来升级或淘汰因子。
 
 ## 如何重新导出（数据层，在 ipo-tool 私有仓）
 
