@@ -5,7 +5,8 @@
   "sources": [
     "reports/long_horizon_factor_pool_2026-07-23.json",
     "reports/expert_v1_historical_simulation_2024_2025_2026-07-23.json",
-    "reports/long_horizon_evidence_backfill_plan_2026-07-23.json"
+    "reports/long_horizon_evidence_backfill_plan_2026-07-23.json",
+    "reports/long_horizon_prospectus_evidence_pilot_2026-07-23.json"
   ],
   "scope": {
     "rows": 181,
@@ -882,12 +883,91 @@
       ],
       "low_confidence_policy": "保留为缺失，不回填数值",
       "relationship_rule": "投资者名称只能用于定位，不能独立证明关联方、客户或供应商"
+    },
+    "pilot": {
+      "mode": "research_review_only",
+      "database_writes": false,
+      "production_scoring_changes": false,
+      "summary": {
+        "wave1_candidates": 69,
+        "prospectuses_windowed": 5,
+        "prospectus_window_coverage": 0.07246376811594203,
+        "research_factor_ready_values": 4,
+        "related_party_ready": 3,
+        "customer_supplier_ready": 1,
+        "lockup_components_ready": 4,
+        "lockup_overhang_factor_ready": 0,
+        "taxonomy_conflicts": 1,
+        "no_cornerstone": 1
+      },
+      "interpretation": {
+        "ready_means": "逐值满足招股书原文、页码、分子分母和高置信要求；仅进入研究因子池候选。",
+        "not_production": "本报告不改变专家规则、双跑引擎、推送或数据库。",
+        "taxonomy_recommendation": "将现有股东基石与严格关连人士拆为两个字段，避免把独立第三方的上市前股东误标为关联方。"
+      },
+      "rows": [
+        {
+          "ticker": "06681",
+          "company_name": "腦動極光－Ｂ",
+          "review_status": {
+            "relationship": "taxonomy_conflict",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "secondary_sell_down": "not_reviewed_in_pilot"
+          },
+          "factor_ready_values": 0
+        },
+        {
+          "ticker": "02560",
+          "company_name": "海螺材料科技",
+          "review_status": {
+            "relationship": "factor_ready_zero",
+            "customer_supplier": "factor_ready_zero",
+            "lockup": "component_ready",
+            "secondary_sell_down": "not_reviewed_in_pilot"
+          },
+          "factor_ready_values": 2
+        },
+        {
+          "ticker": "02613",
+          "company_name": "匯舸環保",
+          "review_status": {
+            "relationship": "factor_ready_zero",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "secondary_sell_down": "not_reviewed_in_pilot"
+          },
+          "factor_ready_values": 1
+        },
+        {
+          "ticker": "00325",
+          "company_name": "布魯可",
+          "review_status": {
+            "relationship": "factor_ready_zero",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "secondary_sell_down": "not_reviewed_in_pilot"
+          },
+          "factor_ready_values": 1
+        },
+        {
+          "ticker": "02530",
+          "company_name": "紐曼思",
+          "review_status": {
+            "relationship": "not_applicable_no_cornerstone",
+            "customer_supplier": "not_applicable_no_cornerstone",
+            "lockup": "not_applicable_no_cornerstone",
+            "secondary_sell_down": "not_reviewed_in_pilot"
+          },
+          "factor_ready_values": 0
+        }
+      ]
     }
   },
   "public_copy": {
     "supported": "完整基石评级与基石占发售比例通过 D180 首日后超额的联合筛选。",
     "observe": "单一身份、集中度、多样性和财务质量项仍只观察；低杠杆方向较好但未过联合筛选。",
-    "insufficient": "D365 基石样本不足；关系型基石与锁定压力仍缺招股书逐页证据。",
+    "insufficient": "D365 基石样本不足；关系型基石已启动逐页证据试点，锁定压力仍缺流通股分母。",
     "boundary": "因子池登记不等于入生产权重，网站不提供长期个股评分或买卖建议。"
   }
 }

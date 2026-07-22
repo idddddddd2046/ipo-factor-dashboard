@@ -14,7 +14,7 @@
 | `dashboard_data.json` | 模块、因子统计与个股研究数据。只读快照，冻结口径 | 数据层：ipo-tool 私有仓导出，见 `DATA_SCHEMA.md` |
 | `strategy_data.json` | v2 冻结卡边界与策略对决结果的**只读快照** | 数据层：来自 ipo-tool 注册协议下的冻结对决报告 |
 | `forward_status.json` | F4 前瞻样本进度、现行基线版本、三类资产日期与新鲜度策略的**只读快照** | 数据层：来自 ipo-tool 双跑周报、版本补充说明与新鲜度审计 |
-| `long_horizon_data.json` | 2024–2025 专家规则长期复演、长期因子池及关系/锁定证据补齐进度的**只读快照** | 数据层：来自 ipo-tool 三份 2026-07-23 审计报告 |
+| `long_horizon_data.json` | 2024–2025 专家规则长期复演、长期因子池及关系/锁定逐页证据进度的**只读快照** | 数据层：来自 ipo-tool 四份 2026-07-23 审计报告 |
 | `template.html` | 页面**模板**：CSS（`<style>`）+ 交互逻辑（`<script>`）+ 结构。含三份只读数据占位符 | 渲染层：直接改这里 |
 | `build.py` | 校验三份快照的日期/计数契约，再塞进 template → `index.html`。纯 Python stdlib | 数据契约变化时才改 |
 | `test_build.py` | 构建契约回归：拒绝越过 Gate 的计数、来源日期错配和模板漏占位 | 渲染层自检 |
