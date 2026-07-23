@@ -143,9 +143,12 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 - `expert_rule_replay.not_historical_production_predictions=true`：2024–2025 没有当时的完整生产留痕，页面必须称“历史仿真”，不能称实盘预测。
 - `long_factor_pool.production_change=false`：通过 D180 联合筛选只代表长期候选，不得写成已入生产。
 - `display_factors[].d180_post_d1_excess`：D1 收盘后到 D180、相对恒指的主要长期目标。
-- `evidence_backfill.database_writes=false`：关联方、客户/供应商、锁定压力仍在证据补齐阶段；0 覆盖不能解释为该风险为 0。
-- `evidence_backfill.pilot.summary`：只展示 5/69 只首批样本的逐页进度、可入研究池值和剩余阻塞；`research_factor_ready_values=4` 不代表 4 个因子有效。
-- `evidence_backfill.pilot.rows[].review_status`：逐票披露“原文明示为 0 / 证据缺失 / 口径冲突 / 无基石”等状态；浏览器不得自行推断关系。
+- `evidence_backfill.database_writes=false`：严格关连人士、上市前股东、客户/供应商、锁定与老股出售仍是研究补证，不写生产数据。
+- `evidence_backfill.collection`：第一批 69 只的官方材料覆盖。`windowed=69`、`nonempty_page_evidence=69` 只表示港交所目标页已收齐；`manual_reviews_completed=5`、`queued_for_manual_review=64` 才是人工裁决进度，自动生成因子值恒为 0。
+- `evidence_backfill.pilot.summary`：只展示 5/69 只首批样本的逐页进度。本批共 16 个可审计研究值（关系身份 7、基石锁定/上市公众持股 4、老股出售 5），不代表 16 个因子有效。
+- `evidence_backfill.pilot.rows[].review_status`：逐票披露“原文明示为 0 / 明示为正 / 证据缺失 / 无基石”等状态；浏览器不得自行推断关系。
+- `public_copy.free_float_warning`：历史 `free_float_pct` 实际是发售股数/上市总股本，不是港交所公众持股比例；渲染层必须保留警示。
+- `lockup_public_float_factor_ready=4` 只表示可计算“基石锁定/上市规则公众持股”；`unlock_supply_shock_factor_ready=0` 表示其他锁定公众股尚未枚举，不能把两者混称为解禁压力。
 - D365 基石类有效样本不足，只能展示“小样本/不足”，不能用来升级或淘汰因子。
 
 ## 如何重新导出（数据层，在 ipo-tool 私有仓）

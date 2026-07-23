@@ -73,6 +73,7 @@ class BuildContractTest(unittest.TestCase):
             )
 
     def test_long_horizon_snapshot_exposes_verified_and_missing_states(self) -> None:
+        assert self.long_horizon["schema_version"] == 2
         factors = {
             row["id"]: row
             for row in self.long_horizon["long_factor_pool"]["display_factors"]
@@ -88,6 +89,18 @@ class BuildContractTest(unittest.TestCase):
             value == 0
             for value in self.long_horizon["evidence_backfill"]["existing_coverage"].values()
         )
+        pilot = self.long_horizon["evidence_backfill"]["pilot"]["summary"]
+        collection = self.long_horizon["evidence_backfill"]["collection"]
+        assert collection["windowed"] == 69
+        assert collection["nonempty_page_evidence"] == 69
+        assert collection["manual_reviews_completed"] == 5
+        assert collection["queued_for_manual_review"] == 64
+        assert collection["factor_values_generated_automatically"] == 0
+        assert pilot["research_factor_ready_values"] == 16
+        assert pilot["public_float_denominators_ready"] == 5
+        assert pilot["lockup_public_float_factor_ready"] == 4
+        assert pilot["secondary_sell_down_ready"] == 5
+        assert pilot["unlock_supply_shock_factor_ready"] == 0
 
 
 if __name__ == "__main__":

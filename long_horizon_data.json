@@ -1,12 +1,13 @@
 {
-  "schema_version": 1,
-  "generated_at": "2026-07-22T16:47:22.424512+00:00",
+  "schema_version": 2,
+  "generated_at": "2026-07-23T05:56:39.962053+00:00",
   "as_of": "2026-07-22",
   "sources": [
     "reports/long_horizon_factor_pool_2026-07-23.json",
     "reports/expert_v1_historical_simulation_2024_2025_2026-07-23.json",
     "reports/long_horizon_evidence_backfill_plan_2026-07-23.json",
-    "reports/long_horizon_prospectus_evidence_pilot_2026-07-23.json"
+    "reports/long_horizon_prospectus_evidence_pilot_2026-07-23.json",
+    "reports/long_horizon_prospectus_evidence_2026-07-23/manifest.json"
   ],
   "scope": {
     "rows": 181,
@@ -74,7 +75,8 @@
       "evaluated": 29,
       "diagnostic_only": 1,
       "proxy_only": 3,
-      "data_gap": 14
+      "deprecated": 2,
+      "data_gap": 16
     },
     "bh_significant": {
       "d180": [],
@@ -750,11 +752,18 @@
     ],
     "data_gaps": [
       {
-        "id": "cs_related_party_share",
+        "id": "cs_connected_person_share",
         "family": "cornerstone_relationship",
         "direction": -1,
         "availability": "data_gap",
-        "meaning": "关联方基石份额；必须依据招股书关系披露"
+        "meaning": "上市规则严格关连人士基石份额；不等同上市前股东"
+      },
+      {
+        "id": "cs_pre_ipo_shareholder_share",
+        "family": "cornerstone_relationship",
+        "direction": -1,
+        "availability": "data_gap",
+        "meaning": "全球发售前已持股的基石份额；与严格关连人士分列"
       },
       {
         "id": "cs_customer_supplier_share",
@@ -764,11 +773,18 @@
         "meaning": "客户/供应商战略基石份额；同时需披露关联交易风险"
       },
       {
-        "id": "cs_lockup_overhang_pct",
+        "id": "cs_lockup_share_of_listing_public_float",
         "family": "ownership_overhang",
         "direction": -1,
         "availability": "data_gap",
-        "meaning": "各锁定期到期可释放股份/流通股"
+        "meaning": "基石锁定股份/上市规则公众持股"
+      },
+      {
+        "id": "cs_unlock_supply_shock",
+        "family": "ownership_overhang",
+        "direction": -1,
+        "availability": "data_gap",
+        "meaning": "同批解禁股份/上市初期可交易公众持股"
       },
       {
         "id": "secondary_sell_down_pct",
@@ -863,9 +879,11 @@
       "needs_source_evidence": 114
     },
     "existing_coverage": {
-      "cs_related_party_share": 0,
+      "cs_connected_person_share": 0,
+      "cs_pre_ipo_shareholder_share": 0,
       "cs_customer_supplier_share": 0,
-      "cs_lockup_overhang_pct": 0,
+      "cs_lockup_share_of_listing_public_float": 0,
+      "cs_unlock_supply_shock": 0,
       "secondary_sell_down_pct": 0
     },
     "acceptance_gate": {
@@ -882,7 +900,17 @@
         "medium"
       ],
       "low_confidence_policy": "保留为缺失，不回填数值",
-      "relationship_rule": "投资者名称只能用于定位，不能独立证明关联方、客户或供应商"
+      "relationship_rule": "投资者名称只能用于定位；严格关连人士、上市前股东、客户/供应商分别取证"
+    },
+    "collection": {
+      "targets": 69,
+      "windowed": 69,
+      "nonempty_page_evidence": 69,
+      "official_hkex_urls": 69,
+      "selected_pages": 2492,
+      "manual_reviews_completed": 5,
+      "queued_for_manual_review": 64,
+      "factor_values_generated_automatically": 0
     },
     "pilot": {
       "mode": "research_review_only",
@@ -892,74 +920,89 @@
         "wave1_candidates": 69,
         "prospectuses_windowed": 5,
         "prospectus_window_coverage": 0.07246376811594203,
-        "research_factor_ready_values": 4,
-        "related_party_ready": 3,
+        "research_factor_ready_values": 16,
+        "connected_person_ready": 4,
+        "pre_ipo_shareholder_ready": 2,
         "customer_supplier_ready": 1,
         "lockup_components_ready": 4,
+        "public_float_denominators_ready": 5,
+        "lockup_public_float_factor_ready": 4,
+        "unlock_supply_shock_factor_ready": 0,
+        "secondary_sell_down_ready": 5,
         "lockup_overhang_factor_ready": 0,
-        "taxonomy_conflicts": 1,
+        "taxonomy_conflicts": 0,
         "no_cornerstone": 1
       },
       "interpretation": {
         "ready_means": "逐值满足招股书原文、页码、分子分母和高置信要求；仅进入研究因子池候选。",
         "not_production": "本报告不改变专家规则、双跑引擎、推送或数据库。",
-        "taxonomy_recommendation": "将现有股东基石与严格关连人士拆为两个字段，避免把独立第三方的上市前股东误标为关联方。"
+        "taxonomy_recommendation": "已将现有股东基石与严格关连人士拆为两个字段；旧 cs_related_party_share 停止回填。"
       },
       "rows": [
         {
           "ticker": "06681",
           "company_name": "腦動極光－Ｂ",
           "review_status": {
-            "relationship": "taxonomy_conflict",
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "factor_ready_positive",
             "customer_supplier": "missing_explicit_evidence",
             "lockup": "component_ready",
-            "secondary_sell_down": "not_reviewed_in_pilot"
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
           },
-          "factor_ready_values": 0
+          "factor_ready_values": 4
         },
         {
           "ticker": "02560",
           "company_name": "海螺材料科技",
           "review_status": {
-            "relationship": "factor_ready_zero",
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "factor_ready_zero",
             "customer_supplier": "factor_ready_zero",
             "lockup": "component_ready",
-            "secondary_sell_down": "not_reviewed_in_pilot"
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
           },
-          "factor_ready_values": 2
+          "factor_ready_values": 5
         },
         {
           "ticker": "02613",
           "company_name": "匯舸環保",
           "review_status": {
-            "relationship": "factor_ready_zero",
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
             "customer_supplier": "missing_explicit_evidence",
             "lockup": "component_ready",
-            "secondary_sell_down": "not_reviewed_in_pilot"
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
           },
-          "factor_ready_values": 1
+          "factor_ready_values": 3
         },
         {
           "ticker": "00325",
           "company_name": "布魯可",
           "review_status": {
-            "relationship": "factor_ready_zero",
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
             "customer_supplier": "missing_explicit_evidence",
             "lockup": "component_ready",
-            "secondary_sell_down": "not_reviewed_in_pilot"
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
           },
-          "factor_ready_values": 1
+          "factor_ready_values": 3
         },
         {
           "ticker": "02530",
           "company_name": "紐曼思",
           "review_status": {
-            "relationship": "not_applicable_no_cornerstone",
+            "connected_person": "not_applicable_no_cornerstone",
+            "pre_ipo_shareholder": "not_applicable_no_cornerstone",
             "customer_supplier": "not_applicable_no_cornerstone",
             "lockup": "not_applicable_no_cornerstone",
-            "secondary_sell_down": "not_reviewed_in_pilot"
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
           },
-          "factor_ready_values": 0
+          "factor_ready_values": 1
         }
       ]
     }
@@ -967,7 +1010,8 @@
   "public_copy": {
     "supported": "完整基石评级与基石占发售比例通过 D180 首日后超额的联合筛选。",
     "observe": "单一身份、集中度、多样性和财务质量项仍只观察；低杠杆方向较好但未过联合筛选。",
-    "insufficient": "D365 基石样本不足；关系型基石已启动逐页证据试点，锁定压力仍缺流通股分母。",
+    "insufficient": "D365 基石样本不足；关系型基石只完成 5/69 只逐页试点。试点已补上市公众持股分母，但真正的解禁供给冲击仍缺其他锁定公众股枚举。",
+    "free_float_warning": "历史 free_float_pct 实际为发售股数/上市总股本，不是港交所公众持股比例；长期锁定因子不得沿用。",
     "boundary": "因子池登记不等于入生产权重，网站不提供长期个股评分或买卖建议。"
   }
 }
