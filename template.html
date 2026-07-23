@@ -97,6 +97,7 @@ h1{font-size:31px;line-height:1.25;margin:8px 0 10px;text-wrap:balance;max-width
 .status-supported{color:var(--good);font-weight:650}
 .status-observe{color:var(--warn);font-weight:650}
 .status-small{color:var(--muted);font-weight:650}
+.status-rejected{color:var(--neg);font-weight:650}
 .group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;min-height:130px;align-items:stretch}
 .group-card{border:1px solid var(--border);border-radius:8px;padding:11px;background:var(--wash)}
 .group-card b{display:block;font-size:13px;margin-bottom:4px}
@@ -317,8 +318,8 @@ a{color:var(--pos)}
       <div class="s">已按 K=16 入现行引擎；不属于 v2 三因子卡</div></div>
     <div class="tile"><div class="k">时间外验证 · 整机 D1 IC</div><div class="v">0.03 → 0.50</div>
       <div class="s">旧引擎 0.026 → v2 0.496；前瞻样本仍在累积</div></div>
-    <div class="tile"><div class="k">D180 首日后超额 · 完整基石评级</div><div class="v" id="longCsHero">—</div>
-      <div class="s">长期候选，不代表进入生产权重；D365 样本仍不足</div></div>
+    <div class="tile"><div class="k">D365 首日后超额 · 低资产负债率</div><div class="v" id="longCsHero">—</div>
+      <div class="s">100 因子联合筛选后唯一优先新增候选；仍未进入生产</div></div>
   </div>
   <div class="disclosures" aria-label="重要口径披露">
     <div class="disclosure"><b>页面主次口径：</b>D1 与“D1 收盘→D30 后续超额”回答两个独立阶段；旧 D30 累计口径仍保留作历史复盘，但不再冒充纯中线目标。</div>
@@ -369,7 +370,7 @@ a{color:var(--pos)}
 
 <section id="long-horizon">
   <h2>长期核验：首日好票，半年后还好吗？</h2>
-  <p class="secnote">新增 2024–2025 共 181 只审计样本。主目标为 D1 收盘至 D180/D365、相对恒指的超额收益；与上方 214 只 D1/D30 因子库是不同样本窗，不可混成一张万能分数。</p>
+  <p class="secnote">2024–2026 共 281 只全部进入审计，注册专家规则与候选指标 100 项；截至 2026-07-22，D180 成熟 141 只、D365 成熟 73 只。2026 年 100 只计入覆盖率，但尚无成熟长期结果。长期样本窗与上方 214 只 D1/D30 因子库不同，不可混成一张万能分数。</p>
   <div class="long-summary" id="longSummary"></div>
   <div class="long-boundary" id="longBoundary"></div>
   <div class="panel">
@@ -478,11 +479,11 @@ a{color:var(--pos)}
     <li><b>连续与类别因子</b>：连续因子看归一 IC、分段稳定、置换检验与五分位单调；二元/类别因子只展示数据层导出的真实标签组，不套用伪 Q1~Q5。估值类即使显著，因方向与先验相反且难以作因果解释，仍被淘汰。</li>
     <li><b>v2 因子卡（在役双跑）</b>：孖展快照 80% + 发行股数 15% + 公开发售货值 5%（固定训练窗边界与分值，2025 训练 / 2026 验证）。策略区比较 v2 历史高分组与 expert_v1 旧引擎买入档，在同一验证交集、同一覆盖率下 v2 三项策略指标更好；它不是“全打”对照，也尚未构成前瞻实盘终裁。</li>
     <li><b>基石机构份额</b>：`cs_inst_share` 于 2026-07-14 经用户签字，以 K=16 微调现行 cornerstone 维度 raw 分，维度权重不变；它不属于 DataDriven_v2 的 80/15/5 三因子卡。LLM 六分类未击败规则版，未进入生产。</li>
-    <li><b>长期核验</b>：2024–2025 共 181 只；D180 成熟 141 只、D365 成熟 73 只。专家规则历史仿真不是当年生产预测；完整基石评级和基石占发售比例只在 D180 首日后超额通过联合筛选，尚未进入任何长期生产卡。</li>
+    <li><b>长期核验</b>：2024–2026 共 281 只全部入表，注册 100 项指标；D180 成熟 141 只、D365 成熟 73 只，2026 年暂只贡献覆盖率。现行专家规则 strict-core 在 D180 为显著负向；新增候选中只有低资产负债率在 D365 首日后超额通过 BH-FDR，仍只保留研究，不进入生产。</li>
     <li><b>双跑版本边界</b>：F4 于 2026-07-12 启动，现行引擎在 2026-07-14 加入基石机构份额。因当时前瞻真值仍为 0，运营基线从该提交起固定，并以 rules/code SHA 对账；达到 30 只前不作终裁。</li>
     <li><b>样本偏置</b>：窗口集中在 2025-2026 打新强势期，冷市稳定性仍待前瞻双跑补证；42 只尚缺 D30，其中 40 只集中于 2026 年 6-7 月，因此 D30 分析更偏向较早样本。</li>
     <li><b>风格警示</b>：估值反向与样本期港股成长行情高度耦合，风格切换时可能翻向。页面展示历史关联、分层与验证结果，不证明单一因子导致涨跌，也不构成投资建议。</li>
-    <li><b>数据源</b>：reports/factor_signal_library_2026-07-12.json · reports/quality_signal_library_2026-07-13.json · reports/factor_card_v2_duel_2026-07-12.json · reports/long_horizon_factor_pool_2026-07-23.json · reports/expert_v1_historical_simulation_2024_2025_2026-07-23.json · data/factor_dataset.json。</li>
+    <li><b>数据源</b>：reports/factor_signal_library_2026-07-12.json · reports/quality_signal_library_2026-07-13.json · reports/factor_card_v2_duel_2026-07-12.json · reports/expert_rule_full_factor_audit_2024_2026_2026-07-23.json · reports/expert_v1_historical_simulation_2024_2025_2026-07-23.json · data/factor_dataset.json。</li>
   </ul></div>
 </section>
 </div>
@@ -721,16 +722,24 @@ const LONG_LABELS = {
   cs_hhi:"基石集中度 HHI",
   cs_category_effective_n:"基石身份多样性",
   debt_asset_ratio:"资产负债率",
+  sponsor_prior_d1_median:"保荐人滚动 D1 中位战绩",
+  public_offer_value_yi:"公众发售货值",
+  shares_offered:"全球发售股数",
   net_margin:"净利率",
   profit_yoy:"股东利润同比",
   ocf_yield:"经营现金流收益率",
-  ocf_profit_conversion:"经营现金流 / 利润转换",
 };
 const LONG_VERDICT = {
-  candidate_supported:"通过联合筛选", observe:"观察", small_sample:"小样本", insufficient:"不足",
+  retain_priority:"优先保留研究",
+  production_hypothesis_supported:"现行假设获支持",
+  retain_research_only:"保留观察",
+  reject_registered_direction:"长期方向反证",
+  no_support_yet:"暂未支持",
+  collect_more_data:"覆盖不足",
+  not_directionally_tested:"只报覆盖",
 };
 function longOutcome(outcome){
-  if (!outcome || outcome.status === "insufficient") return "n=" + (outcome?.n ?? "—") + " · 不足";
+  if (!outcome || outcome.status !== "available") return "n=" + (outcome?.n ?? "—") + " · 不足";
   return "n=" + outcome.n + " · " + icS(outcome.ic);
 }
 function renderLongHorizon(){
@@ -739,29 +748,36 @@ function renderLongHorizon(){
   const factorMap = Object.fromEntries(factors.map(f => [f.id, f]));
   const cs = factorMap.cornerstone_production_score;
   const pct = factorMap.cornerstone_pct_of_offer;
+  const debt = factorMap.debt_asset_ratio;
   const backfill = LONG.evidence_backfill;
   const collection = backfill.collection;
   const pilot = backfill.pilot;
   const pilotSummary = pilot?.summary;
   const existing = Object.values(backfill.existing_coverage || {});
   const evidenceReady = pilotSummary?.research_factor_ready_values ?? (existing.length ? Math.max(...existing) : 0);
-  $("#longCsHero").textContent = "IC " + icS(cs.d180_post_d1_excess.ic);
+  $("#longCsHero").textContent = "IC " + icS(debt.d365_post_d1_excess.ic);
   $("#longSummary").innerHTML = [
-    '<article class="long-card observe"><div class="label">专家规则：首日 → 半年</div><div class="value">' + icS(expert.d1.rank_ic) + ' → ' + icS(expert.d180.rank_ic) + '</div><div class="detail">D1 n=' + expert.d1.n + '；D180 n=' + expert.d180.n + '。首日排序有效，长期转负。</div></article>',
-    '<article class="long-card supported"><div class="label">完整基石评级 · D180 首日后超额</div><div class="value">IC ' + icS(cs.d180_post_d1_excess.ic) + '</div><div class="detail">n=' + cs.d180_post_d1_excess.n + '，通过 BH-FDR 10% 联合筛选。</div></article>',
-    '<article class="long-card supported"><div class="label">基石占发售比例 · D180 首日后超额</div><div class="value">IC ' + icS(pct.d180_post_d1_excess.ic) + '</div><div class="detail">n=' + pct.d180_post_d1_excess.n + '，通过联合筛选；仍需监控锁定到期压力。</div></article>',
+    '<article class="long-card observe"><div class="label">完整审计母样本 / 注册指标</div><div class="value">' + LONG.scope.rows + ' / ' + LONG.scope.registered_indicators + '</div><div class="detail">2024=' + LONG.scope.by_year["2024"] + '，2025=' + LONG.scope.by_year["2025"] + '，2026=' + LONG.scope.by_year["2026"] + '；D180=' + LONG.scope.d180_mature + '，D365=' + LONG.scope.d365_mature + '。</div></article>',
+    '<article class="long-card gap"><div class="label">专家规则：首日 → 半年</div><div class="value">' + icS(expert.d1.rank_ic) + ' → ' + icS(expert.d180.rank_ic) + '</div><div class="detail">D1 n=' + expert.d1.n + '；D180 n=' + expert.d180.n + '。D180 负向且通过引擎/模块族 BH-FDR，不能当长期质量分。</div></article>',
+    '<article class="long-card supported"><div class="label">低资产负债率 · D365 首日后超额</div><div class="value">IC ' + icS(debt.d365_post_d1_excess.ic) + '</div><div class="detail">n=' + debt.d365_post_d1_excess.n + '，95%CI ' + debt.d365_post_d1_excess.ci95.map(icS).join(" 至 ") + '，通过 100 项联合 BH-FDR；只保留研究。</div></article>',
+    '<article class="long-card observe"><div class="label">完整基石评级 / 基石占发售比例</div><div class="value">' + icS(cs.d180_post_d1_excess.ic) + ' / ' + icS(pct.d180_post_d1_excess.ic) + '</div><div class="detail">D180 首日后超额均过 FDR，但可配对只有 ' + cs.d180_post_d1_excess.n + ' 只，未达全审计 60% 覆盖准入线。</div></article>',
     '<article class="long-card gap"><div class="label">逐页可审计研究值</div><div class="value">' + evidenceReady + ' 个</div><div class="detail">官方材料已收齐 ' + (collection?.windowed ?? 0) + ' / ' + (collection?.targets ?? 69) + '，人工审阅仍为 ' + (collection?.manual_reviews_completed ?? 0) + ' 只；尚未证明长期预测有效。</div></article>',
   ].join("");
-  $("#longBoundary").innerHTML = "<b>先看结论边界：</b>" + esc(LONG.public_copy.supported) + " " + esc(LONG.public_copy.observe) + " " + esc(LONG.public_copy.insufficient) + " <b>" + esc(LONG.public_copy.boundary) + "</b>";
+  $("#longBoundary").innerHTML = "<b>先看结论边界：</b>" + esc(LONG.public_copy.supported) + " " + esc(LONG.public_copy.observe) + " " + esc(LONG.public_copy.contradicted) + " " + esc(LONG.public_copy.insufficient) + " <b>" + esc(LONG.public_copy.boundary) + "</b>";
 
   const rows = factors.map(f => {
-    const supported = Boolean(f.d180_post_d1_excess?.bh_fdr_10pct);
-    const verdict = supported ? "candidate_supported" : (f.d365?.verdict === "small_sample" ? "small_sample" : "observe");
-    const statusClass = supported ? "status-supported" : (verdict === "small_sample" ? "status-small" : "status-observe");
+    const verdict = f.decision;
+    const statusClass = verdict === "retain_priority" || verdict === "production_hypothesis_supported"
+      ? "status-supported"
+      : verdict === "reject_registered_direction"
+      ? "status-rejected"
+      : verdict === "collect_more_data" || verdict === "not_directionally_tested"
+      ? "status-small"
+      : "status-observe";
     const direction = f.direction < 0 ? "越低越好" : "越高越好";
-    return '<tr><td><b>' + esc(LONG_LABELS[f.id] || f.id) + '</b><div class="mono">' + esc(f.id) + '</div></td><td>' + esc(f.meaning) + '<div class="mono">先验：' + direction + '</div></td><td class="num">' + longOutcome(f.d180) + '</td><td class="num">' + longOutcome(f.d180_post_d1_excess) + '</td><td class="num">' + longOutcome(f.d365) + '</td><td class="' + statusClass + '">' + LONG_VERDICT[verdict] + '</td></tr>';
+    return '<tr><td><b>' + esc(LONG_LABELS[f.id] || f.id) + '</b><div class="mono">' + esc(f.id) + '</div></td><td>' + esc(f.meaning) + '<div class="mono">先验：' + direction + ' · 总覆盖 ' + f.coverage.available + '/' + f.coverage.total + '</div></td><td class="num">' + longOutcome(f.d180) + '</td><td class="num">' + longOutcome(f.d180_post_d1_excess) + '</td><td class="num">' + longOutcome(f.d365) + '</td><td class="num">' + longOutcome(f.d365_post_d1_excess) + '</td><td class="' + statusClass + '">' + (LONG_VERDICT[verdict] || verdict) + '</td></tr>';
   }).join("");
-  $("#longFactorTable").innerHTML = '<table><thead><tr><th>因子</th><th>业务口径</th><th class="num">D180</th><th class="num">D180 首日后超额</th><th class="num">D365</th><th>当前裁决</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  $("#longFactorTable").innerHTML = '<table><thead><tr><th>因子</th><th>业务口径</th><th class="num">D180</th><th class="num">D180 首日后超额</th><th class="num">D365</th><th class="num">D365 首日后超额</th><th>当前裁决</th></tr></thead><tbody>' + rows + '</tbody></table>';
 
   const s = backfill.summary;
   const statusCopy = {

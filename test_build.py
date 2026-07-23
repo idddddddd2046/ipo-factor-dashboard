@@ -73,7 +73,9 @@ class BuildContractTest(unittest.TestCase):
             )
 
     def test_long_horizon_snapshot_exposes_verified_and_missing_states(self) -> None:
-        assert self.long_horizon["schema_version"] == 2
+        assert self.long_horizon["schema_version"] == 3
+        assert self.long_horizon["scope"]["rows"] == 281
+        assert self.long_horizon["scope"]["registered_indicators"] == 100
         factors = {
             row["id"]: row
             for row in self.long_horizon["long_factor_pool"]["display_factors"]
@@ -82,6 +84,10 @@ class BuildContractTest(unittest.TestCase):
             "bh_fdr_10pct"
         ]
         assert factors["cornerstone_pct_of_offer"]["d180_post_d1_excess"][
+            "bh_fdr_10pct"
+        ]
+        assert factors["debt_asset_ratio"]["decision"] == "retain_priority"
+        assert factors["debt_asset_ratio"]["d365_post_d1_excess"][
             "bh_fdr_10pct"
         ]
         assert self.long_horizon["evidence_backfill"]["summary"]["planned_updates"] == 0

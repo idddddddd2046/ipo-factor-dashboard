@@ -60,7 +60,13 @@ def validate_inputs(
     if long_horizon.get("long_factor_pool", {}).get("production_change") is not False:
         raise ValueError("长期因子池不得越过生产 Gate")
     scope = long_horizon.get("scope", {})
-    if scope.get("rows") != 181 or scope.get("d180_mature") != 141:
+    if (
+        long_horizon.get("schema_version") != 3
+        or scope.get("rows") != 281
+        or scope.get("registered_indicators") != 100
+        or scope.get("d180_mature") != 141
+        or scope.get("d365_mature") != 73
+    ):
         raise ValueError("长期核验样本契约不一致")
     backfill = long_horizon.get("evidence_backfill", {})
     if backfill.get("database_writes") is not False:

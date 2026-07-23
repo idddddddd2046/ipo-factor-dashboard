@@ -137,19 +137,23 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 
 ## long_horizon_data.json
 
-该快照由私有仓 `scripts/export_long_horizon_dashboard_snapshot.py` 从四份冻结产物导出：长期因子池、
-专家规则审计级历史仿真、关系/锁定证据 dry-run 计划及 5 只招股书逐页审阅试点。关键边界：
+该快照由私有仓 `scripts/export_long_horizon_dashboard_snapshot.py` 从全量长期审计、
+专家规则 D1/D30 审计级历史仿真、关系/锁定证据 dry-run 计划及 5 只招股书逐页审阅试点导出。
+`schema_version=3`，母样本为 2024–2026 全 281 只、注册指标 100 项；D180 成熟 141 只、D365
+成熟 73 只，2026 年 100 只只进入覆盖率。关键边界：
 
 - `expert_rule_replay.not_historical_production_predictions=true`：2024–2025 没有当时的完整生产留痕，页面必须称“历史仿真”，不能称实盘预测。
-- `long_factor_pool.production_change=false`：通过 D180 联合筛选只代表长期候选，不得写成已入生产。
-- `display_factors[].d180_post_d1_excess`：D1 收盘后到 D180、相对恒指的主要长期目标。
+- `long_factor_pool.production_change=false`：通过长期联合筛选只代表长期候选，不得写成已入生产。
+- `display_factors[]` 同时给出 D180、D180 首日后超额、D365、D365 首日后超额及总覆盖率；网页不得只挑有利口径。
+- `display_factors[].decision`：新增候选中只有 `debt_asset_ratio=retain_priority`，含义是“低资产负债率”在 D365 首日后超额通过 100 项同族 BH-FDR；仍未进入生产。
+- 完整基石评级与基石占发售比例虽在 D180 首日后超额通过 FDR，但可配对仅 69 只，低于全审计 60% 覆盖准入线，保持 `collect_more_data`。
 - `evidence_backfill.database_writes=false`：严格关连人士、上市前股东、客户/供应商、锁定与老股出售仍是研究补证，不写生产数据。
 - `evidence_backfill.collection`：第一批 69 只的官方材料覆盖。`windowed=69`、`nonempty_page_evidence=69` 只表示港交所目标页已收齐；`manual_reviews_completed=5`、`queued_for_manual_review=64` 才是人工裁决进度，自动生成因子值恒为 0。
 - `evidence_backfill.pilot.summary`：只展示 5/69 只首批样本的逐页进度。本批共 16 个可审计研究值（关系身份 7、基石锁定/上市公众持股 4、老股出售 5），不代表 16 个因子有效。
 - `evidence_backfill.pilot.rows[].review_status`：逐票披露“原文明示为 0 / 明示为正 / 证据缺失 / 无基石”等状态；浏览器不得自行推断关系。
 - `public_copy.free_float_warning`：历史 `free_float_pct` 实际是发售股数/上市总股本，不是港交所公众持股比例；渲染层必须保留警示。
 - `lockup_public_float_factor_ready=4` 只表示可计算“基石锁定/上市规则公众持股”；`unlock_supply_shock_factor_ready=0` 表示其他锁定公众股尚未枚举，不能把两者混称为解禁压力。
-- D365 基石类有效样本不足，只能展示“小样本/不足”，不能用来升级或淘汰因子。
+- 生产供需口径若在长期显著反向，只能标为“长期方向反证”，不能直接反转或修改 D1 生产权重。
 
 ## 如何重新导出（数据层，在 ipo-tool 私有仓）
 
