@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-25T12:33:23.921718+00:00",
+  "generated_at": "2026-07-25T13:06:27.800707+00:00",
   "as_of": "2026-07-22",
   "sources": [
     "reports/expert_rule_full_factor_audit_2024_2026_2026-07-23.json",
@@ -8,6 +8,7 @@
     "reports/long_horizon_evidence_backfill_plan_2026-07-23.json",
     "reports/long_horizon_prospectus_evidence_pilot_2026-07-23.json",
     "reports/long_horizon_prospectus_evidence_batch2_2026-07-25.json",
+    "reports/long_horizon_prospectus_evidence_batch3_2026-07-25.json",
     "reports/long_horizon_prospectus_evidence_2026-07-23/manifest.json"
   ],
   "scope": {
@@ -1137,16 +1138,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 14,
+          "available": 22,
           "total": 281,
-          "coverage_rate": 0.0498,
+          "coverage_rate": 0.0783,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 14,
+              "available": 22,
               "total": 114
             },
             "2026": {
@@ -1154,32 +1155,32 @@
               "total": 100
             }
           },
-          "d180_pairable": 14,
+          "d180_pairable": 22,
           "d365_pairable": 4,
-          "missing": 267,
+          "missing": 259,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data",
         "d180": {
-          "n": 14,
+          "n": 22,
           "status": "available",
-          "ic": 0.4472,
+          "ic": 0.0192,
           "ci95": [
-            0.4487,
-            0.7246
+            -0.5019,
+            0.4993
           ],
-          "p": 0.153846,
+          "p": 0.934066,
           "bh_fdr_10pct": false
         },
         "d180_post_d1_excess": {
-          "n": 14,
+          "n": 22,
           "status": "available",
-          "ic": 0.3096,
+          "ic": 0.0147,
           "ci95": [
-            0.1045,
-            0.6172
+            -0.4001,
+            0.4029
           ],
-          "p": 0.433566,
+          "p": 0.951049,
           "bh_fdr_10pct": false
         },
         "d365": {
@@ -1210,16 +1211,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 5,
+          "available": 6,
           "total": 281,
-          "coverage_rate": 0.0178,
+          "coverage_rate": 0.0214,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 5,
+              "available": 6,
               "total": 114
             },
             "2026": {
@@ -1227,14 +1228,14 @@
               "total": 100
             }
           },
-          "d180_pairable": 5,
+          "d180_pairable": 6,
           "d365_pairable": 2,
-          "missing": 276,
+          "missing": 275,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data",
         "d180": {
-          "n": 5,
+          "n": 6,
           "status": "insufficient",
           "ic": null,
           "ci95": null,
@@ -1242,7 +1243,7 @@
           "bh_fdr_10pct": false
         },
         "d180_post_d1_excess": {
-          "n": 5,
+          "n": 6,
           "status": "insufficient",
           "ic": null,
           "ci95": null,
@@ -1344,16 +1345,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 13,
+          "available": 20,
           "total": 281,
-          "coverage_rate": 0.0463,
+          "coverage_rate": 0.0712,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 13,
+              "available": 20,
               "total": 114
             },
             "2026": {
@@ -1361,32 +1362,32 @@
               "total": 100
             }
           },
-          "d180_pairable": 13,
+          "d180_pairable": 20,
           "d365_pairable": 4,
-          "missing": 268,
+          "missing": 261,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data",
         "d180": {
-          "n": 13,
+          "n": 20,
           "status": "available",
-          "ic": 0.2008,
+          "ic": 0.0527,
           "ci95": [
-            -0.4986,
-            0.7493
+            -0.4303,
+            0.5152
           ],
-          "p": 0.488511,
+          "p": 0.822178,
           "bh_fdr_10pct": false
         },
         "d180_post_d1_excess": {
-          "n": 13,
+          "n": 20,
           "status": "available",
-          "ic": 0.0825,
+          "ic": -0.0135,
           "ci95": [
-            -0.5545,
-            0.6359
+            -0.4863,
+            0.463
           ],
-          "p": 0.791209,
+          "p": 0.957043,
           "bh_fdr_10pct": false
         },
         "d365": {
@@ -1417,16 +1418,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 17,
+          "available": 28,
           "total": 281,
-          "coverage_rate": 0.0605,
+          "coverage_rate": 0.0996,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 17,
+              "available": 28,
               "total": 114
             },
             "2026": {
@@ -1434,36 +1435,36 @@
               "total": 100
             }
           },
-          "d180_pairable": 17,
-          "d365_pairable": 5,
-          "missing": 264,
+          "d180_pairable": 28,
+          "d365_pairable": 7,
+          "missing": 253,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data",
         "d180": {
-          "n": 17,
+          "n": 28,
           "status": "available",
-          "ic": 0.0,
+          "ic": 0.0119,
           "ci95": [
-            -0.2623,
-            0.263
+            -0.1378,
+            0.1791
           ],
           "p": 1.0,
           "bh_fdr_10pct": false
         },
         "d180_post_d1_excess": {
-          "n": 17,
+          "n": 28,
           "status": "available",
-          "ic": -0.1021,
+          "ic": -0.0834,
           "ci95": [
-            -0.3805,
-            0.1037
+            -0.2792,
+            0.0359
           ],
-          "p": 0.828172,
+          "p": 0.786214,
           "bh_fdr_10pct": false
         },
         "d365": {
-          "n": 5,
+          "n": 7,
           "status": "insufficient",
           "ic": null,
           "ci95": null,
@@ -1471,7 +1472,7 @@
           "bh_fdr_10pct": false
         },
         "d365_post_d1_excess": {
-          "n": 5,
+          "n": 7,
           "status": "insufficient",
           "ic": null,
           "ci95": null,
@@ -2555,16 +2556,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 14,
+          "available": 22,
           "total": 281,
-          "coverage_rate": 0.0498,
+          "coverage_rate": 0.0783,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 14,
+              "available": 22,
               "total": 114
             },
             "2026": {
@@ -2572,9 +2573,9 @@
               "total": 100
             }
           },
-          "d180_pairable": 14,
+          "d180_pairable": 22,
           "d365_pairable": 4,
-          "missing": 267,
+          "missing": 259,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -2590,16 +2591,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 5,
+          "available": 6,
           "total": 281,
-          "coverage_rate": 0.0178,
+          "coverage_rate": 0.0214,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 5,
+              "available": 6,
               "total": 114
             },
             "2026": {
@@ -2607,9 +2608,9 @@
               "total": 100
             }
           },
-          "d180_pairable": 5,
+          "d180_pairable": 6,
           "d365_pairable": 2,
-          "missing": 276,
+          "missing": 275,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -2660,16 +2661,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 13,
+          "available": 20,
           "total": 281,
-          "coverage_rate": 0.0463,
+          "coverage_rate": 0.0712,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 13,
+              "available": 20,
               "total": 114
             },
             "2026": {
@@ -2677,9 +2678,9 @@
               "total": 100
             }
           },
-          "d180_pairable": 13,
+          "d180_pairable": 20,
           "d365_pairable": 4,
-          "missing": 268,
+          "missing": 261,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -2730,16 +2731,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 17,
+          "available": 28,
           "total": 281,
-          "coverage_rate": 0.0605,
+          "coverage_rate": 0.0996,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 17,
+              "available": 28,
               "total": 114
             },
             "2026": {
@@ -2747,9 +2748,9 @@
               "total": 100
             }
           },
-          "d180_pairable": 17,
-          "d365_pairable": 5,
-          "missing": 264,
+          "d180_pairable": 28,
+          "d365_pairable": 7,
+          "missing": 253,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -3954,8 +3955,8 @@
       "nonempty_page_evidence": 69,
       "official_hkex_urls": 69,
       "selected_pages": 2492,
-      "manual_reviews_completed": 17,
-      "queued_for_manual_review": 52,
+      "manual_reviews_completed": 28,
+      "queued_for_manual_review": 41,
       "factor_values_generated_automatically": 0
     },
     "pilot": {
@@ -4057,19 +4058,19 @@
       "database_writes": false,
       "production_scoring_changes": false,
       "summary": {
-        "prospectuses_windowed": 17,
+        "prospectuses_windowed": 28,
         "wave1_candidates": 69,
-        "review_coverage": 0.2463768115942029,
-        "research_factor_ready_values": 53,
+        "review_coverage": 0.4057971014492754,
+        "research_factor_ready_values": 80,
         "ready_by_field": {
-          "cs_connected_person_share": 14,
-          "cs_pre_ipo_shareholder_share": 5,
+          "cs_connected_person_share": 22,
+          "cs_pre_ipo_shareholder_share": 6,
           "cs_customer_supplier_share": 4,
-          "cs_lockup_share_of_listing_public_float": 13,
-          "secondary_sell_down_pct": 17
+          "cs_lockup_share_of_listing_public_float": 20,
+          "secondary_sell_down_pct": 28
         },
-        "lockup_components_ready": 16,
-        "public_float_denominators_ready": 14,
+        "lockup_components_ready": 25,
+        "public_float_denominators_ready": 21,
         "unlock_supply_shock_factor_ready": 0
       },
       "batches": [
@@ -4082,6 +4083,11 @@
           "batch": 2,
           "prospectuses_windowed": 12,
           "research_factor_ready_values": 37
+        },
+        {
+          "batch": 3,
+          "prospectuses_windowed": 11,
+          "research_factor_ready_values": 27
         }
       ],
       "rows": [
@@ -4308,6 +4314,154 @@
             "secondary_sell_down": "factor_ready_zero"
           },
           "factor_ready_values": 3
+        },
+        {
+          "ticker": "00805",
+          "company_name": "新吉奧房車",
+          "review_status": {
+            "connected_person": "not_applicable_no_cornerstone",
+            "pre_ipo_shareholder": "not_applicable_no_cornerstone",
+            "customer_supplier": "not_applicable_no_cornerstone",
+            "lockup": "not_applicable_no_cornerstone",
+            "public_float": "not_applicable_no_cornerstone",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 1
+        },
+        {
+          "ticker": "02596",
+          "company_name": "宜賓銀行",
+          "review_status": {
+            "connected_person": "not_applicable_no_cornerstone",
+            "pre_ipo_shareholder": "not_applicable_no_cornerstone",
+            "customer_supplier": "not_applicable_no_cornerstone",
+            "lockup": "not_applicable_no_cornerstone",
+            "public_float": "not_applicable_no_cornerstone",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 1
+        },
+        {
+          "ticker": "06168",
+          "company_name": "周六福",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "taxonomy_split_required",
+            "customer_supplier": "missing_explicit_evidence",
+            "relationship_note": "close_associate_not_direct_shareholder",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "02097",
+          "company_name": "蜜雪集團",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "taxonomy_split_required",
+            "customer_supplier": "missing_explicit_evidence",
+            "relationship_note": "close_associate_not_direct_shareholder",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "09606",
+          "company_name": "映恩生物－Ｂ",
+          "review_status": {
+            "connected_person": "factor_ready_positive",
+            "pre_ipo_shareholder": "taxonomy_split_required",
+            "customer_supplier": "missing_explicit_evidence",
+            "relationship_note": "close_associates_of_existing_shareholders",
+            "lockup": "component_ready",
+            "public_float": "blocked_18a_and_final_offer_adjustment",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 2
+        },
+        {
+          "ticker": "02573",
+          "company_name": "新琪安",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "taxonomy_split_required",
+            "customer_supplier": "missing_explicit_evidence",
+            "relationship_note": "close_associate_not_direct_shareholder",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "02889",
+          "company_name": "博泰車聯",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "02590",
+          "company_name": "極智嘉－Ｗ",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "06603",
+          "company_name": "IFBH",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "02543",
+          "company_name": "大行科工",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "09887",
+          "company_name": "維立志博－Ｂ",
+          "review_status": {
+            "connected_person": "missing_explicit_evidence",
+            "pre_ipo_shareholder": "factor_ready_positive",
+            "customer_supplier": "missing_explicit_evidence",
+            "relationship_note": "direct_shareholder_and_close_associates_split",
+            "lockup": "component_ready",
+            "public_float": "blocked_18a_and_final_offer_adjustment",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 2
         }
       ]
     }
@@ -4316,7 +4470,7 @@
     "supported": "100 项联合检验后，新增候选中只有低资产负债率在 D365 首日后超额通过 BH-FDR，保留为优先研究因子；尚未获准进入生产。",
     "observe": "完整基石评级与基石占发售比例在 D180 首日后超额显著，但当前可配对仅 69 只，低于全审计 60% 覆盖准入线。",
     "contradicted": "小发售规模、零基石和保荐人短期滚动战绩的原方向在部分长期超额口径显著反向，说明 D1 供需优势不能直接外推成长线质量。",
-    "insufficient": "2026 年 100 只已进入覆盖率，但尚无成熟 D180/D365；关系型基石完成 17/69 只逐页人工裁定，单项覆盖仍不足，不能把未审票填 0。",
+    "insufficient": "2026 年 100 只已进入覆盖率，但尚无成熟 D180/D365；关系型基石完成 28/69 只逐页人工裁定，单项覆盖仍不足，不能把未审票填 0。",
     "free_float_warning": "历史 free_float_pct 实际是发售股数/上市总股本，不是港交所公众持股比例；长期锁定因子不得沿用。",
     "boundary": "因子池登记不等于进入生产权重；网站不提供长期个股评分或买卖建议。"
   }
