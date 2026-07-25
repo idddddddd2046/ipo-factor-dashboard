@@ -99,19 +99,19 @@ class BuildContractTest(unittest.TestCase):
         collection = self.long_horizon["evidence_backfill"]["collection"]
         assert collection["windowed"] == 69
         assert collection["nonempty_page_evidence"] == 69
-        assert collection["manual_reviews_completed"] == 28
-        assert collection["queued_for_manual_review"] == 41
+        assert collection["manual_reviews_completed"] == 69
+        assert collection["queued_for_manual_review"] == 0
         assert collection["factor_values_generated_automatically"] == 0
-        assert review["research_factor_ready_values"] == 80
+        assert review["research_factor_ready_values"] == 161
         assert review["public_float_denominators_ready"] == 21
         assert review["ready_by_field"] == {
-            "cs_connected_person_share": 22,
-            "cs_pre_ipo_shareholder_share": 6,
-            "cs_customer_supplier_share": 4,
+            "cs_connected_person_share": 50,
+            "cs_pre_ipo_shareholder_share": 16,
+            "cs_customer_supplier_share": 6,
             "cs_lockup_share_of_listing_public_float": 20,
-            "secondary_sell_down_pct": 28,
+            "secondary_sell_down_pct": 69,
         }
-        assert review["lockup_components_ready"] == 25
+        assert review["lockup_components_ready"] == 57
         assert review["unlock_supply_shock_factor_ready"] == 0
 
 
