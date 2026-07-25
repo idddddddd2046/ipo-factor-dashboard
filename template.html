@@ -721,6 +721,11 @@ const LONG_LABELS = {
   cs_largest_pct:"最大单一基石集中度",
   cs_hhi:"基石集中度 HHI",
   cs_category_effective_n:"基石身份多样性",
+  cs_connected_person_share:"严格关连人士基石份额",
+  cs_pre_ipo_shareholder_share:"上市前股东基石份额",
+  cs_customer_supplier_share:"客户 / 供应商基石份额",
+  cs_lockup_share_of_listing_public_float:"基石锁定 / 上市公众持股",
+  secondary_sell_down_pct:"老股出售占最终发售比例",
   debt_asset_ratio:"资产负债率",
   sponsor_prior_d1_median:"保荐人滚动 D1 中位战绩",
   public_offer_value_yi:"公众发售货值",
@@ -751,17 +756,24 @@ function renderLongHorizon(){
   const debt = factorMap.debt_asset_ratio;
   const backfill = LONG.evidence_backfill;
   const collection = backfill.collection;
-  const pilot = backfill.pilot;
-  const pilotSummary = pilot?.summary;
+  const review = backfill.review || backfill.pilot;
+  const reviewSummary = review?.summary;
+  const readyByField = reviewSummary?.ready_by_field || {
+    cs_connected_person_share: reviewSummary?.connected_person_ready ?? 0,
+    cs_pre_ipo_shareholder_share: reviewSummary?.pre_ipo_shareholder_ready ?? 0,
+    cs_customer_supplier_share: reviewSummary?.customer_supplier_ready ?? 0,
+    cs_lockup_share_of_listing_public_float: reviewSummary?.lockup_public_float_factor_ready ?? 0,
+    secondary_sell_down_pct: reviewSummary?.secondary_sell_down_ready ?? 0,
+  };
   const existing = Object.values(backfill.existing_coverage || {});
-  const evidenceReady = pilotSummary?.research_factor_ready_values ?? (existing.length ? Math.max(...existing) : 0);
+  const evidenceReady = reviewSummary?.research_factor_ready_values ?? (existing.length ? Math.max(...existing) : 0);
   $("#longCsHero").textContent = "IC " + icS(debt.d365_post_d1_excess.ic);
   $("#longSummary").innerHTML = [
     '<article class="long-card observe"><div class="label">完整审计母样本 / 注册指标</div><div class="value">' + LONG.scope.rows + ' / ' + LONG.scope.registered_indicators + '</div><div class="detail">2024=' + LONG.scope.by_year["2024"] + '，2025=' + LONG.scope.by_year["2025"] + '，2026=' + LONG.scope.by_year["2026"] + '；D180=' + LONG.scope.d180_mature + '，D365=' + LONG.scope.d365_mature + '。</div></article>',
     '<article class="long-card gap"><div class="label">专家规则：首日 → 半年</div><div class="value">' + icS(expert.d1.rank_ic) + ' → ' + icS(expert.d180.rank_ic) + '</div><div class="detail">D1 n=' + expert.d1.n + '；D180 n=' + expert.d180.n + '。D180 负向且通过引擎/模块族 BH-FDR，不能当长期质量分。</div></article>',
     '<article class="long-card supported"><div class="label">低资产负债率 · D365 首日后超额</div><div class="value">IC ' + icS(debt.d365_post_d1_excess.ic) + '</div><div class="detail">n=' + debt.d365_post_d1_excess.n + '，95%CI ' + debt.d365_post_d1_excess.ci95.map(icS).join(" 至 ") + '，通过 100 项联合 BH-FDR；只保留研究。</div></article>',
     '<article class="long-card observe"><div class="label">完整基石评级 / 基石占发售比例</div><div class="value">' + icS(cs.d180_post_d1_excess.ic) + ' / ' + icS(pct.d180_post_d1_excess.ic) + '</div><div class="detail">D180 首日后超额均过 FDR，但可配对只有 ' + cs.d180_post_d1_excess.n + ' 只，未达全审计 60% 覆盖准入线。</div></article>',
-    '<article class="long-card gap"><div class="label">逐页可审计研究值</div><div class="value">' + evidenceReady + ' 个</div><div class="detail">官方材料已收齐 ' + (collection?.windowed ?? 0) + ' / ' + (collection?.targets ?? 69) + '，人工审阅仍为 ' + (collection?.manual_reviews_completed ?? 0) + ' 只；尚未证明长期预测有效。</div></article>',
+    '<article class="long-card gap"><div class="label">逐页可审计研究值</div><div class="value">' + evidenceReady + ' 个</div><div class="detail">官方材料已收齐 ' + (collection?.windowed ?? 0) + ' / ' + (collection?.targets ?? 69) + '，人工审阅 ' + (collection?.manual_reviews_completed ?? 0) + ' 只；单项覆盖仍不足，尚未证明长期预测有效。</div></article>',
   ].join("");
   $("#longBoundary").innerHTML = "<b>先看结论边界：</b>" + esc(LONG.public_copy.supported) + " " + esc(LONG.public_copy.observe) + " " + esc(LONG.public_copy.contradicted) + " " + esc(LONG.public_copy.insufficient) + " <b>" + esc(LONG.public_copy.boundary) + "</b>";
 
@@ -787,16 +799,19 @@ function renderLongHorizon(){
     component_ready:"已确认 180 天",
     denominator_ready:"上市公众持股分母已核实",
     not_applicable_no_cornerstone:"无基石，不制造 0/0 比率",
+    taxonomy_split_required:"关系已披露，但本人 / 紧密联系人未能拆分",
+    blocked_final_offer_adjustment:"最终发售调整后分母未闭环",
+    blocked_no_exact_final_denominator:"未披露最终精确分母",
   };
-  const pilotRows = (pilot?.rows || []).map(row => '<tr><td><b>' + esc(row.ticker) + '</b></td><td>' + esc(row.company_name) + '</td><td>' + esc(statusCopy[row.review_status.connected_person] || row.review_status.connected_person) + '</td><td>' + esc(statusCopy[row.review_status.pre_ipo_shareholder] || row.review_status.pre_ipo_shareholder) + '</td><td>' + esc(statusCopy[row.review_status.customer_supplier] || row.review_status.customer_supplier) + '</td><td>' + esc(statusCopy[row.review_status.public_float] || row.review_status.public_float) + '</td><td>' + esc(statusCopy[row.review_status.secondary_sell_down] || row.review_status.secondary_sell_down) + '</td><td class="num">' + row.factor_ready_values + '</td></tr>').join("");
+  const reviewRows = (review?.rows || []).map(row => '<tr><td><b>' + esc(row.ticker) + '</b></td><td>' + esc(row.company_name) + '</td><td>' + esc(statusCopy[row.review_status.connected_person] || row.review_status.connected_person) + '</td><td>' + esc(statusCopy[row.review_status.pre_ipo_shareholder] || row.review_status.pre_ipo_shareholder) + '</td><td>' + esc(statusCopy[row.review_status.customer_supplier] || row.review_status.customer_supplier) + '</td><td>' + esc(statusCopy[row.review_status.public_float] || row.review_status.public_float) + '</td><td>' + esc(statusCopy[row.review_status.secondary_sell_down] || row.review_status.secondary_sell_down) + '</td><td class="num">' + row.factor_ready_values + '</td></tr>').join("");
   $("#backfillProgress").innerHTML = '<div class="long-summary">' +
     '<article class="long-card observe"><div class="label">官方材料窗口</div><div class="value">' + (collection?.windowed ?? 0) + ' / ' + (collection?.targets ?? s.priority_wave_1_d180_testable) + '</div><div class="detail">全部来自港交所，非空目标页 ' + (collection?.nonempty_page_evidence ?? 0) + ' 只，共保留 ' + (collection?.selected_pages ?? 0).toLocaleString("zh-CN") + ' 页候选证据。</div></article>' +
-    '<article class="long-card observe"><div class="label">人工逐票审阅</div><div class="value">' + (collection?.manual_reviews_completed ?? pilotSummary?.prospectuses_windowed ?? 0) + ' / ' + s.priority_wave_1_d180_testable + '</div><div class="detail">另有 ' + (collection?.queued_for_manual_review ?? 0) + ' 只进入队列；自动生成因子值为 ' + (collection?.factor_values_generated_automatically ?? 0) + '。</div></article>' +
-    '<article class="long-card observe"><div class="label">关系身份值</div><div class="value">' + ((pilotSummary?.connected_person_ready ?? 0) + (pilotSummary?.pre_ipo_shareholder_ready ?? 0) + (pilotSummary?.customer_supplier_ready ?? 0)) + ' 个</div><div class="detail">严格关连人士 ' + (pilotSummary?.connected_person_ready ?? 0) + '；上市前股东 ' + (pilotSummary?.pre_ipo_shareholder_ready ?? 0) + '；客户/供应商 ' + (pilotSummary?.customer_supplier_ready ?? 0) + '。</div></article>' +
-    '<article class="long-card observe"><div class="label">基石锁定 / 上市公众持股</div><div class="value">' + (pilotSummary?.lockup_public_float_factor_ready ?? 0) + ' 只</div><div class="detail">公众持股分母已核实 ' + (pilotSummary?.public_float_denominators_ready ?? 0) + ' 只；解禁供给冲击仍为 ' + (pilotSummary?.unlock_supply_shock_factor_ready ?? 0) + ' 只。</div></article>' +
-    '<article class="long-card observe"><div class="label">老股出售比例</div><div class="value">' + (pilotSummary?.secondary_sell_down_ready ?? 0) + ' 只</div><div class="detail">本次 5 只均由招股书明确支持 0；0 只是样本事实，不代表老股出售因子已经有效。</div></article></div>' +
-    (pilotRows ? '<div class="table-wrap"><table><thead><tr><th>代码</th><th>公司</th><th>严格关连人士</th><th>上市前股东</th><th>客户 / 供应商</th><th>上市公众持股</th><th>老股出售</th><th class="num">可入池值</th></tr></thead><tbody>' + pilotRows + '</tbody></table></div>' : '') +
-    '<p class="secnote"><b>口径修正：</b>“上市前股东”不自动等于“严格关连人士”；06681 因而拆成严格关连人士 0、上市前股东为正，不再用一个模糊“关联方”字段混写。每个数值必须同时有来源链接、PDF 页码、原文、分子、分母和置信度。</p>' +
+    '<article class="long-card observe"><div class="label">人工逐票审阅</div><div class="value">' + (collection?.manual_reviews_completed ?? reviewSummary?.prospectuses_windowed ?? 0) + ' / ' + s.priority_wave_1_d180_testable + '</div><div class="detail">另有 ' + (collection?.queued_for_manual_review ?? 0) + ' 只进入队列；自动生成因子值为 ' + (collection?.factor_values_generated_automatically ?? 0) + '。</div></article>' +
+    '<article class="long-card observe"><div class="label">关系身份值</div><div class="value">' + ((readyByField.cs_connected_person_share ?? 0) + (readyByField.cs_pre_ipo_shareholder_share ?? 0) + (readyByField.cs_customer_supplier_share ?? 0)) + ' 个</div><div class="detail">严格关连人士 ' + (readyByField.cs_connected_person_share ?? 0) + '；上市前股东 ' + (readyByField.cs_pre_ipo_shareholder_share ?? 0) + '；客户/供应商 ' + (readyByField.cs_customer_supplier_share ?? 0) + '。</div></article>' +
+    '<article class="long-card observe"><div class="label">基石锁定 / 上市公众持股</div><div class="value">' + (readyByField.cs_lockup_share_of_listing_public_float ?? 0) + ' 只</div><div class="detail">公众持股分母已核实 ' + (reviewSummary?.public_float_denominators_ready ?? 0) + ' 只；解禁供给冲击仍为 ' + (reviewSummary?.unlock_supply_shock_factor_ready ?? 0) + ' 只。</div></article>' +
+    '<article class="long-card observe"><div class="label">老股出售比例</div><div class="value">' + (readyByField.secondary_sell_down_pct ?? 0) + ' 只</div><div class="detail">06831 明确含 30% 老股出售，其余已审票多为 0；当前 IC 未获支持，不能据此判断个股。</div></article></div>' +
+    (reviewRows ? '<div class="table-wrap"><table><thead><tr><th>代码</th><th>公司</th><th>严格关连人士</th><th>上市前股东</th><th>客户 / 供应商</th><th>上市公众持股</th><th>老股出售</th><th class="num">可入池值</th></tr></thead><tbody>' + reviewRows + '</tbody></table></div>' : '') +
+    '<p class="secnote"><b>口径修正：</b>“上市前股东本人”“上市前股东的紧密联系人”和“严格关连人士”不是同一概念。无法拆分时保持缺失；客户/供应商关系也必须由招股书明示。每个数值必须同时有来源链接、PDF 页码、原文、分子、分母和置信度。</p>' +
     '<p class="secnote" style="margin-bottom:0"><b>流通盘警示：</b>' + esc(LONG.public_copy.free_float_warning || "") + ' 当前可计算的是“基石锁定 / 上市规则公众持股”；真正的“解禁供给冲击”还要扣清其他锁定公众股，暂不发布数值。</p>';
 }
 

@@ -95,18 +95,23 @@ class BuildContractTest(unittest.TestCase):
             value == 0
             for value in self.long_horizon["evidence_backfill"]["existing_coverage"].values()
         )
-        pilot = self.long_horizon["evidence_backfill"]["pilot"]["summary"]
+        review = self.long_horizon["evidence_backfill"]["review"]["summary"]
         collection = self.long_horizon["evidence_backfill"]["collection"]
         assert collection["windowed"] == 69
         assert collection["nonempty_page_evidence"] == 69
-        assert collection["manual_reviews_completed"] == 5
-        assert collection["queued_for_manual_review"] == 64
+        assert collection["manual_reviews_completed"] == 17
+        assert collection["queued_for_manual_review"] == 52
         assert collection["factor_values_generated_automatically"] == 0
-        assert pilot["research_factor_ready_values"] == 16
-        assert pilot["public_float_denominators_ready"] == 5
-        assert pilot["lockup_public_float_factor_ready"] == 4
-        assert pilot["secondary_sell_down_ready"] == 5
-        assert pilot["unlock_supply_shock_factor_ready"] == 0
+        assert review["research_factor_ready_values"] == 53
+        assert review["public_float_denominators_ready"] == 14
+        assert review["ready_by_field"] == {
+            "cs_connected_person_share": 14,
+            "cs_pre_ipo_shareholder_share": 5,
+            "cs_customer_supplier_share": 4,
+            "cs_lockup_share_of_listing_public_float": 13,
+            "secondary_sell_down_pct": 17,
+        }
+        assert review["unlock_supply_shock_factor_ready"] == 0
 
 
 if __name__ == "__main__":

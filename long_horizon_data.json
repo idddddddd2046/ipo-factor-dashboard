@@ -1,12 +1,13 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-23T07:12:31.802329+00:00",
+  "generated_at": "2026-07-25T12:33:23.921718+00:00",
   "as_of": "2026-07-22",
   "sources": [
     "reports/expert_rule_full_factor_audit_2024_2026_2026-07-23.json",
     "reports/expert_v1_historical_simulation_2024_2025_2026-07-23.json",
     "reports/long_horizon_evidence_backfill_plan_2026-07-23.json",
     "reports/long_horizon_prospectus_evidence_pilot_2026-07-23.json",
+    "reports/long_horizon_prospectus_evidence_batch2_2026-07-25.json",
     "reports/long_horizon_prospectus_evidence_2026-07-23/manifest.json"
   ],
   "scope": {
@@ -1126,6 +1127,359 @@
         }
       },
       {
+        "id": "cs_connected_person_share",
+        "module": "cornerstone",
+        "role": "research_candidate",
+        "direction": -1,
+        "meaning": "Listing Rules 严格关联人士基石份额",
+        "source": "prospectus manual evidence",
+        "missing_reason": "manual_review_not_complete",
+        "coverage": {
+          "module": "cornerstone",
+          "role": "research_candidate",
+          "available": 14,
+          "total": 281,
+          "coverage_rate": 0.0498,
+          "by_year": {
+            "2024": {
+              "available": 0,
+              "total": 67
+            },
+            "2025": {
+              "available": 14,
+              "total": 114
+            },
+            "2026": {
+              "available": 0,
+              "total": 100
+            }
+          },
+          "d180_pairable": 14,
+          "d365_pairable": 4,
+          "missing": 267,
+          "missing_reason": "manual_review_not_complete"
+        },
+        "decision": "collect_more_data",
+        "d180": {
+          "n": 14,
+          "status": "available",
+          "ic": 0.4472,
+          "ci95": [
+            0.4487,
+            0.7246
+          ],
+          "p": 0.153846,
+          "bh_fdr_10pct": false
+        },
+        "d180_post_d1_excess": {
+          "n": 14,
+          "status": "available",
+          "ic": 0.3096,
+          "ci95": [
+            0.1045,
+            0.6172
+          ],
+          "p": 0.433566,
+          "bh_fdr_10pct": false
+        },
+        "d365": {
+          "n": 4,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d365_post_d1_excess": {
+          "n": 4,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        }
+      },
+      {
+        "id": "cs_pre_ipo_shareholder_share",
+        "module": "cornerstone",
+        "role": "research_candidate",
+        "direction": -1,
+        "meaning": "上市前股东基石份额",
+        "source": "prospectus manual evidence",
+        "missing_reason": "manual_review_not_complete",
+        "coverage": {
+          "module": "cornerstone",
+          "role": "research_candidate",
+          "available": 5,
+          "total": 281,
+          "coverage_rate": 0.0178,
+          "by_year": {
+            "2024": {
+              "available": 0,
+              "total": 67
+            },
+            "2025": {
+              "available": 5,
+              "total": 114
+            },
+            "2026": {
+              "available": 0,
+              "total": 100
+            }
+          },
+          "d180_pairable": 5,
+          "d365_pairable": 2,
+          "missing": 276,
+          "missing_reason": "manual_review_not_complete"
+        },
+        "decision": "collect_more_data",
+        "d180": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d180_post_d1_excess": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d365": {
+          "n": 2,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d365_post_d1_excess": {
+          "n": 2,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        }
+      },
+      {
+        "id": "cs_customer_supplier_share",
+        "module": "cornerstone",
+        "role": "research_candidate",
+        "direction": 1,
+        "meaning": "客户/供应商战略基石份额",
+        "source": "prospectus manual evidence",
+        "missing_reason": "manual_review_not_complete",
+        "coverage": {
+          "module": "cornerstone",
+          "role": "research_candidate",
+          "available": 4,
+          "total": 281,
+          "coverage_rate": 0.0142,
+          "by_year": {
+            "2024": {
+              "available": 0,
+              "total": 67
+            },
+            "2025": {
+              "available": 4,
+              "total": 114
+            },
+            "2026": {
+              "available": 0,
+              "total": 100
+            }
+          },
+          "d180_pairable": 4,
+          "d365_pairable": 1,
+          "missing": 277,
+          "missing_reason": "manual_review_not_complete"
+        },
+        "decision": "collect_more_data",
+        "d180": {
+          "n": 4,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d180_post_d1_excess": {
+          "n": 4,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d365": {
+          "n": 1,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d365_post_d1_excess": {
+          "n": 1,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        }
+      },
+      {
+        "id": "cs_lockup_share_of_listing_public_float",
+        "module": "cornerstone",
+        "role": "research_candidate",
+        "direction": -1,
+        "meaning": "基石锁定股/上市规则公众持股",
+        "source": "prospectus manual evidence",
+        "missing_reason": "manual_review_not_complete",
+        "coverage": {
+          "module": "cornerstone",
+          "role": "research_candidate",
+          "available": 13,
+          "total": 281,
+          "coverage_rate": 0.0463,
+          "by_year": {
+            "2024": {
+              "available": 0,
+              "total": 67
+            },
+            "2025": {
+              "available": 13,
+              "total": 114
+            },
+            "2026": {
+              "available": 0,
+              "total": 100
+            }
+          },
+          "d180_pairable": 13,
+          "d365_pairable": 4,
+          "missing": 268,
+          "missing_reason": "manual_review_not_complete"
+        },
+        "decision": "collect_more_data",
+        "d180": {
+          "n": 13,
+          "status": "available",
+          "ic": 0.2008,
+          "ci95": [
+            -0.4986,
+            0.7493
+          ],
+          "p": 0.488511,
+          "bh_fdr_10pct": false
+        },
+        "d180_post_d1_excess": {
+          "n": 13,
+          "status": "available",
+          "ic": 0.0825,
+          "ci95": [
+            -0.5545,
+            0.6359
+          ],
+          "p": 0.791209,
+          "bh_fdr_10pct": false
+        },
+        "d365": {
+          "n": 4,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d365_post_d1_excess": {
+          "n": 4,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        }
+      },
+      {
+        "id": "secondary_sell_down_pct",
+        "module": "cornerstone",
+        "role": "research_candidate",
+        "direction": -1,
+        "meaning": "老股出售占最终发售比例",
+        "source": "prospectus manual evidence",
+        "missing_reason": "manual_review_not_complete",
+        "coverage": {
+          "module": "cornerstone",
+          "role": "research_candidate",
+          "available": 17,
+          "total": 281,
+          "coverage_rate": 0.0605,
+          "by_year": {
+            "2024": {
+              "available": 0,
+              "total": 67
+            },
+            "2025": {
+              "available": 17,
+              "total": 114
+            },
+            "2026": {
+              "available": 0,
+              "total": 100
+            }
+          },
+          "d180_pairable": 17,
+          "d365_pairable": 5,
+          "missing": 264,
+          "missing_reason": "manual_review_not_complete"
+        },
+        "decision": "collect_more_data",
+        "d180": {
+          "n": 17,
+          "status": "available",
+          "ic": 0.0,
+          "ci95": [
+            -0.2623,
+            0.263
+          ],
+          "p": 1.0,
+          "bh_fdr_10pct": false
+        },
+        "d180_post_d1_excess": {
+          "n": 17,
+          "status": "available",
+          "ic": -0.1021,
+          "ci95": [
+            -0.3805,
+            0.1037
+          ],
+          "p": 0.828172,
+          "bh_fdr_10pct": false
+        },
+        "d365": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        },
+        "d365_post_d1_excess": {
+          "n": 5,
+          "status": "insufficient",
+          "ic": null,
+          "ci95": null,
+          "p": null,
+          "bh_fdr_10pct": false
+        }
+      },
+      {
         "id": "sponsor_prior_d1_median",
         "module": "underwriter",
         "role": "research_candidate",
@@ -2201,16 +2555,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 4,
+          "available": 14,
           "total": 281,
-          "coverage_rate": 0.0142,
+          "coverage_rate": 0.0498,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 4,
+              "available": 14,
               "total": 114
             },
             "2026": {
@@ -2218,9 +2572,9 @@
               "total": 100
             }
           },
-          "d180_pairable": 4,
+          "d180_pairable": 14,
           "d365_pairable": 4,
-          "missing": 277,
+          "missing": 267,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -2236,16 +2590,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 2,
+          "available": 5,
           "total": 281,
-          "coverage_rate": 0.0071,
+          "coverage_rate": 0.0178,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 2,
+              "available": 5,
               "total": 114
             },
             "2026": {
@@ -2253,9 +2607,9 @@
               "total": 100
             }
           },
-          "d180_pairable": 2,
+          "d180_pairable": 5,
           "d365_pairable": 2,
-          "missing": 279,
+          "missing": 276,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -2266,41 +2620,6 @@
         "role": "research_candidate",
         "direction": 1,
         "meaning": "客户/供应商战略基石份额",
-        "source": "prospectus manual evidence",
-        "missing_reason": "manual_review_not_complete",
-        "coverage": {
-          "module": "cornerstone",
-          "role": "research_candidate",
-          "available": 1,
-          "total": 281,
-          "coverage_rate": 0.0036,
-          "by_year": {
-            "2024": {
-              "available": 0,
-              "total": 67
-            },
-            "2025": {
-              "available": 1,
-              "total": 114
-            },
-            "2026": {
-              "available": 0,
-              "total": 100
-            }
-          },
-          "d180_pairable": 1,
-          "d365_pairable": 1,
-          "missing": 280,
-          "missing_reason": "manual_review_not_complete"
-        },
-        "decision": "collect_more_data"
-      },
-      {
-        "id": "cs_lockup_share_of_listing_public_float",
-        "module": "cornerstone",
-        "role": "research_candidate",
-        "direction": -1,
-        "meaning": "基石锁定股/上市规则公众持股",
         "source": "prospectus manual evidence",
         "missing_reason": "manual_review_not_complete",
         "coverage": {
@@ -2324,8 +2643,43 @@
             }
           },
           "d180_pairable": 4,
-          "d365_pairable": 4,
+          "d365_pairable": 1,
           "missing": 277,
+          "missing_reason": "manual_review_not_complete"
+        },
+        "decision": "collect_more_data"
+      },
+      {
+        "id": "cs_lockup_share_of_listing_public_float",
+        "module": "cornerstone",
+        "role": "research_candidate",
+        "direction": -1,
+        "meaning": "基石锁定股/上市规则公众持股",
+        "source": "prospectus manual evidence",
+        "missing_reason": "manual_review_not_complete",
+        "coverage": {
+          "module": "cornerstone",
+          "role": "research_candidate",
+          "available": 13,
+          "total": 281,
+          "coverage_rate": 0.0463,
+          "by_year": {
+            "2024": {
+              "available": 0,
+              "total": 67
+            },
+            "2025": {
+              "available": 13,
+              "total": 114
+            },
+            "2026": {
+              "available": 0,
+              "total": 100
+            }
+          },
+          "d180_pairable": 13,
+          "d365_pairable": 4,
+          "missing": 268,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -2376,16 +2730,16 @@
         "coverage": {
           "module": "cornerstone",
           "role": "research_candidate",
-          "available": 5,
+          "available": 17,
           "total": 281,
-          "coverage_rate": 0.0178,
+          "coverage_rate": 0.0605,
           "by_year": {
             "2024": {
               "available": 0,
               "total": 67
             },
             "2025": {
-              "available": 5,
+              "available": 17,
               "total": 114
             },
             "2026": {
@@ -2393,9 +2747,9 @@
               "total": 100
             }
           },
-          "d180_pairable": 5,
+          "d180_pairable": 17,
           "d365_pairable": 5,
-          "missing": 276,
+          "missing": 264,
           "missing_reason": "manual_review_not_complete"
         },
         "decision": "collect_more_data"
@@ -3600,8 +3954,8 @@
       "nonempty_page_evidence": 69,
       "official_hkex_urls": 69,
       "selected_pages": 2492,
-      "manual_reviews_completed": 5,
-      "queued_for_manual_review": 64,
+      "manual_reviews_completed": 17,
+      "queued_for_manual_review": 52,
       "factor_values_generated_automatically": 0
     },
     "pilot": {
@@ -3697,13 +4051,272 @@
           "factor_ready_values": 1
         }
       ]
+    },
+    "review": {
+      "mode": "research_review_only",
+      "database_writes": false,
+      "production_scoring_changes": false,
+      "summary": {
+        "prospectuses_windowed": 17,
+        "wave1_candidates": 69,
+        "review_coverage": 0.2463768115942029,
+        "research_factor_ready_values": 53,
+        "ready_by_field": {
+          "cs_connected_person_share": 14,
+          "cs_pre_ipo_shareholder_share": 5,
+          "cs_customer_supplier_share": 4,
+          "cs_lockup_share_of_listing_public_float": 13,
+          "secondary_sell_down_pct": 17
+        },
+        "lockup_components_ready": 16,
+        "public_float_denominators_ready": 14,
+        "unlock_supply_shock_factor_ready": 0
+      },
+      "batches": [
+        {
+          "batch": 1,
+          "prospectuses_windowed": 5,
+          "research_factor_ready_values": 16
+        },
+        {
+          "batch": 2,
+          "prospectuses_windowed": 12,
+          "research_factor_ready_values": 37
+        }
+      ],
+      "rows": [
+        {
+          "ticker": "06681",
+          "company_name": "腦動極光－Ｂ",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "factor_ready_positive",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 4
+        },
+        {
+          "ticker": "02560",
+          "company_name": "海螺材料科技",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "factor_ready_zero",
+            "customer_supplier": "factor_ready_zero",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 5
+        },
+        {
+          "ticker": "02613",
+          "company_name": "匯舸環保",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "00325",
+          "company_name": "布魯可",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "02530",
+          "company_name": "紐曼思",
+          "review_status": {
+            "connected_person": "not_applicable_no_cornerstone",
+            "pre_ipo_shareholder": "not_applicable_no_cornerstone",
+            "customer_supplier": "not_applicable_no_cornerstone",
+            "lockup": "not_applicable_no_cornerstone",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 1
+        },
+        {
+          "ticker": "02617",
+          "company_name": "藥捷安康－Ｂ",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "taxonomy_split_required",
+            "customer_supplier": "factor_ready_positive",
+            "relationship_note": "close_associate_not_direct_shareholder",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 4
+        },
+        {
+          "ticker": "02610",
+          "company_name": "南山鋁業國際",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "factor_ready_positive",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 4
+        },
+        {
+          "ticker": "06831",
+          "company_name": "綠茶集團",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_positive"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "02589",
+          "company_name": "滬上阿姨",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "factor_ready_zero",
+            "customer_supplier": "factor_ready_positive",
+            "lockup": "component_ready",
+            "public_float": "blocked_final_offer_adjustment",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 4
+        },
+        {
+          "ticker": "02648",
+          "company_name": "安井食品",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "02619",
+          "company_name": "香江電器",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "factor_ready_zero",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 4
+        },
+        {
+          "ticker": "02561",
+          "company_name": "維昇藥業－Ｂ",
+          "review_status": {
+            "connected_person": "factor_ready_positive",
+            "pre_ipo_shareholder": "factor_ready_positive",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "blocked_final_offer_adjustment",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "03750",
+          "company_name": "寧德時代",
+          "review_status": {
+            "connected_person": "taxonomy_split_required",
+            "pre_ipo_shareholder": "taxonomy_split_required",
+            "customer_supplier": "missing_explicit_evidence",
+            "relationship_note": "direct_shareholder_vs_close_associate_unresolved",
+            "lockup": "component_ready",
+            "public_float": "blocked_no_exact_final_denominator",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 1
+        },
+        {
+          "ticker": "02643",
+          "company_name": "曹操出行",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "03858",
+          "company_name": "佳鑫國際資源",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        },
+        {
+          "ticker": "09973",
+          "company_name": "奇瑞汽車",
+          "review_status": {
+            "connected_person": "taxonomy_split_required",
+            "pre_ipo_shareholder": "taxonomy_split_required",
+            "customer_supplier": "missing_explicit_evidence",
+            "relationship_note": "close_associate_not_direct_shareholder",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 2
+        },
+        {
+          "ticker": "02259",
+          "company_name": "紫金黃金國際",
+          "review_status": {
+            "connected_person": "factor_ready_zero",
+            "pre_ipo_shareholder": "missing_explicit_evidence",
+            "customer_supplier": "missing_explicit_evidence",
+            "lockup": "component_ready",
+            "public_float": "denominator_ready",
+            "secondary_sell_down": "factor_ready_zero"
+          },
+          "factor_ready_values": 3
+        }
+      ]
     }
   },
   "public_copy": {
     "supported": "100 项联合检验后，新增候选中只有低资产负债率在 D365 首日后超额通过 BH-FDR，保留为优先研究因子；尚未获准进入生产。",
     "observe": "完整基石评级与基石占发售比例在 D180 首日后超额显著，但当前可配对仅 69 只，低于全审计 60% 覆盖准入线。",
     "contradicted": "小发售规模、零基石和保荐人短期滚动战绩的原方向在部分长期超额口径显著反向，说明 D1 供需优势不能直接外推成长线质量。",
-    "insufficient": "2026 年 100 只已进入覆盖率，但尚无成熟 D180/D365；关系型基石仍只有 5/69 只逐页人工裁定，不能把未审票填 0。",
+    "insufficient": "2026 年 100 只已进入覆盖率，但尚无成熟 D180/D365；关系型基石完成 17/69 只逐页人工裁定，单项覆盖仍不足，不能把未审票填 0。",
     "free_float_warning": "历史 free_float_pct 实际是发售股数/上市总股本，不是港交所公众持股比例；长期锁定因子不得沿用。",
     "boundary": "因子池登记不等于进入生产权重；网站不提供长期个股评分或买卖建议。"
   }
