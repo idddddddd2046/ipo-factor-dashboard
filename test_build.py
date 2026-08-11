@@ -20,11 +20,19 @@ class BuildContractTest(unittest.TestCase):
         self.long_horizon = json.loads(
             (ROOT / "long_horizon_data.json").read_text(encoding="utf-8")
         )
+        self.valuation = json.loads(
+            (ROOT / "valuation_status.json").read_text(encoding="utf-8")
+        )
         self.template = (ROOT / "template.html").read_text(encoding="utf-8")
 
     def test_current_inputs_are_consistent(self) -> None:
         validate_inputs(
-            self.data, self.strategy, self.forward, self.long_horizon, self.template
+            self.data,
+            self.strategy,
+            self.forward,
+            self.long_horizon,
+            self.valuation,
+            self.template,
         )
 
     def test_rejects_forward_count_beyond_gate(self) -> None:
@@ -34,7 +42,7 @@ class BuildContractTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "前瞻样本进度不合法"):
             validate_inputs(
-                self.data, self.strategy, forward, self.long_horizon, self.template
+                self.data, self.strategy, forward, self.long_horizon, self.valuation, self.template
             )
 
     def test_rejects_factor_date_mismatch(self) -> None:
@@ -43,7 +51,7 @@ class BuildContractTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "factor_research"):
             validate_inputs(
-                self.data, self.strategy, forward, self.long_horizon, self.template
+                self.data, self.strategy, forward, self.long_horizon, self.valuation, self.template
             )
 
     def test_rejects_missing_placeholder(self) -> None:
@@ -51,7 +59,7 @@ class BuildContractTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "__FORWARD_STATUS__"):
             validate_inputs(
-                self.data, self.strategy, self.forward, self.long_horizon, template
+                self.data, self.strategy, self.forward, self.long_horizon, self.valuation, template
             )
 
     def test_rejects_long_horizon_production_promotion(self) -> None:
@@ -60,7 +68,7 @@ class BuildContractTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "生产 Gate"):
             validate_inputs(
-                self.data, self.strategy, self.forward, long_horizon, self.template
+                self.data, self.strategy, self.forward, long_horizon, self.valuation, self.template
             )
 
     def test_rejects_backfill_database_write(self) -> None:
@@ -69,7 +77,35 @@ class BuildContractTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "dry-run"):
             validate_inputs(
-                self.data, self.strategy, self.forward, long_horizon, self.template
+                self.data, self.strategy, self.forward, long_horizon, self.valuation, self.template
+            )
+
+    def test_rejects_valuation_scope_weight_drift(self) -> None:
+        valuation = copy.deepcopy(self.valuation)
+        valuation["rules"]["comparability_weights"]["cross_market_nonconcurrent"] = 1.0
+
+        with self.assertRaisesRegex(ValueError, "同业市场可比性权重"):
+            validate_inputs(
+                self.data,
+                self.strategy,
+                self.forward,
+                self.long_horizon,
+                valuation,
+                self.template,
+            )
+
+    def test_rejects_in_sample_replay_claimed_as_independent(self) -> None:
+        valuation = copy.deepcopy(self.valuation)
+        valuation["validation"]["independent_validation"] = True
+
+        with self.assertRaisesRegex(ValueError, "独立验证"):
+            validate_inputs(
+                self.data,
+                self.strategy,
+                self.forward,
+                self.long_horizon,
+                valuation,
+                self.template,
             )
 
     def test_long_horizon_snapshot_exposes_verified_and_missing_states(self) -> None:

@@ -32,7 +32,7 @@
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--page);color:var(--ink);
-  font:15px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+  font:15px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;overflow-x:hidden}
 .wrap{max-width:1200px;margin:0 auto;padding:0 22px 70px}
 nav{position:sticky;top:0;z-index:30;background:var(--page);border-bottom:1px solid var(--border);
   display:flex;gap:4px;align-items:center;padding:10px 22px;flex-wrap:wrap}
@@ -91,6 +91,7 @@ h1{font-size:31px;line-height:1.25;margin:8px 0 10px;text-wrap:balance;max-width
 .long-boundary{border:1px solid var(--border);border-left:3px solid var(--warn);border-radius:8px;
   padding:10px 12px;background:var(--wash);font-size:12.5px;color:var(--ink2);margin:12px 0}
 .long-table{overflow-x:auto}
+.table-wrap{overflow-x:auto}
 .long-table table{font-size:12.5px}
 .long-table th{cursor:default}
 .long-table td:first-child,.long-table td:nth-child(2){white-space:normal;min-width:160px}
@@ -291,6 +292,7 @@ a{color:var(--pos)}
 <nav aria-label="页面导航">
   <span class="brand">📊 IPO 打新因子看板</span>
   <a href="#story">结论</a><a href="#strategy">策略验证</a><a href="#calculator">固定卡试算</a>
+  <a href="#valuation-live">现行估值</a>
   <a href="#evidence">新增证据</a><a href="#long-horizon">长期核验</a>
   <a href="#modules">模块地图</a><a href="#explorer">因子透视</a>
   <a href="#stocks">个股数据</a><a href="#guide">备注·名词解释</a><a href="#method">方法</a>
@@ -355,10 +357,26 @@ a{color:var(--pos)}
   </div>
 </section>
 
-<section>
+<section id="engine-mapping">
   <h2>从评分引擎到因子证据</h2>
   <p class="secnote">现行引擎的五个专家维度，逐一放到 214 只研究样本上检验。请区分“进入冻结卡”“近失二级证据”和“未通过筛选”，不要把在役标记等同于因果证明。</p>
   <div class="panel"><div class="engmap" id="engmap"></div></div>
+</section>
+
+<section id="valuation-live">
+  <h2>现行估值引擎：便宜不等于首日一定涨</h2>
+  <p class="secnote">这是现行八模块专家引擎中的估值模块，不是单独选股策略。盈利公司同时看 PE 与 PS；跨市场同业只作低置信度压力测试。页面只展示私有仓导出的冻结结果，不在浏览器重算估值或评分。</p>
+  <div class="long-summary" id="valuationSummary"></div>
+  <div class="long-boundary" id="valuationBoundary"></div>
+  <div class="panel">
+    <h3 style="margin-top:0">正式采用的规则</h3>
+    <div class="engmap" id="valuationRules"></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h3 style="margin-top:0">为什么“折价”仍可能破发：五只可核对样本</h3>
+    <p class="secnote">估值分只回答“相对同业贵不贵”，D1 总分还会综合需求热度、货量、基石、行业等模块。下表的 D1 涨幅是事后真值，仅用于回检。</p>
+    <div class="long-table" id="valuationExamples"></div>
+  </div>
 </section>
 
 <section id="evidence">
@@ -498,6 +516,7 @@ const DATA = __DATA__;
 const STRATEGY = __STRATEGY_DATA__;
 const FORWARD = __FORWARD_STATUS__;
 const LONG = __LONG_HORIZON_DATA__;
+const VALUATION = __VALUATION_STATUS__;
 const $ = s => document.querySelector(s);
 const FM = {}; DATA.factors.forEach(f => FM[f.id] = f);
 const MM = {}; DATA.modules.forEach(m => MM[m.id] = m);
@@ -708,6 +727,47 @@ function renderEvidence(){
     <p class="secnote" style="margin-top:8px">${esc(cf.llm_upgrade_result || "")}</p>`;
 }
 
+// ---------- 现行估值模块（只展示私有仓冻结导出，不在浏览器重算） ----------
+const VALUATION_SCOPE = {
+  same_company_ah:"同公司 A/H 直接锚",
+  same_market_hk:"同期香港同业",
+  mixed_market:"港股 + 跨市场混合",
+  cross_market_concurrent:"跨市场同期同业",
+  cross_market_nonconcurrent:"跨市场非同期同业",
+  unavailable:"正式弃权",
+};
+const VALUATION_NAME = {
+  "02512":"云工场科技",
+  "06831":"绿茶集团",
+  "02097":"蜜雪集团",
+  "02550":"易搜科技",
+  "03636":"金浔资源",
+};
+const ratioS = value => value == null ? "—" : value.toFixed(2) + "×";
+function renderValuation(){
+  const c = VALUATION.coverage;
+  const r = VALUATION.rules;
+  const v = VALUATION.validation;
+  const scoreable = c.sample - c.formal_abstention;
+  $("#valuationSummary").innerHTML = [
+    '<article class="long-card supported"><div class="label">生产状态</div><div class="value">已生效</div><div class="detail">现行八模块规则的估值模块；当前无在申购个股，下一只新股出现时做真实前瞻验收。</div></article>',
+    '<article class="long-card supported"><div class="label">历史回放覆盖</div><div class="value">' + c.current_rules_replayed + ' / ' + c.sample + '</div><div class="detail">A/H 直接锚 ' + c.ah_same_company + ' 只；非 A/H 主营与同业闭环 ' + c.non_ah_business_resolved + ' 只。</div></article>',
+    '<article class="long-card observe"><div class="label">可计分 / 正式弃权</div><div class="value">' + scoreable + ' / ' + c.formal_abstention + '</div><div class="detail">非 A/H 真实同业估值 ' + c.non_ah_real_peer_valuation + ' 只；找不到至少 ' + r.minimum_eligible_peers + ' 家合格同业时明确弃权，不用 50 分冒充正常估值。</div></article>',
+    '<article class="long-card observe"><div class="label">D1 排序方向性回放</div><div class="value">' + v.d1_rank_ic_before.toFixed(3) + ' → ' + v.d1_rank_ic_after.toFixed(3) + '</div><div class="detail">提升 ' + v.d1_rank_ic_delta.toFixed(3) + '；同一批 30 只参与规则审阅，不是独立样本验证。</div></article>',
+  ].join("");
+  $("#valuationBoundary").innerHTML = '<b>业务边界：</b>' + esc(VALUATION.public_copy.boundary) + ' <b>五只正式弃权的 50 分只为总分计算中的中性占位，必须同时显示“不可计分”，不能解读为估值正常。</b>';
+  const scopes = r.comparability_weights;
+  $("#valuationRules").innerHTML = [
+    {a:"盈利公司双指标",b:"PE 60% + PS 40%",c:"避免只看收入倍数，把盈利兑现能力纳入估值。"},
+    {a:"港股 / A·H 直接锚",b:"100% 采用",c:"同公司 A/H 或同期香港市场同业，可比性最高。"},
+    {a:"跨市场同期 / 非同期",b:Math.round(scopes.cross_market_concurrent*100) + "% / " + Math.round(scopes.cross_market_nonconcurrent*100) + "%",c:"只采用部分估值偏离，不能把 A 股或美股倍数冒充港股目标价。"},
+    {a:"同业不足",b:"至少 " + r.minimum_eligible_peers + " 家，否则弃权",c:"保留中性占位维持总分兼容，但对外必须标成不可计分。"},
+    {a:"标准档模块权重",b:"D1 " + Math.round(r.standard_profile_weights.d1*100) + "% · 质量 " + Math.round(r.standard_profile_weights.quality*100) + "%",c:"本轮没有改顶层权重；估值不会盖过需求热度等更强 D1 信号。"},
+  ].map(x => '<div class="eng"><div class="dim">' + x.a + '</div><div><b>' + x.b + '</b></div><div class="res">' + x.c + '</div></div>').join("");
+  const rows = VALUATION.examples.map(row => '<tr><td><b>' + esc(row.ticker) + ' ' + esc(VALUATION_NAME[row.ticker] || SM[row.ticker]?.nm || row.source_company_name) + '</b></td><td>' + esc(VALUATION_SCOPE[row.market_scope] || row.market_scope) + '<div class="mono">采用 ' + Math.round(row.comparability_weight*100) + '% · ' + row.peer_count + ' 家</div></td><td class="num">' + ratioS(row.ps_to_peer) + '</td><td class="num">' + ratioS(row.pe_to_peer) + '</td><td class="num">' + row.valuation_score.toFixed(1) + '</td><td class="num">' + row.d1_score.toFixed(1) + '</td><td class="num ' + (row.actual_d1_return >= 0 ? 'pos-t' : 'neg-t') + '">' + pctS(row.actual_d1_return) + '</td></tr>').join("");
+  $("#valuationExamples").innerHTML = '<table><thead><tr><th>个股</th><th>同业锚与采用权重</th><th class="num">目标 PS / 同业</th><th class="num">目标 PE / 同业</th><th class="num">估值模块分</th><th class="num">D1 总分</th><th class="num">实际 D1</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
 // ---------- D180 / D365 长期核验（只展示私有仓冻结导出） ----------
 const LONG_LABELS = {
   cornerstone_production_score:"完整基石评级（T1–T4 + 覆盖档 + 机构份额）",
@@ -881,7 +941,8 @@ const ENG = [
   {dim:"hype 市场热度 25%", to:"孖展族因子", res:"✅ 历史 D1 排序证据最强：IC 0.53；冻结 v2 卡主因子 80%", good:1},
   {dim:"cornerstone 基石 10%", to:"机构/主权基石份额", res:"✅ D1 IC +0.184、block-p 0.036；已按 K=16 微调现行维度 raw 分，权重表不变", good:1},
   {dim:"underwriter 承销商 10%", to:"具体机构滚动战绩", res:"⚠️ 静态粗档不显著；近 12 月战绩 IC +0.10 但 p=0.30、覆盖 102/214，暂不入卡", good:0},
-  {dim:"fundamental 基本面 30%", to:"11 个财务因子", res:"⚠️ 剥离首日后营收增速 IC +0.18；估值类在样本期反向，均未接入生产", good:2},
+  {dim:"fundamental 基本面 30%", to:"11 个财务因子", res:"⚠️ 剥离首日后营收增速 IC +0.18；单估值因子的历史反向结果不直接当作生产信号", good:2},
+  {dim:"valuation 估值（标准 D1 10%）", to:"PE/PS + 同业市场可比性", res:"✅ 现行规则已生效：盈利公司 PE 60% + PS 40%；跨市场只采用 35%–60% 偏离，至少 3 家同业", good:1},
   {dim:"industry 行业景气 20%", to:"（LLM 口径）", res:"— 历史输入不可合规重建，无法回测；市场环境族作近似代理（弱）", good:0},
   {dim:"sentiment 舆论情绪 15%", to:"（LLM 口径）", res:"— 同上不可回测；信源质量差，v2 卡暂缓纳入", good:0},
   {dim:"整机对比", to:"专家权重 → v2 因子卡", res:"D1 IC：实盘 0.026 / 离线重打分 ≈0.19 → v2 卡 0.496（2026 验证窗，双跑观察中）", good:1},
@@ -1239,6 +1300,7 @@ addEventListener("keydown", e => {
 
 // ---------- init ----------
 renderCorrections();
+renderValuation();
 renderEvidence();
 renderLongHorizon();
 buildList();

@@ -1,6 +1,6 @@
 # 看板冻结数据字段字典
 
-看板使用四份数据：`dashboard_data.json` 保存因子与个股研究快照，`strategy_data.json` 保存冻结 v2 卡及策略对决快照，`forward_status.json` 保存 F4 前瞻进度与运营基线版本，`long_horizon_data.json` 保存 D180/D365 核验与证据补齐进度。**四者都是 ipo-tool 私有仓冻结报告/补充说明的只读导出**——渲染层可以增删展示、重排、加解释，但不得改写统计数值或在浏览器重估它们。
+看板使用五份数据：`dashboard_data.json` 保存因子与个股研究快照，`strategy_data.json` 保存冻结 v2 卡及策略对决快照，`forward_status.json` 保存 F4 前瞻进度与运营基线版本，`long_horizon_data.json` 保存 D180/D365 核验与证据补齐进度，`valuation_status.json` 保存现行估值模块的规则与回放状态。**五者都是 ipo-tool 私有仓冻结报告/补充说明的只读导出**——渲染层可以增删展示、重排、加解释，但不得改写统计数值或在浏览器重估它们。
 
 ## dashboard_data.json 顶层结构
 
@@ -156,9 +156,26 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 - `cs_lockup_share_of_listing_public_float` 已有 20 只可计算，只表示“基石锁定/上市规则公众持股”；`unlock_supply_shock_factor_ready=0` 表示其他锁定公众股尚未枚举，不能把两者混称为解禁压力。
 - 生产供需口径若在长期显著反向，只能标为“长期方向反证”，不能直接反转或修改 D1 生产权重。
 
+## valuation_status.json
+
+该快照由私有仓 `scripts/export_valuation_dashboard_snapshot.py` 从两版 30 只专家规则回放报告导出，`schema_version=1`。它只公开现行估值模块的可解释规则和冻结结果，不导出数据库凭证、缓存或生产日志。
+
+| 路径 | 含义 |
+|---|---|
+| `production.status/effective_commit` | 规则是否已生效及对应私有仓提交 |
+| `rules.profitable_metric_mix` | 盈利公司估值组合：PE 60%、PS 40% |
+| `rules.comparability_weights` | A/H、港股、混合和跨市场同业的可比性采用权重 |
+| `rules.minimum_eligible_peers` | 至少 3 家合格同业才允许计分 |
+| `rules.standard_profile_weights` | 估值模块在标准 D1 / 质量分中的既有权重；`top_level_weight_changed=false` 表示本轮没有改顶层权重 |
+| `coverage` | 30 只回放、A/H 7 只、非 A/H 23 只、18 只真实同业估值及 5 只正式弃权 |
+| `validation` | 新旧规则在同一批样本的 D1 排序相关性；`independent_validation=false` 必须同时披露 |
+| `examples[]/rows[]` | 个股同业范围、采用权重、PE/PS 相对倍数、估值分、D1 总分及事后 D1 真值 |
+
+正式弃权的 `formal_abstention_score=50` 只是维持总分兼容的中性占位，`formal_abstention_is_scoreable=false` 才是业务状态。公开页不得把 50 分写成“估值正常”。跨市场同业倍数属于压力测试，不构成港股目标价。
+
 ## 如何重新导出（数据层，在 ipo-tool 私有仓）
 
-两份公开 JSON 由 ipo-tool 的冻结产物导出，数据源为：
+五份公开 JSON 由 ipo-tool 的冻结产物导出，数据源包括：
 
 | 数据源（ipo-tool 私有仓路径） | 提供 |
 |---|---|
@@ -166,6 +183,7 @@ CSS 里每个模块有配色变量 `--m-<id>`。
 | `reports/factor_signal_library_2026-07-12.json` | F2 信号库：16 个市场/供给/基石/环境因子的四件套统计 |
 | `reports/quality_signal_library_2026-07-13.json` | v3 财务因子体检：11 个财务因子的四件套统计 |
 | `reports/factor_card_v2_duel_2026-07-12.json` | v2 固定卡边界、权重、2026 对决结果与置信区间 |
+| `reports/manual_expert_review_replay_v2_dry_run_2026-08-10.json` 与 `2026-08-11.json` | 现行估值模块部署前后 30 只历史回放 |
 
 新一期数据（如双跑周报满 30 只、v3 卡上线）到位后，由 ipo-tool 侧重新导出对应 JSON，复制到本仓覆盖，跑 `build.py`，推 main。
 

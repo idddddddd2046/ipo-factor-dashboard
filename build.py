@@ -25,11 +25,17 @@ PLACEHOLDERS = (
     "__STRATEGY_DATA__",
     "__FORWARD_STATUS__",
     "__LONG_HORIZON_DATA__",
+    "__VALUATION_STATUS__",
 )
 
 
 def validate_inputs(
-    data: dict, strategy: dict, forward_status: dict, long_horizon: dict, template: str
+    data: dict,
+    strategy: dict,
+    forward_status: dict,
+    long_horizon: dict,
+    valuation_status: dict,
+    template: str,
 ) -> None:
     """阻止来源日期、前瞻计数或模板占位符失配后仍发布。"""
     for placeholder in PLACEHOLDERS:
@@ -72,6 +78,63 @@ def validate_inputs(
     if backfill.get("database_writes") is not False:
         raise ValueError("关系/锁定补齐必须保持 dry-run")
 
+    valuation_date = date.fromisoformat(valuation_status["as_of"])
+    production = valuation_status.get("production", {})
+    coverage = valuation_status.get("coverage", {})
+    rules = valuation_status.get("rules", {})
+    validation = valuation_status.get("validation", {})
+    if valuation_status.get("schema_version") != 1:
+        raise ValueError("估值快照 schema_version 必须为 1")
+    if production.get("status") != "active":
+        raise ValueError("公开页只展示已生效的现行估值规则")
+    if valuation_date > date.today():
+        raise ValueError("估值快照日期不能晚于构建日期")
+    valuation_source_match = re.search(
+        r"(\d{4}-\d{2}-\d{2})", valuation_status["source_reports"][0]["path"]
+    )
+    if not valuation_source_match or date.fromisoformat(
+        valuation_source_match.group(1)
+    ) != valuation_date:
+        raise ValueError("估值快照日期与当前回放来源不一致")
+    if coverage != {
+        "sample": 30,
+        "current_rules_replayed": 30,
+        "ah_same_company": 7,
+        "non_ah_business_resolved": 23,
+        "non_ah_real_peer_valuation": 18,
+        "formal_abstention": 5,
+        "unresolved": 0,
+        "scope_counts": {
+            "same_market_hk": 3,
+            "mixed_market": 1,
+            "cross_market_nonconcurrent": 14,
+        },
+    }:
+        raise ValueError("估值回放覆盖契约不一致")
+    if rules.get("profitable_metric_mix") != {"pe": 0.6, "ps": 0.4}:
+        raise ValueError("盈利公司 PE/PS 估值组合契约不一致")
+    expected_scope_weights = {
+        "same_company_ah": 1.0,
+        "same_market_hk": 1.0,
+        "mixed_market": 0.5,
+        "cross_market_concurrent": 0.6,
+        "cross_market_nonconcurrent": 0.35,
+        "unknown": 0.0,
+        "unavailable": 0.0,
+    }
+    if rules.get("comparability_weights") != expected_scope_weights:
+        raise ValueError("同业市场可比性权重契约不一致")
+    if rules.get("top_level_weight_changed") is not False:
+        raise ValueError("估值快照不得暗示修改顶层评分权重")
+    if rules.get("formal_abstention_is_scoreable") is not False:
+        raise ValueError("正式弃权不得伪装成可计分估值")
+    if validation.get("independent_validation") is not False:
+        raise ValueError("同样本方向性回放不得标成独立验证")
+    if len(valuation_status.get("rows", [])) != 30 or len(
+        valuation_status.get("examples", [])
+    ) != 5:
+        raise ValueError("估值快照明细数量不一致")
+
     report_match = re.search(r"(\d{4}-\d{2}-\d{2})", forward_status["source_report"])
     if not report_match or date.fromisoformat(report_match.group(1)) > as_of:
         raise ValueError("source_report 日期缺失或晚于公开状态快照")
@@ -88,14 +151,19 @@ def main() -> None:
     strategy = json.loads((ROOT / "strategy_data.json").read_text(encoding="utf-8"))
     forward_status = json.loads((ROOT / "forward_status.json").read_text(encoding="utf-8"))
     long_horizon = json.loads((ROOT / "long_horizon_data.json").read_text(encoding="utf-8"))
+    valuation_status = json.loads((ROOT / "valuation_status.json").read_text(encoding="utf-8"))
     template = (ROOT / "template.html").read_text(encoding="utf-8")
-    validate_inputs(data, strategy, forward_status, long_horizon, template)
+    validate_inputs(data, strategy, forward_status, long_horizon, valuation_status, template)
 
     body = template.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     body = body.replace("__STRATEGY_DATA__", json.dumps(strategy, ensure_ascii=False, separators=(",", ":")))
     body = body.replace("__FORWARD_STATUS__", json.dumps(forward_status, ensure_ascii=False, separators=(",", ":")))
     body = body.replace(
         "__LONG_HORIZON_DATA__", json.dumps(long_horizon, ensure_ascii=False, separators=(",", ":"))
+    )
+    body = body.replace(
+        "__VALUATION_STATUS__",
+        json.dumps(valuation_status, ensure_ascii=False, separators=(",", ":")),
     )
     page = (
         '<!doctype html><html lang="zh-Hans"><head><meta charset="utf-8">'
@@ -111,7 +179,9 @@ def main() -> None:
         f"built index.html {len(page)//1024} KB  "
         f"(stocks={len(data['stocks'])}, factors={len(data['factors'])}, "
         f"forward={forward_status['forward_n']}/{forward_status['target_n']}, "
-        f"long_d180={long_horizon['scope']['d180_mature']})"
+        f"long_d180={long_horizon['scope']['d180_mature']}, "
+        f"valuation={valuation_status['coverage']['sample'] - valuation_status['coverage']['formal_abstention']}/"
+        f"{valuation_status['coverage']['sample']})"
     )
 
 
